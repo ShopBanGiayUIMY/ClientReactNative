@@ -1,11 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-
+import Login from './Sreen/Login';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Huy chào world</Text>
-      <StatusBar style="auto" />
+      <Login/>
     </View>
   );
 }
@@ -15,6 +14,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
 });
