@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { MaterialIcons } from '@expo/vector-icons';
 export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
             password: '',
             passwordVisibility: false,
+            agreeToTerms: false,
         };
 
     }
@@ -15,10 +17,16 @@ export default class Register extends Component {
             passwordVisible: !prevState.passwordVisible,
         }));
     };
+    toggleAgreeToTerms = () => {
+        this.setState((prevState) => ({
+            agreeToTerms: !prevState.agreeToTerms,
+        }));
+    };
     render() {
-        const { passwordVisible } = this.state;
+        const { passwordVisible, agreeToTerms } = this.state;
         return (
             <View style={styles.container}>
+
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Create an account</Text>
                 </View>
@@ -37,7 +45,7 @@ export default class Register extends Component {
                     <TextInput style={styles.input} placeholder="Enter Your Username" />
                 </View>
 
-                <View style={styles.inputContainer}>
+                <View style={styles.inputContainer_pass}>
                     <TextInput style={styles.input} placeholder="Enter Your Password"
                         onChangeText={(text) => this.setState({ password: text })}
                         value={this.state.password}
@@ -56,15 +64,30 @@ export default class Register extends Component {
                         />
                     </TouchableOpacity>
                 </View>
-
+                <View style={styles.checkBoxContainer}>
+                    <TouchableOpacity style={styles.checkBoxContainer} onPress={this.toggleAgreeToTerms}>
+                        {agreeToTerms ? (
+                            <MaterialIcons name="check-box" size={24} color="#0E64D2" style={styles.icon_checkbox} />
+                        ) : (
+                            <Icon name="square-o" size={24} color="gray" style={styles.icon_checkbox} />
+                        )}
+                    </TouchableOpacity>
+                    <Text style={styles.text_checkbox}>I agree to Terms and Conditions</Text>
+                </View>
                 <View style={styles.inputContainerButton}>
                     <TouchableOpacity style={styles.register} >
                         <Text style={styles.TextRegister} >Register</Text>
                     </TouchableOpacity>
                 </View>
+
+                <View style={styles.container_line}>
+                    <View style={styles.line_left} />
+                    <Text style={styles.text_line}>Or With</Text>
+                    <View style={styles.line_right} />
+                </View>
                 <View style={styles.inputContainerButton}>
                     <TouchableOpacity style={styles.registerbyfb} >
-                    <View style={styles.fbIconContainer}>
+                        <View style={styles.fbIconContainer}>
                             <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png' }} style={styles.fbIcon} />
                         </View>
                         <Text style={styles.TextRegister}>Signup with Facebook</Text>
@@ -72,13 +95,12 @@ export default class Register extends Component {
                 </View>
                 <View style={styles.inputContainerButton}>
                     <TouchableOpacity style={styles.registerbygoogle} >
-                    <View style={styles.ggIconContainer}>
+                        <View style={styles.ggIconContainer}>
                             <Image source={{ uri: 'https://www.nicepng.com/png/full/133-1334497_google-favicon-vector-google-g-logo-png.png' }} style={styles.ggIcon} />
                         </View>
                         <Text style={styles.TextRegisterGoogle}>Signup with Google</Text>
                     </TouchableOpacity>
                 </View>
-
 
             </View>
         );
@@ -90,19 +112,24 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        marginVertical: 80,
+        paddingVertical: 50,
 
     },
     inputContainer: {
         width: '80%',
         marginBottom: 20,
     },
+    inputContainer_pass:
+    {
+        width: '80%',
+        marginBottom: 10,
+    },
     inputContainerButton: {
         width: '75%',
         marginBottom: 20,
         marginTop: 20,
-        flexDirection: 'row', 
-        alignItems: 'center', 
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     label: {
         fontSize: 35,
@@ -145,11 +172,11 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 45,
         borderRadius: 20,
-        flex: 1, 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        paddingHorizontal: 10, 
-        backgroundColor: '#1877F2', 
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: '#1877F2',
         textAlign: 'center',
         justifyContent: 'center',
 
@@ -166,14 +193,14 @@ const styles = StyleSheet.create({
         height: 30,
     },
     registerbygoogle: {
-       
+
         width: '80%',
         height: 45,
         borderRadius: 20,
-        flex: 1, 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        paddingHorizontal: 10, 
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
         borderColor: 'gray',
         borderWidth: 1,
         textAlign: 'center',
@@ -206,4 +233,45 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         textAlign: 'center'
     },
+    container_line: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        
+    },
+    line_left: {
+        flex: 1,
+        height: 2,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        marginLeft: 55,
+    },
+    line_right: {
+        flex: 1,
+        height: 2,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        marginRight: 55,
+    },
+    text_line: {
+        marginHorizontal: 10,
+        fontSize: 16,
+        color: 'rgba(0, 0, 0, 0.5)',
+        fontWeight: 'bold',
+    },
+    checkBoxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 0,
+
+    },
+    icon_checkbox: {
+        marginRight: 10,
+        width: 24,
+        opacity: 0.8,
+
+    },
+    text_checkbox: {
+        fontSize: 16,
+        color: "#768487",
+        marginTop: -3,
+    }
 });
