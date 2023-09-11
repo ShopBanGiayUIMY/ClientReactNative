@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   },
   hi: {
     fontSize: 30,
-    fontFamily: 'Cochin',
     fontWeight: '700',
     color: 'black',
     marginTop: 60,
