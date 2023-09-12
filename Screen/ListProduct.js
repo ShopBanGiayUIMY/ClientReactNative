@@ -76,12 +76,21 @@ export default function ListProduct() {
     <View style={styles.container}>
       <View style={styles.searchs}>
         <View style={styles.iconContainer}>
-          <TouchableOpacity style={styles.iconWrapper}>
+          <TouchableOpacity
+            style={styles.iconWrapper}
+            onPress={() => {
+              alert("quét qr code");
+            }}
+          >
             <FontAwesomeIcon icon={faQrcode} size={25} />
           </TouchableOpacity>
           <View style={styles.inputContainer}>
             <TextInput style={styles.inputt} placeholder="Enter something..." />
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                alert("Tìm kiếm");
+              }}
+            >
               <FontAwesomeIcon
                 style={styles.glass}
                 size={25}
@@ -90,10 +99,20 @@ export default function ListProduct() {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.iconWrapper}>
+        <TouchableOpacity
+          style={styles.iconWrapper}
+          onPress={() => {
+            alert("Giỏ hàng");
+          }}
+        >
           <FontAwesomeIcon icon={faShoppingCart} size={25} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconWrapper}>
+        <TouchableOpacity
+          style={styles.iconWrapper}
+          onPress={() => {
+            alert("Không có thông báo nào");
+          }}
+        >
           <FontAwesomeIcon icon={faBell} size={25} color="white" />
         </TouchableOpacity>
       </View>
@@ -117,19 +136,10 @@ export default function ListProduct() {
             />
           ))}
         </ScrollView>
-        <View style={styles.dot}>
-          {images.map((image, index) => (
-            <Text
-              key={index}
-              style={
-                imageActive === index ? styles.activeDot : styles.inactiveDot
-              }
-            ></Text>
-          ))}
-        </View>
       </View>
-      <ScrollView contentContainerStyle={styles.viewProducts}
-      showsVerticalScrollIndicator={true}
+      <ScrollView
+        contentContainerStyle={styles.viewProducts}
+        showsVerticalScrollIndicator={true}
       >
         {data &&
           data.map((product, index) => (
@@ -147,9 +157,12 @@ export default function ListProduct() {
                     size={25}
                     color="rgba(241, 209, 96, 1)"
                   />
-                  <Text style={styles.productPrice}>{product.price}<Text style={styles.underlline}>đ</Text></Text>
+                  <Text style={styles.productPrice}>
+                    {product.price}
+                    <Text style={styles.underlline}>đ</Text>
+                  </Text>
                   <Text style={styles.productOldPrice}>
-                 {product.discount}%
+                    {product.discount}%
                   </Text>
                 </View>
                 <View style={styles.productRow}>
@@ -159,7 +172,9 @@ export default function ListProduct() {
                     size={17}
                     color="rgba(241, 209, 96, 1)"
                   />
-                  <Text style={styles.productRating}>{product.rating} / 5.0 </Text>
+                  <Text style={styles.productRating}>
+                    {product.rating} / 5.0{" "}
+                  </Text>
                   <View style={styles.productSeparator}></View>
                   <Text style={styles.productSales}>
                     {product.sales} lượt bán
@@ -233,28 +248,6 @@ const styles = StyleSheet.create({
     width: WIDTH,
     height: HEIGHT * 0.25,
   },
-  dot: {
-    position: "absolute",
-    bottom: 0,
-    flexDirection: "row",
-    alignSelf: "center",
-  },
-  activeDot: {
-    // Style for active dot
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: "blue",
-    margin: 5,
-  },
-  inactiveDot: {
-    // Style for inactive dot
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: "gray",
-    margin: 5,
-  },
   viewProducts: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -264,7 +257,6 @@ const styles = StyleSheet.create({
   productItem: {
     width: "49%",
     marginBottom: 10,
-    alignItems: "center",
     backgroundColor: "#f2f2f2",
     borderRadius: 10,
     borderWidth: 1,
@@ -292,8 +284,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginLeft: 10,
-    paddingTop:4,
-   
+    paddingTop: 4,
   },
   productPrice: {
     fontWeight: "700",
@@ -301,8 +292,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "red",
   },
-  underlline:{
-    textDecorationLine: 'underline'
+  underlline: {
+    textDecorationLine: "underline",
   },
   productOldPrice: {
     fontWeight: "bold",
@@ -314,20 +305,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 35,
     height: 23,
-    paddingTop:5,
-    marginStart:35
+    paddingTop: 5,
+    marginStart: 50,
   },
   productRating: {
     fontWeight: "400",
     marginTop: 1,
     fontSize: 15,
     lineHeight: 18,
-    
   },
   productSeparator: {
-    position: "absolute",
     top: 4,
-    left: '48%',
+    left: "30%",
     transform: [{ translateX: -0.5 }],
     width: 1,
     height: 15,

@@ -77,7 +77,7 @@ export default class Login extends Component  {
       AsyncStorage.setItem('userId', userId).then(() => {
         this.props.navigation.reset({
           index: 0,
-          routes: [{ name: 'Home' }],
+          routes: [{ name: 'ListProduct' }],
         });
         ToastAndroid.show('Chúc mừng bạn đăng nhập thành công ✓', ToastAndroid.SHORT);
       });
