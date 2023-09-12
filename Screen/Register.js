@@ -1,17 +1,59 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image ,ToastAndroid} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { MaterialIcons } from '@expo/vector-icons';
+import axios from 'axios';
 export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            fullname: '',
+            email: '',
+            phone: '',
+            username: '',
             password: '',
             passwordVisibility: false,
             agreeToTerms: false,
         };
 
     }
+    handleRegister() {
+        const { fullname, email, phone, username, password,agreeToTerms } = this.state;
+        const url = "https://64ffde2c18c34dee0cd40218.mockapi.io/registration/users";
+        try{
+            if(fullname.trim().length === 0,email.trim().length === 0,phone.trim().length === 0,username.trim().length === 0,password.trim().length === 0){
+                ToastAndroid.show('Không để rỗng!', ToastAndroid.SHORT);
+                return;
+            }
+            else if(!agreeToTerms){
+                ToastAndroid.show('Bạn chưa đồng ý với điều khoản!', ToastAndroid.SHORT);
+                return;
+            }
+           else{
+            axios
+            .post(url, {
+                fullname: fullname,
+                email: email,
+                phone: phone,
+                username: username,
+                password: password,
+            })
+            .then((response) => {
+                ToastAndroid.show('Chúc mừng bạn đã đăng kí thành công ✓'+username, ToastAndroid.SHORT);
+                setTimeout(() => {
+                    this.props.navigation.navigate('Login');
+                  }, 1000);
+            })
+            .catch((error) => {
+                console.log("Đã có lỗi xảy ra", error);
+            });
+           }
+        }
+        catch (error) {
+            ToastAndroid.show('Lỗi Mạng ✓', ToastAndroid.SHORT);
+          }
+    }
+                    
     togglePasswordVisibility = () => {
         this.setState((prevState) => ({
             passwordVisible: !prevState.passwordVisible,
@@ -31,18 +73,30 @@ export default class Register extends Component {
                     <Text style={styles.label}>Create an account</Text>
                 </View>
                 <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Enter Your FullName" />
+                    <TextInput
+                    onChangeText={(text) => this.setState({ fullname: text })}
+                    value={this.state.fullname}
+                     style={styles.input} placeholder="Enter Your FullName" />
                 </View>
                 <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Enter Your Email" />
+                    <TextInput 
+                    onChangeText={(text) => this.setState({ email: text })}
+                    value={this.state.email}
+                    style={styles.input} placeholder="Enter Your Email" />
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Enter Your Phone Number" />
+                    <TextInput 
+                    onChangeText={(text) => this.setState({ phone: text })}
+                    value={this.state.phone}
+                    style={styles.input} placeholder="Enter Your Phone Number" />
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Enter Your Username" />
+                    <TextInput 
+                    onChangeText={(text) => this.setState({ username: text })}
+                    value={this.state.username}
+                    style={styles.input} placeholder="Enter Your Username" />
                 </View>
 
                 <View style={styles.inputContainer_pass}>
@@ -75,7 +129,7 @@ export default class Register extends Component {
                     <Text style={styles.text_checkbox}>I agree to Terms and Conditions</Text>
                 </View>
                 <View style={styles.inputContainerButton}>
-                    <TouchableOpacity style={styles.register} >
+                    <TouchableOpacity style={styles.register} onPress={()=>this.handleRegister()} >
                         <Text style={styles.TextRegister} >Register</Text>
                     </TouchableOpacity>
                 </View>
