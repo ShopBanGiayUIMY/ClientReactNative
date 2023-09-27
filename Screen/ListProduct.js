@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import {
   View,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   TextInput,
   Text,
   Dimensions,
+  RefreshControl
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -22,17 +23,13 @@ import {
 import banner from "../image/banner.png";
 import banner1 from "../image/banner1.jpg";
 import banner2 from "../image/banner2.jpg";
-import products from "../image/products.png";
 const images = [banner, banner1, banner2];
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 export default function ListProduct() {
-  const [imageActive, setImageActive] = useState(0);
-  const scrollViewRef = useRef();
-  //get api
   const [data, setData] = useState(null);
-
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     // Define the API URL
     const apiUrl = "https://64e6e269b0fd9648b78f008b.mockapi.io/api/shopquanao";
@@ -48,33 +45,21 @@ export default function ListProduct() {
         console.error("Error:", error);
       });
   }, []);
+  const [backgroundOpacity, setBackgroundOpacity] = useState(0);
 
-  //slide show banner
-  const handleChangeImage = (event) => {
-    const slideSize = WIDTH;
-    const currentOffset = event.nativeEvent.contentOffset.x;
-    const activeImage = Math.floor(currentOffset / slideSize);
-    setImageActive(activeImage);
-  };
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const activeImage = (imageActive + 1) % images.length;
-      setImageActive(activeImage);
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({
-          x: activeImage * WIDTH,
-          animated: true,
-        });
-      }
-    }, 5000);
-
-    return () => {
-      clearInterval(interval);
+    const handleScroll = (event) => {
+      const scrollY = event.nativeEvent.contentOffset.y;
+      // Điều chỉnh giá trị opacity tùy thuộc vào vị trí cuộn của trang
+      const newOpacity = Math.min(scrollY / 100, 1);
+      setBackgroundOpacity(newOpacity);
     };
-  }, [imageActive]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.searchs}>
+      <View style={{
+          ...styles.searchs,
+          backgroundColor: `rgba(75, 158, 255, ${backgroundOpacity})`, // Sử dụng giá trị backgroundOpacity
+        }}>
         <View style={styles.iconContainer}>
           <TouchableOpacity
             style={styles.iconWrapper}
@@ -116,73 +101,63 @@ export default function ListProduct() {
           <FontAwesomeIcon icon={faBell} size={25} color="white" />
         </TouchableOpacity>
       </View>
-      <View style={styles.viewBanner}>
-        <ScrollView
-          ref={scrollViewRef}
-          onScroll={handleChangeImage}
-          scrollEventThrottle={16}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          pagingEnabled
-          horizontal
-          style={styles.carousel}
-        >
-          {images.map((image, index) => (
-            <Image
-              key={index}
-              resizeMode="stretch"
-              source={image}
-              style={styles.image}
-            />
-          ))}
-        </ScrollView>
-      </View>
       <ScrollView
-        contentContainerStyle={styles.viewProducts}
-        showsVerticalScrollIndicator={true}
+        contentContainerStyle={styles.viewProductsContainer}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        refreshControl={ 
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={this.handleRefresh}
+            colors={['#9Bd35A', '#689F38']}
+          />
+        }
       >
-        {data &&
-          data.map((product, index) => (
-            <View key={index} style={styles.productItem}>
-              <Image
-                style={styles.productImage}
-                source={{ uri: product.image }}
-              />
-              <View style={styles.productContent}>
-                <Text style={styles.productName}>{product.nameproduct}</Text>
-                <View style={styles.productRow}>
-                  <FontAwesomeIcon
-                    style={styles.productIcon}
-                    icon={faMoneyBill1}
-                    size={25}
-                    color="rgba(241, 209, 96, 1)"
-                  />
-                  <Text style={styles.productPrice}>
-                    {product.price}
-                    <Text style={styles.underlline}>đ</Text>
-                  </Text>
-                  <Text style={styles.productOldPrice}>
-                    {product.discount}%
-                  </Text>
-                </View>
-                <View style={styles.productRow}>
-                  <FontAwesomeIcon
-                    style={styles.productIcon}
-                    icon={faStar}
-                    size={17}
-                    color="rgba(241, 209, 96, 1)"
-                  />
-                  <Text style={styles.productRating}>
-                    {product.rating} / 5.0{" "}
-                  </Text>
-                  <View style={styles.productSeparator}></View>
-                  <Text style={styles.productSales}>
-                    {product.sales} lượt bán
-                  </Text>
+       {/* banner ở đây */}
+        <View style={styles.productList}>
+          {data &&
+            data.map((product, index) => (
+              <View key={index} style={styles.productItem}>
+                <Image
+                  style={styles.productImage}
+                  source={{ uri: product.image }}
+                />
+                <View style={styles.productContent}>
+                  <Text style={styles.productName}>{product.nameproduct}</Text>
+                  <View style={styles.productRow}>
+                    <FontAwesomeIcon
+                      style={styles.productIcon}
+                      icon={faMoneyBill1}
+                      size={25}
+                      color="rgba(241, 209, 96, 1)"
+                    />
+                    <Text style={styles.productPrice}>
+                      {product.price}
+                      <Text style={styles.underlline}>đ</Text>
+                    </Text>
+                    <Text style={styles.productOldPrice}>
+                      {product.discount}%
+                    </Text>
+                  </View>
+                  <View style={styles.productRow}>
+                    <FontAwesomeIcon
+                      style={styles.productIcon}
+                      icon={faStar}
+                      size={17}
+                      color="rgba(241, 209, 96, 1)"
+                    />
+                    <Text style={styles.productRating}>
+                      {product.rating} / 5.0{" "}
+                    </Text>
+                    <View style={styles.productSeparator}></View>
+                    <Text style={styles.productSales}>
+                      {product.sales} lượt bán
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
+            ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -191,28 +166,15 @@ export default function ListProduct() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    paddingTop: 50,
-    paddingHorizontal: "5%",
     backgroundColor: "#BBDEF2",
   },
   searchs: {
-    position: "absolute",
-    top: 50,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(75, 158, 255, 1)",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 10,
-    height: 55,
-  },
-  viewBanner: {
-    width: WIDTH,
-    height: HEIGHT * 0.25,
-    marginTop: 55,
+    height: 75,
+    backgroundColor: "rgba(75, 158, 255, 1)",
   },
   iconContainer: {
     flexDirection: "row",
@@ -240,7 +202,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 5,
   },
-  carousel: {
+  viewBanner: {
     width: WIDTH,
     height: HEIGHT * 0.25,
   },
@@ -248,14 +210,19 @@ const styles = StyleSheet.create({
     width: WIDTH,
     height: HEIGHT * 0.25,
   },
-  viewProducts: {
+  viewProductsContainer: {
+    flexGrow: 1,
+    paddingBottom: 10,
+  },
+  productList: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     marginTop: 5,
+    paddingHorizontal: 10,
   },
   productItem: {
-    width: "49%",
+    width: "48%",
     marginBottom: 10,
     backgroundColor: "#f2f2f2",
     borderRadius: 10,
@@ -265,16 +232,13 @@ const styles = StyleSheet.create({
   productImage: {
     width: "100%",
     height: 200,
-    marginBottom: 100,
   },
   productContent: {
-    position: "absolute",
-    marginTop: 210,
-    textAlign: "center",
+    marginTop: 10,
+    paddingHorizontal: 10,
   },
   productName: {
     fontWeight: "700",
-    marginLeft: 10,
   },
   productRow: {
     flexDirection: "row",
