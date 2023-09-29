@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from "react-native";
-import avatar from "../../image/avatar.png";
-import background from "../../image/backgroundprofile.png";
-import change from "../../image/ReChange.png";
-import wait from "../../image/2.png";
-import ship from "../../image/3.png";
-import mess from "../../image/4.png";
-import pay from "../../image/5.png";
+import avatar from "../../images/avatar.png";
+import background from "../../images/backgroundprofile.png";
+import change from "../../images/ReChange.png";
+import wait from "../../images/2.png";
+import ship from "../../images/3.png";
+import mess from "../../images/4.png";
+import pay from "../../images/5.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 

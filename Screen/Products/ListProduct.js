@@ -15,8 +15,8 @@ import Header from "../../components/Header";
 import HeaderBanner from "../../components/HeaderBanner";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-
-export default function ListProduct({ navigation,product }) {
+import Product from "../../components/Product";
+export default function ListProduct() {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
@@ -73,55 +73,7 @@ export default function ListProduct({ navigation,product }) {
         <View style={styles.productList}>
           {data &&
             data.map((product, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.productItem}
-                onPress={() => {
-                  navigation.navigate("ProductDetail",{product});
-                }}
-              >
-                <View>
-                  <Image
-                    style={styles.productImage}
-                    source={{ uri: product.image }}
-                  />
-                  <View style={styles.productContent}>
-                    <Text style={styles.productName}>
-                      {product.nameproduct}
-                    </Text>
-                    <View style={styles.productRow}>
-                      <FontAwesomeIcon
-                        style={styles.productIcon}
-                        icon={faMoneyBill1}
-                        size={25}
-                        color="rgba(241, 209, 96, 1)"
-                      />
-                      <Text style={styles.productPrice}>
-                        {product.price}
-                        <Text style={styles.underlline}>đ</Text>
-                      </Text>
-                      <Text style={styles.productOldPrice}>
-                        {product.discount}%
-                      </Text>
-                    </View>
-                    <View style={styles.productRow}>
-                      <FontAwesomeIcon
-                        style={styles.productIcon}
-                        icon={faStar}
-                        size={17}
-                        color="rgba(241, 209, 96, 1)"
-                      />
-                      <Text style={styles.productRating}>
-                        {product.rating} / 5.0{" "}
-                      </Text>
-                      <View style={styles.productSeparator}></View>
-                      <Text style={styles.productSales}>
-                        {product.sales} lượt bán
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
+             <Product key={index} dataProd={product} />
             ))}
         </View>
       </ScrollView>
@@ -188,75 +140,5 @@ const styles = StyleSheet.create({
     marginTop: 5,
     paddingHorizontal: 10,
   },
-  productItem: {
-    width: "48%",
-    marginBottom: 10,
-    backgroundColor: "#f2f2f2",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "white",
-  },
-  productImage: {
-    width: "100%",
-    height: 200,
-  },
-  productContent: {
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  productName: {
-    fontWeight: "700",
-  },
-  productRow: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  productIcon: {
-    width: 20,
-    height: 20,
-    marginLeft: 10,
-    paddingTop: 4,
-  },
-  productPrice: {
-    fontWeight: "700",
-    marginLeft: 5,
-    fontSize: 20,
-    color: "red",
-  },
-  underlline: {
-    textDecorationLine: "underline",
-  },
-  productOldPrice: {
-    fontWeight: "bold",
-    lineHeight: 15,
-    marginTop: 2,
-    color: "white",
-    backgroundColor: "rgba(255, 55, 55, 1)",
-    borderRadius: 5,
-    textAlign: "center",
-    width: 35,
-    height: 23,
-    paddingTop: 5,
-    marginStart: 50,
-  },
-  productRating: {
-    fontWeight: "400",
-    marginTop: 1,
-    fontSize: 15,
-    lineHeight: 18,
-  },
-  productSeparator: {
-    top: 4,
-    left: "30%",
-    transform: [{ translateX: -0.5 }],
-    width: 1,
-    height: 15,
-    backgroundColor: "gray",
-  },
-  productSales: {
-    marginStart: 10,
-    marginTop: 1,
-    fontWeight: "400",
-    fontSize: 15,
-  },
+  
 });
