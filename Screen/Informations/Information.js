@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import avatar from "../../images/avatar.png";
 import background from "../../images/backgroundprofile.png";
 import change from "../../images/ReChange.png";
@@ -9,11 +16,13 @@ import mess from "../../images/4.png";
 import pay from "../../images/5.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
+import Repurchase from "./Repurchase";
+import About from "./About";
 
 export default function Information({ navigation }) {
   const handleLogin = () => {
-    navigation.navigate('Register'); // Corrected the typo here
-  }
+    navigation.navigate("Register"); // Corrected the typo here
+  };
 
   return (
     <View style={styles.container}>
@@ -28,24 +37,61 @@ export default function Information({ navigation }) {
           <Text style={styles.userEmail}>example@example.com</Text>
           <Text style={styles.saleOffUser}>100 Phiếu giảm giá</Text>
         </View>
-        <View style={{ width: '50%', height: 50, position: 'absolute', right: 5, top: 130, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View
+          style={{
+            width: "50%",
+            height: 50,
+            position: "absolute",
+            right: 5,
+            top: 130,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
           <TouchableOpacity
-            style={{ color: "#841584", backgroundColor: '#DAA3A3', width: '49%', borderRadius: 5 }}
-            onPress={() => navigation.navigate('Login')} // Corrected the function call
+            style={{
+              color: "#841584",
+              backgroundColor: "#DAA3A3",
+              width: "49%",
+              borderRadius: 5,
+            }}
+            onPress={() => navigation.navigate("Login")} // Corrected the function call
           >
-            <Text style={{ paddingTop: 12, textAlign: 'center', color: 'white', fontStyle: 'normal', fontWeight: '800' }}>Đăng nhập</Text>
+            <Text
+              style={{
+                paddingTop: 12,
+                textAlign: "center",
+                color: "white",
+                fontStyle: "normal",
+                fontWeight: "800",
+              }}
+            >
+              Đăng nhập
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={{ color: "#841584", backgroundColor: '#DE6247', width: '49%' }}
+            style={{
+              color: "#841584",
+              backgroundColor: "#DE6247",
+              width: "49%",
+            }}
             onPress={handleLogin} // Corrected the function call
           >
-            <Text style={{ paddingTop: 12, textAlign: 'center', color: 'white', fontStyle: 'normal', fontWeight: '800' }}>Đăng Ký</Text>
+            <Text
+              style={{
+                paddingTop: 12,
+                textAlign: "center",
+                color: "white",
+                fontStyle: "normal",
+                fontWeight: "800",
+              }}
+            >
+              Đăng Ký
+            </Text>
           </TouchableOpacity>
         </View>
-
       </View>
-
       <View style={styles.info}>
         <Text style={styles.label}>Đơn hàng của tôi</Text>
         <TouchableOpacity>
@@ -74,6 +120,33 @@ export default function Information({ navigation }) {
           <Image style={styles.iconImage} source={change} />
           <Text style={styles.iconText}>Phản hồi Về Sản Phẩm</Text>
         </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          shadowOffset: { width: 0, height: 2 }, // Độ dịch chuyển đổ bóng theo chiều ngang và dọc
+          elevation: 1, // Độ cao của đổ bóng (cho Android)
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 5,
+            borderBottomWidth: 0.1,
+            shadowOffset: { width: 0, height: 2 }, // Độ dịch chuyển đổ bóng theo chiều ngang và dọc
+            shadowOpacity: 0.5, // Độ mờ của đổ bóng
+            elevation: 1,
+          }}
+        >
+          <Image
+            style={{ width: 30, height: 30, marginRight: 23 }}
+            source={{ uri: "https://iili.io/JdjjLmv.png" }}
+          />
+          <Text style={{ fontSize: 25 }}>Mua lại</Text>
+        </View>
+        <Repurchase style={{ with: "100%", height: 200 }} />
+      </View>
+      <View>
+        <About />
       </View>
     </View>
   );
@@ -151,16 +224,16 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     marginTop: 20,
-    paddingHorizontal: 20,
+    width: "100%",
   },
   iconItem: {
     alignItems: "center",
     marginBottom: 20,
-    width: "30%", // Adjusted width to fit three items in a row
+    width: "15%", // Adjusted width to fit three items in a row
   },
   iconImage: {
-    width: 60,
-    height: 60,
+    width: 35,
+    height: 35,
   },
   iconText: {
     marginTop: 5,
