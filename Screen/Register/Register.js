@@ -1,4 +1,4 @@
-import React, { Component,useState } from "react";
+import React, { Component,useState,useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,20 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialIcons } from "@expo/vector-icons";
 import  useAuth  from "../../Services/auth.services";
-export default function Register() {
+export default function Register({navigation}) {
+  useLayoutEffect(() => { 
+    navigation.setOptions({ 
+      headerTitle: 'Re git tơ',
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginLeft: 5 ,marginRight: 10}}
+        >
+          <Text style={{ color: 'red', fontSize: 18 }}>{"<-"}</Text>
+        </TouchableOpacity>
+      ),
+    }) 
+  }, [])
   const { registerUser } = useAuth();
   const [formData, setFormData] = useState({
     fullname: "",

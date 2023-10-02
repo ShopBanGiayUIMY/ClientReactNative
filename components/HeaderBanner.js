@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   Image,
   Animated,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -15,27 +16,44 @@ const images = [
   "http://ordixi.com/wp-content/uploads/2020/01/giay-nike-air-force-1-low-shadow-se-spruce-aura-white-ck3172-0023.jpg",
   "https://bazaarvietnam.vn/wp-content/uploads/2020/11/giay-the-thao-nike-x-PEACEMINUSONE-para-noise-20-g-dragon-01-768x725.jpg",
   "https://ben.com.vn/tin-tuc/wp-content/uploads/2021/12/hinh-nen-nike-dep-cho-dien-thoai-1.jpg",
+  "https://ben.com.vn/tin-tuc/wp-content/uploads/2021/12/hinh-nen-nike-dep-cho-dien-thoai-1.jpg",
+  "https://ben.com.vn/tin-tuc/wp-content/uploads/2021/12/hinh-nen-nike-dep-cho-dien-thoai-1.jpg",
 ];
 
 const Slideshow = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const handleMomentumScrollEnd = (event) => {
+    const contentOffset = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(contentOffset / width);
+    setCurrentIndex(newIndex);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const newIndex = Math.floor(
-        (scrollX._value + width) / width
-      ) % images.length;
-
-      scrollViewRef.current.scrollTo({
-        x: newIndex * width,
-        animated: true,
-      });
-    }, 2000);
-
+      if (!isSwiping) {
+        const newIndex = (currentIndex + 1) % images.length;
+        setCurrentIndex(newIndex);
+        scrollViewRef.current.scrollTo({ 
+          x: newIndex * width,
+          animated: true,
+        });
+      }
+    }, 2500);
     return () => clearInterval(timer);
-  }, []);
+  }, [currentIndex, isSwiping]);
+  const handleScrollBegin = () => {
+    setIsSwiping(true);
+  };
 
+  const handleScrollEnd = () => {
+    setIsSwiping(false);
+  };
+  const handleBannerPress = (index) => {
+    alert(`Bạn đã ấn vào banner số ${index + 1}`);
+  };
   return (
     <View style={styles.container}>
       <ScrollView
@@ -47,47 +65,68 @@ const Slideshow = () => {
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false }
         )}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
+        onScrollBeginDrag={handleScrollBegin}
+        onScrollEndDrag={handleScrollEnd}
+        scrollEventThrottle={16}
+        contentContainerStyle={styles.scrollViewContent}
       >
         {images.map((image, index) => (
-          <View key={index} style={styles.imageContainer}>
+          <TouchableOpacity
+            key={index}
+            style={styles.imageContainer}
+            onPress={() => {
+              scrollViewRef.current.scrollTo({
+                x: index * width,
+                animated: true,
+              });
+              handleBannerPress(index)
+              setCurrentIndex(index);
+            }}
+          >
             <Image source={{ uri: image }} style={styles.image} />
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
-      <Animated.View
-        style={[
-          styles.pagination,
-          {
-            transform: [
-              {
-                translateX: Animated.divide(scrollX, width).interpolate({
-                  inputRange: [0, 1, 2, 3],
-                  outputRange: [0, 10, 20, 30],
-                }),
-              },
-            ],
-          },
-        ]}
-      >
+      <View style={styles.pagination}>
         {images.map((_, i) => (
-          <View key={i} style={styles.paginationDot} />
+          <TouchableOpacity
+            key={i}
+            style={[
+              styles.paginationDot,
+              i === currentIndex && styles.activeDot,
+            ]}
+            onPress={() => {
+              scrollViewRef.current.scrollTo({
+                x: i * width,
+                animated: true,
+              });
+              setCurrentIndex(i);
+            }}
+          />
         ))}
-      </Animated.View>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width,
+    paddingRight: 6,
+  },
+  scrollViewContent: {
+    paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView
   },
   imageContainer: {
     width,
     height: 250,
+    
   },
   image: {
     width,
     height: "100%",
+    borderRadius: 5,
     resizeMode: "cover",
   },
   pagination: {
@@ -100,9 +139,18 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#333",
+    borderColor: "#fff",
+    borderWidth: 1,
     margin: 5,
-    opacity: 0, // Ẩn chấm tròn
+  },
+  activeDot: {
+    backgroundColor: "#66B2FF",
+    width: 12,
+    height:12,
+    borderRadius: 10,
+    borderWidth: 1,
+    position: "relative",
+    top: -2,
   },
 });
 

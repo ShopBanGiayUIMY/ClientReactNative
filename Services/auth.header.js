@@ -1,10 +1,17 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function authHeader() {
-    const user = JSON.parse(localStorage.getItem('user'));
-  
-    if (user && user.access_token) {
-       return { Authorization: 'Bearer ' + user.access_token };
-    } else {
+  return AsyncStorage.getItem('user')
+    .then(userData => {
+      if (userData) {
+        const user = JSON.parse(userData);
+        return { token: 'Bearer ' + user.accesstoken };
+      } else {
+        return {};
+      }
+    })
+    .catch(error => {
+      console.error("Error retrieving user data from AsyncStorage:", error);
       return {};
-    }
-  }
-  
+    });
+}

@@ -1,11 +1,24 @@
-import React, { useState,Component } from "react";
+import React, { useState,Component,useLayoutEffect  } from "react";
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,ToastAndroid } from "react-native";
 import eye from "../../images/eys.jpg";
 import face from "../../images/facebook.png";
 import google from "../../images/google.png";
 import Checkbox from 'expo-checkbox';
 import  useAuth  from "../../Services/auth.services";
-export default function Login ()  {
+export default function Login ({navigation})  {
+  useLayoutEffect(() => { 
+    navigation.setOptions({ 
+      headerTitle: 'Lô gin',
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginLeft: 5 ,marginRight: 10}}
+        >
+          <Text style={{ color: 'red', fontSize: 18 }}>{"<-"}</Text>
+        </TouchableOpacity>
+      ),
+    }) 
+  }, [])
   const { loginUser } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
@@ -16,7 +29,6 @@ export default function Login ()  {
   const handleLogin =() =>{
     
     try {
-      console.log(formData);
     if (formData.username.trim().length === 0) {
       ToastAndroid.show('Không để rỗng!', ToastAndroid.SHORT);
       return;
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginTop: 50,
     paddingHorizontal: '5%',
   },
   hi: {

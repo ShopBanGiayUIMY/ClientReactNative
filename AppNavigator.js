@@ -6,7 +6,7 @@ import ListProduct from "./Screen/Products/ListProduct";
 import Cart from "./Screen/Cart";
 import Register from "./Screen/Register/Register";
 import Notification from "./Screen/Notification";
-import Information from "./Screen/Informations/Information";
+import Profile from "./Screen/Informations/Profile";
 import Login from "./Screen/Login/Login";
 import ProductDetail from "./Screen/Products/ProductDetail";
 const Stack = createNativeStackNavigator();
@@ -88,8 +88,8 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Information"
-        component={Information}
+        name="Profile"
+        component={Profile}
         options={{
           tabBarShowLabel: false,
           headerShown:false,
@@ -106,24 +106,24 @@ function TabNavigator() {
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-  <Stack.Navigator initialRouteName="TabNavigator">
-    <Stack.Screen
-      name="Login"
-      component={Login}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen name="Register" component={Register} />
-    <Stack.Screen
-      name="ProductDetail"
-      component={ProductDetail}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="TabNavigator"
-      component={TabNavigator}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-</NavigationContainer>
+      <Stack.Navigator initialRouteName="ProductList">
+        <Stack.Screen
+          name="Login"
+          component={Login}
+        
+        />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen
+          name="ProductDetail"
+          component={ProductDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProductList"
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

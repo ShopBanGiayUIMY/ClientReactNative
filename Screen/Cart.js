@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import {View, Text, StyleSheet} from 'react-native';
-
+import ModalBottom from "./Modal/modal.bottom";
 
 export default function Category(){
-     const [count, setCoung] = useState(0);
 return(
-     <View style={style.container}>
-          <View >
-
-          </View>
-          <Text>This is screen Cart</Text>
-     </View>
+     <ModalBottom/>
 )
 }
 

@@ -9,15 +9,19 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faMoneyBill1, faStar } from "@fortawesome/free-solid-svg-icons";
+import loading from "../../images/loading.gif";
 import Header from "../../components/Header";
 import HeaderBanner from "../../components/HeaderBanner";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import Product from "../../components/Product";
-export default function ListProduct({navigation}) {
+export default function ListProduct({ navigation }) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [isloading, setIsloading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   useEffect(() => {
     // Define the API URL
     const apiUrl = "https://64e6e269b0fd9648b78f008b.mockapi.io/api/shopquanao";
@@ -28,25 +32,32 @@ export default function ListProduct({navigation}) {
       .then((responseData) => {
         // Handle the retrieved data by updating the state
         setData(responseData);
+        setIsloading(false);
+        console.log("đã load dữ liệu thành công");
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
       });
-  }, []);
-  ///
+  }, [isRefreshing]);
+    
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
 
   const handleScroll = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-    // Điều chỉnh giá trị opacity tùy thuộc vào vị trí cuộn của trang
     const newOpacity = Math.min(scrollY / 100, 1);
     setBackgroundOpacity(newOpacity);
   };
 
-  const handlePresDetailProduct =(item)=>{
-    navigation.navigate('ProductDetail',{product:item})
+  const handlePresDetailProduct = (item) => {
+    navigation.navigate("ProductDetail", { product: item });
+  };
+ const handleRefresh = () => {
+    setIsloading(true);
+    setIsRefreshing(!isRefreshing);
+    setTimeout(() => {
+      setIsloading(false);
+    }, 3500);
   }
-
   return (
     <View style={styles.container}>
       <View
@@ -54,32 +65,45 @@ export default function ListProduct({navigation}) {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          height:90
+          height: 90,
         }}
       >
-        <Header navigation={navigation}/>
+        <Header backgroundOpacity={backgroundOpacity} />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.viewProductsContainer}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={this.handleRefresh}
-            colors={["#9Bd35A", "#689F38"]}
-          />
-        }
-      >
-        {/* banner */}
-        <HeaderBanner />
-        <View style={styles.productList}>
-          {data &&
-            data.map((product, index) => (
-             <Product key={index} dataProd={product} handlePress={handlePresDetailProduct} />
-            ))}
-        </View>
-      </ScrollView>
+      {isloading ? (
+        <Image
+          source={loading}
+          style={styles.loadingImage}
+        />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.viewProductsContainer}
+          showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#9Bd35A", "#689F38"]}
+            />
+          }
+        >
+          {/* banner */}
+          <View style={styles.viewBanner}>
+            <HeaderBanner />
+          </View>
+          <View style={styles.productList}>
+            {data &&
+              data.map((product, index) => (
+                <Product
+                  key={index}
+                  dataProd={product}
+                  handlePress={handlePresDetailProduct}
+                />
+              ))}
+          </View>
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -87,9 +111,8 @@ export default function ListProduct({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#BBDEF2",
+    backgroundColor: "#A9CDEE",
     paddingBottom: 50,
-    
   },
   searchs: {
     flexDirection: "row",
@@ -126,8 +149,9 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   viewBanner: {
-    width: WIDTH,
-    height: HEIGHT * 0.25,
+    height: 200,
+    paddingHorizontal: 3,
+    paddingVertical: 3,
   },
   image: {
     width: WIDTH,
@@ -141,8 +165,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginTop: 5,
-    paddingHorizontal: 10,
+    marginTop: 12,
+    paddingHorizontal: 13,
   },
-  
+  loadingImage: {
+    width: 100,
+    height: 100,
+    marginTop: 100,
+    alignSelf: "center",
+  },
 });

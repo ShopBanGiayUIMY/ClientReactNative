@@ -22,16 +22,19 @@ export default function Product(props) {
       <TouchableWithoutFeedback onPress={fun_handlePress} style={styles.all}>
         <View style={styles.shadow}>
           <View style={styles.container}>
-            <Image source={{ uri: dataProd.image }} style={styles.img} />
+          <Image source={{ uri: dataProd.image }} style={styles.img} />
+          <Text style={styles.txtSales}>{dataProd.sales}<Text style={styles.textsale} >%</Text></Text>
+           
             <Text style={styles.tensp}>{tensp}</Text>
             <View style={styles.price}>
               <Image style={styles.star} source={{ uri: "https://iili.io/Jdk4y5G.png"}}/>
               <Text style={styles.item_price}>
                 {dataProd.discount}
-                <Text style={styles.kihieu}>đ</Text>
+                
               </Text>
-              <Text style={styles.txtSales}>{dataProd.discount}<Text style={styles.txtSales}>%</Text></Text>
+              <Text style={styles.kihieu}>đ</Text>
             </View>
+         
             <View style={styles.info}>
               <View style={styles.star_sold_product}>
                 <Image
@@ -62,13 +65,12 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     width: 180,
-    height:270 ,
-
+    height:310 
   },
   star_sold_product: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: -5,
+   
   },
   star: {
     height: 20,
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
   },
   container: {
     marginBottom: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: "#FFFBF9",
     flex:1
   },
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   img: {
-    height: 135,
+    height: 200,
     width: "100%",
     alignItems: "center",
     alignSelf: "center",
@@ -102,43 +104,58 @@ const styles = StyleSheet.create({
   textsale: {
     position: "absolute",
     right: 30,
-    top: 34,
-    color: "white",
+    top: 40,
+    color:'#FF4500',
     fontWeight: "bold",
   },
   tensp: {
-    fontSize: 15,
-    marginVertical: 10,
-    marginHorizontal: 5,
+    fontSize: 20,
+    fontFamily: "Roboto",
+    marginVertical: 5,
+    marginHorizontal: 13,
+    marginBottom: 0,
   },
   price: {
     flexDirection: "row",
     alignItems: "center",
-    paddingStart: 5,
+    paddingStart: 13,
     paddingEnd: 5,
     width: "100%",
   },
   item_price: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     marginRight: 5,
     color: "red",
     marginStart:10
   },
   kihieu: {
-    fontSize: 16,
+    fontSize: 20,
     color: "#FF4500",
     textDecorationLine: "underline",
-    paddingLeft :5
+    fontFamily: "Roboto",
+    fontWeight: "bold",
+    marginHorizontal: 4,
+    paddingTop: 7,
   },
   txtSales:{
-   width:'30%',
-   backgroundColor:'#F6C7C0',
+   width:'28%',
+   height:30,
    textAlign:'center',
-   borderRadius:5,
-   marginLeft:5,
+   borderRadius: 2, 
+   borderTopRightRadius: 10, 
+   borderBottomRightRadius: 2, 
+   borderBottomLeftRadius: 10,
+   left:'72%',
+   paddingTop:5,
    color:'#FF4500',
-   fontWeight:'800'
+   fontWeight:'800',
+   position:'absolute',
+   borderColor:'#FF4500',
+   borderWidth:1,
+   backgroundColor:"#E8D348",
+   fontSize:16
+   
   }
 });
 // hi

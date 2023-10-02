@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import thư viện biểu tượng
 
-const Header = ({ navigation }) => {
-  const [count, setCount] = useState(0);
+const Header = (props) => {
+  const { backgroundOpacity } = props;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: `rgba(94, 121, 230, ${backgroundOpacity})` }]}>
       <View style={styles.left}>
-        <TouchableOpacity
-          style={{ width: 25, height: 25, alignSelf: "center" }}
-        >
-          <Icon name="qrcode" size={25} color="#333" />
+        <TouchableOpacity style={{ width:25, height:25, alignSelf:'center'}}>
+          <Icon  name="qrcode" size={25} color="#333" />
         </TouchableOpacity>
       </View>
       <View style={styles.center}>
@@ -19,44 +17,15 @@ const Header = ({ navigation }) => {
           placeholder="Tìm kiếm..."
           placeholderTextColor="#999"
         />
-        <TouchableOpacity
-          style={{ width: 25, height: 25, alignSelf: "center" }}
-        >
+        <TouchableOpacity style={{ width:25, height:25, alignSelf:'center'}}>
           <Icon name="search" size={25} color="#333" />
         </TouchableOpacity>
       </View>
       <View style={styles.right}>
-      <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Cart");
-          }}
-          style={{ width: 25, height: 25, alignSelf: "center" }}
-        >
+        <TouchableOpacity style={{ width:25, height:25, alignSelf:'center'}}>
           <Icon name="shopping-cart" size={25} color="#333" />
-          {count > 0 && ( // Conditionally render the badge
-            <View
-              style={{
-                width: 25,
-                height: 25,
-                backgroundColor: "red",
-                borderRadius: 15,
-                justifyContent: "center",
-                alignItems: "center", 
-                position: "absolute",
-                top: -10,
-                left: 10,
-                borderBlockColor:'white'
-              }}
-            >
-              <Text style={{ color: "white", textAlign: "center" }}>
-                {count}
-              </Text>
-            </View>
-          )}
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ width: 25, height: 25, alignSelf: "center" }}
-        >
+        <TouchableOpacity style={{ width:25, height:25, alignSelf:'center'}}>
           <Icon name="bell" size={25} color="#333" />
         </TouchableOpacity>
       </View>
@@ -69,11 +38,10 @@ const styles = {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#4B9EFF",
     paddingHorizontal: 10,
     height: 90,
     elevation: 3,
-    paddingTop: 35,
+    paddingTop:35
   },
   left: {
     flex: 1,
@@ -96,7 +64,7 @@ const styles = {
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginLeft: 10,
+    marginLeft:10
   },
 };
 
