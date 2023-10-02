@@ -2,9 +2,10 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import thư viện biểu tượng
 
-const Header = () => {
+const Header = (props) => {
+  const { backgroundOpacity } = props;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: `rgba(94, 121, 230, ${backgroundOpacity})` }]}>
       <View style={styles.left}>
         <TouchableOpacity style={{ width:25, height:25, alignSelf:'center'}}>
           <Icon  name="qrcode" size={25} color="#333" />
@@ -37,7 +38,6 @@ const styles = {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#4B9EFF",
     paddingHorizontal: 10,
     height: 90,
     elevation: 3,
