@@ -9,8 +9,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faMoneyBill1, faStar } from "@fortawesome/free-solid-svg-icons";
+
 import Header from "../../components/Header";
 import HeaderBanner from "../../components/HeaderBanner";
 const WIDTH = Dimensions.get("window").width;
@@ -58,7 +57,7 @@ export default function ListProduct({navigation}) {
           height:90
         }}
       >
-        <Header/>
+        <Header navigation={navigation}/>
       </View>
       <ScrollView
         contentContainerStyle={styles.viewProductsContainer}

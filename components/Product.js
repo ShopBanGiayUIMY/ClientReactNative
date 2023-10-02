@@ -25,11 +25,12 @@ export default function Product(props) {
             <Image source={{ uri: dataProd.image }} style={styles.img} />
             <Text style={styles.tensp}>{tensp}</Text>
             <View style={styles.price}>
+              <Image style={styles.star} source={{ uri: "https://iili.io/Jdk4y5G.png"}}/>
               <Text style={styles.item_price}>
                 {dataProd.discount}
                 <Text style={styles.kihieu}>đ</Text>
               </Text>
-              <Text style={styles.txtSales}>{dataProd.sales}<Text style={styles.txtSales}>%</Text></Text>
+              <Text style={styles.txtSales}>{dataProd.discount}<Text style={styles.txtSales}>%</Text></Text>
             </View>
             <View style={styles.info}>
               <View style={styles.star_sold_product}>
@@ -50,13 +51,19 @@ export default function Product(props) {
   );
 }
 const styles = StyleSheet.create({
+  all:{
+    marginBottom: 10,
+  borderRadius: 5,
+  backgroundColor: "#FFFBF9", // Set a background color here
+  flex: 1,
+  },
   shadow: {
-    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     width: 180,
-    height:270 
+    height:270 ,
+
   },
   star_sold_product: {
     flexDirection: "row",
@@ -65,7 +72,7 @@ const styles = StyleSheet.create({
   },
   star: {
     height: 20,
-    width: 20,
+    width: 30,
   },
   container: {
     marginBottom: 10,
@@ -116,6 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 5,
     color: "red",
+    marginStart:10
   },
   kihieu: {
     fontSize: 16,
