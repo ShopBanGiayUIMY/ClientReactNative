@@ -1,94 +1,39 @@
 import React, { useState,Component } from "react";
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,ToastAndroid } from "react-native";
-import eye from "../image/eys.jpg";
-import face from "../image/facebook.png";
-import google from "../image/google.png";
-import axios from "axios";
+import eye from "../../images/eys.jpg";
+import face from "../../images/facebook.png";
+import google from "../../images/google.png";
 import Checkbox from 'expo-checkbox';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-export default class Login extends Component  {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-      userList: [],
-      isPasswordVisible: false,
-      isChecked: false,
-    };
-  }
-
-
-  togglePasswordVisibility = () => {
-    this.setState((prevState) => ({
-      isPasswordVisible: !prevState.isPasswordVisible,
-    }));
-  };
-  togglexacnhan = () => {
-    this.setState((prevState) => ({
-      isChecked: !prevState.isChecked,
-    }));
-  };
-
-  componentDidMount() {
-    this.getData();
-  }
-  getData() {
-    const url = "https://64ffde2c18c34dee0cd40218.mockapi.io/registration/users";
-    axios
-      .get(url)
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          userList: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  handleLogin() {
-    const { username, password, userList,isChecked } = this.state;
+import  useAuth  from "../../Services/auth.services";
+export default function Login ()  {
+  const { loginUser } = useAuth();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const handleLogin =() =>{
+    
     try {
-      const user = userList.find((user) => user.username === username.trim() && user.password === password);
-    const usernameExists = userList.some((user) => user.username === username.trim());
-    const passwordExists = userList.some((user) => user.password === password);
-
-    if (username.trim().length === 0) {
+      console.log(formData);
+    if (formData.username.trim().length === 0) {
       ToastAndroid.show('Không để rỗng!', ToastAndroid.SHORT);
       return;
     } 
-    else if (!isChecked) {
+    else if (!agreeToTerms) {
       ToastAndroid.show('Bạn chưa đồng ý với điều khoản!', ToastAndroid.SHORT);
       return;
     }
-    else if (!usernameExists) {
-      ToastAndroid.show('Tài khoản không tồn tại!', ToastAndroid.SHORT);
-    }
-    else if (!passwordExists) {
-      ToastAndroid.show('Mật khẩu không đúng!', ToastAndroid.SHORT);
-    }
-    else if (!user) {
-      ToastAndroid.show('Tài khoản hoặc mật khẩu không chính xác!', ToastAndroid.SHORT);
-    }
-    
     else {
-      const userId = user.id.toString();
-      AsyncStorage.setItem('userId', userId).then(() => {
-        this.props.navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
+         loginUser(formData);
         ToastAndroid.show('Chúc mừng bạn đăng nhập thành công ✓', ToastAndroid.SHORT);
-      });
     }
     } catch (error) {
       ToastAndroid.show('Lỗi Mạng ✓', ToastAndroid.SHORT);
     }
     
   }
-render(){
-  const { isChecked, isPasswordVisible } = this.state;
   return (
     <View style={styles.container}>
       <Text style={styles.hi}>Hi, Welcome Back!{'\n'} </Text>
@@ -96,21 +41,21 @@ render(){
       <Text style={styles.nameapp}>Mini <Text style={styles.shop}> Shop</Text></Text>
 
       <View style={styles.view}>
-        <TextInput
-          onChangeText={(text) => this.setState({ username: text })}
-          value={this.state.username}
+      <TextInput
+          onChangeText={(text) => setFormData({ ...formData, username: text })}
+          value={formData.username}
           style={styles.input}
           placeholder="Enter your name"
         />
-        <View style={styles.passwordInput}>
+       <View style={styles.passwordInput}>
           <TextInput
-           onChangeText={(text) => this.setState({ password: text })}
-           value={this.state.password}
+            onChangeText={(text) => setFormData({ ...formData, password: text })}
+            value={formData.password}
             style={styles.input}
             placeholder="Enter your password"
             secureTextEntry={!isPasswordVisible}
           />
-          <TouchableOpacity onPress={this.togglePasswordVisibility} style={styles.eyeContainer}>
+          <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeContainer}>
             <Image source={eye} style={[styles.eye, isPasswordVisible && styles.invisibleEye]} />
           </TouchableOpacity>
         </View>
@@ -119,16 +64,16 @@ render(){
       <View style={styles.checkboxx}>
         <Checkbox
           style={styles.checkbox}
-          value={isChecked}
-          onValueChange={this.togglexacnhan}
-          color={isChecked ? '#4630EB' : undefined}
+          value={agreeToTerms}
+          onValueChange={()=>setAgreeToTerms(!agreeToTerms)}
+          color={agreeToTerms ? '#4630EB' : undefined}
         />
         <Text style={{ marginLeft: 10, marginTop: 2 }}>Remember me? </Text>
         <Text style={styles.forgotpassword}>Forgot the password?</Text>
       </View>
 
       <View style={styles.login}>
-        <TouchableOpacity onPress={() => this.handleLogin()}>
+        <TouchableOpacity onPress={() => handleLogin()}>
           <Text style={styles.touchablecity}>Login</Text>
         </TouchableOpacity>
       </View>
@@ -162,7 +107,6 @@ render(){
       </View>
     </View>
   );
-}
 }
 const styles = StyleSheet.create({
   container: {
