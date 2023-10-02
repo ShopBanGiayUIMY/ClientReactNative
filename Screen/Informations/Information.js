@@ -75,6 +75,7 @@ export default function Information({ navigation }) {
               color: "#841584",
               backgroundColor: "#DE6247",
               width: "49%",
+              borderRadius: 5,
             }}
             onPress={handleLogin} // Corrected the function call
           >
@@ -85,6 +86,7 @@ export default function Information({ navigation }) {
                 color: "white",
                 fontStyle: "normal",
                 fontWeight: "800",
+                
               }}
             >
               Đăng Ký
@@ -122,10 +124,6 @@ export default function Information({ navigation }) {
         </TouchableOpacity>
       </View>
       <View
-        style={{
-          shadowOffset: { width: 0, height: 2 }, // Độ dịch chuyển đổ bóng theo chiều ngang và dọc
-          elevation: 1, // Độ cao của đổ bóng (cho Android)
-        }}
       >
         <View
           style={{
