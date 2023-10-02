@@ -27,6 +27,7 @@ export default function Product(props) {
            
             <Text style={styles.tensp}>{tensp}</Text>
             <View style={styles.price}>
+              <Image style={styles.star} source={{ uri: "https://iili.io/Jdk4y5G.png"}}/>
               <Text style={styles.item_price}>
                 {dataProd.discount}
                 
@@ -53,8 +54,13 @@ export default function Product(props) {
   );
 }
 const styles = StyleSheet.create({
+  all:{
+    marginBottom: 10,
+  borderRadius: 5,
+  backgroundColor: "#FFFBF9", // Set a background color here
+  flex: 1,
+  },
   shadow: {
-    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
@@ -68,7 +74,7 @@ const styles = StyleSheet.create({
   },
   star: {
     height: 20,
-    width: 20,
+    width: 30,
   },
   container: {
     marginBottom: 10,
@@ -121,6 +127,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 5,
     color: "red",
+    marginStart:10
   },
   kihieu: {
     fontSize: 20,

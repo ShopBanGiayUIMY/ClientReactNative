@@ -86,6 +86,7 @@ export default function Information({ navigation }) {
                 color: "white",
                 fontStyle: "normal",
                 fontWeight: "800",
+                
               }}
             >
               Đăng Ký
