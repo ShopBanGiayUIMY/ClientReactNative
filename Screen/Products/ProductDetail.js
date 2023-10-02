@@ -64,13 +64,13 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: "100%",
-    height: 400, // Increase image height for a more prominent product image
+    height: 350, // Increase image height for a more prominent product image
   },
   productInfo: {
     padding: 16,
   },
   productName: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 8,
   },

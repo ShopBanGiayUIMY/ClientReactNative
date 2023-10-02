@@ -16,7 +16,7 @@ import HeaderBanner from "../../components/HeaderBanner";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import Product from "../../components/Product";
-export default function ListProduct() {
+export default function ListProduct({navigation}) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
@@ -44,17 +44,21 @@ export default function ListProduct() {
     setBackgroundOpacity(newOpacity);
   };
 
+  const handlePresDetailProduct =(item)=>{
+    navigation.navigate('ProductDetail',{product:item})
+  }
+
   return (
     <View style={styles.container}>
       <View
         style={{
           width: "100%",
-          height: 90,
           alignItems: "center",
           justifyContent: "center",
+          height:90
         }}
       >
-        <Header  />
+        <Header/>
       </View>
       <ScrollView
         contentContainerStyle={styles.viewProductsContainer}
@@ -73,7 +77,7 @@ export default function ListProduct() {
         <View style={styles.productList}>
           {data &&
             data.map((product, index) => (
-             <Product key={index} dataProd={product} />
+             <Product key={index} dataProd={product} handlePress={handlePresDetailProduct} />
             ))}
         </View>
       </ScrollView>
@@ -86,6 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#BBDEF2",
     paddingBottom: 50,
+    
   },
   searchs: {
     flexDirection: "row",

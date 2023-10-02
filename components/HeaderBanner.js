@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#333",
     margin: 5,
+    opacity: 0, // Ẩn chấm tròn
   },
 });
 
