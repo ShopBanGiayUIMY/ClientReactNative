@@ -39,7 +39,7 @@ const ProductDetail = ({ route, navigation }) => {
           <TouchableOpacity
             style={styles.iconn}
             onPress={() => {
-              navigation.navigate("TabNavigator");
+              navigation.goBack();
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} size={25} color="#ADD8E6" />
