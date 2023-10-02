@@ -16,7 +16,6 @@ export default function Login ()  {
   const handleLogin =() =>{
     
     try {
-      console.log(formData);
     if (formData.username.trim().length === 0) {
       ToastAndroid.show('Không để rỗng!', ToastAndroid.SHORT);
       return;

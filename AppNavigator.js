@@ -106,7 +106,7 @@ function TabNavigator() {
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="ProductList">
         <Stack.Screen
           name="Login"
           component={Login}
@@ -119,7 +119,7 @@ export default function AppNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Home"
+          name="ProductList"
           component={TabNavigator}
           options={{ headerShown: false }}
         />
