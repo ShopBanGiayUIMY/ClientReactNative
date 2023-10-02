@@ -73,7 +73,10 @@ export default function ListProduct({navigation}) {
         }
       >
         {/* banner */}
+        <View style={styles.viewBanner}>
+          
         <HeaderBanner />
+        </View>
         <View style={styles.productList}>
           {data &&
             data.map((product, index) => (
@@ -127,8 +130,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   viewBanner: {
-    width: WIDTH,
-    height: HEIGHT * 0.25,
+
+    height: 200,
+    paddingHorizontal: 3,
+    paddingVertical: 3,
   },
   image: {
     width: WIDTH,
@@ -142,8 +147,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginTop: 5,
-    paddingHorizontal: 10,
+    marginTop: 12,
+    paddingHorizontal: 13,
   },
   
 });

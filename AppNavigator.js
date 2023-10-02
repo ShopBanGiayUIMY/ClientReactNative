@@ -6,7 +6,7 @@ import ListProduct from "./Screen/Products/ListProduct";
 import Cart from "./Screen/Cart";
 import Register from "./Screen/Register/Register";
 import Notification from "./Screen/Notification";
-import Information from "./Screen/Informations/Information";
+import Profile from "./Screen/Informations/Profile";
 import Login from "./Screen/Login/Login";
 import ProductDetail from "./Screen/Products/ProductDetail";
 const Stack = createNativeStackNavigator();
@@ -88,8 +88,8 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Information"
-        component={Information}
+        name="Profile"
+        component={Profile}
         options={{
           tabBarShowLabel: false,
           headerShown:false,
@@ -110,7 +110,7 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ headerShown: false }}
+        
         />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen

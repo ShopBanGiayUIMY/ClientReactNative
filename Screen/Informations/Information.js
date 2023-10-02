@@ -16,8 +16,6 @@ import mess from "../../images/4.png";
 import pay from "../../images/5.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
-import Repurchase from "./Repurchase";
-import About from "./About";
 
 export default function Information({ navigation }) {
   const handleLogin = () => {
@@ -54,6 +52,7 @@ export default function Information({ navigation }) {
               backgroundColor: "#DAA3A3",
               width: "49%",
               borderRadius: 5,
+              height: 45,
             }}
             onPress={() => navigation.navigate("Login")} // Corrected the function call
           >
@@ -75,6 +74,8 @@ export default function Information({ navigation }) {
               color: "#841584",
               backgroundColor: "#DE6247",
               width: "49%",
+              borderRadius: 5,
+              height: 45,
             }}
             onPress={handleLogin} // Corrected the function call
           >
@@ -92,14 +93,18 @@ export default function Information({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.info}>
+   
+     
+      <View style={styles.iconsContainer}>
+      <View>
+     <View style={styles.info}>
         <Text style={styles.label}>Đơn hàng của tôi</Text>
-        <TouchableOpacity>
-          <Text style={styles.viewAllOrders}>Xem tất cả đơn hàng</Text>
+        <TouchableOpacity onPress={()=>{alert("đang xem tất cả đơn hàng")}}>
+          <Text style={styles.viewAllOrders}>Xem tất cả đơn hàng {">"}</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.iconsContainer}>
+     </View>
+     <View  style={styles.Containerinfo}>
         <TouchableOpacity style={styles.iconItem}>
           <Image style={styles.iconImage} source={wait} />
           <Text style={styles.iconText}>Chờ Thanh Toán</Text>
@@ -121,33 +126,8 @@ export default function Information({ navigation }) {
           <Text style={styles.iconText}>Phản hồi Về Sản Phẩm</Text>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          shadowOffset: { width: 0, height: 2 }, // Độ dịch chuyển đổ bóng theo chiều ngang và dọc
-          elevation: 1, // Độ cao của đổ bóng (cho Android)
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: 5,
-            borderBottomWidth: 0.1,
-            shadowOffset: { width: 0, height: 2 }, // Độ dịch chuyển đổ bóng theo chiều ngang và dọc
-            shadowOpacity: 0.5, // Độ mờ của đổ bóng
-            elevation: 1,
-          }}
-        >
-          <Image
-            style={{ width: 30, height: 30, marginRight: 23 }}
-            source={{ uri: "https://iili.io/JdjjLmv.png" }}
-          />
-          <Text style={{ fontSize: 25 }}>Mua lại</Text>
-        </View>
-        <Repurchase style={{ with: "100%", height: 200 }} />
       </View>
-      <View>
-        <About />
-      </View>
+     
     </View>
   );
 }
@@ -203,11 +183,9 @@ const styles = StyleSheet.create({
   },
   info: {
     flexDirection: "row",
-    justifyContent: "space-between",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: "#fff",
-    elevation: 2, // Material design shadow
+    height: 50,
   },
   label: {
     fontSize: 20,
@@ -215,16 +193,25 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   viewAllOrders: {
-    fontSize: 15,
+    fontSize: 16,
     color: "#ff6600",
-    fontWeight: "bold",
+    marginHorizontal: 50,
+    marginVertical: 3,
   },
   iconsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginTop: 20,
     width: "100%",
+  },
+  Containerinfo: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    height:100,
   },
   iconItem: {
     alignItems: "center",
@@ -237,7 +224,7 @@ const styles = StyleSheet.create({
   },
   iconText: {
     marginTop: 5,
-    fontSize: 14,
+    fontSize: 12,
     textAlign: "center",
     color: "#333",
   },
