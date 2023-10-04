@@ -9,6 +9,8 @@ import Notification from "./Screen/Notification";
 import Profile from "./Screen/Informations/Profile";
 import Login from "./Screen/Login/Login";
 import ProductDetail from "./Screen/Products/ProductDetail";
+import SplashStore from "./Screen/Splash/SplashStore";
+import Home from "./Screen/Home/Home";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
@@ -45,22 +47,25 @@ function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          height: 65,
+          height: 55,
           position: "absolute",
+          backgroundColor: "#fff",
         },
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={ListProduct}
+        name="Homes"
+        component={Home}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
           title: "Chào mừng bạn",
+          
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" color={color} size={20} />
           ),
           tabBarButton: (props) => <TabButton {...props} />,
+        
         }}
       />
       <Tab.Screen
@@ -106,7 +111,8 @@ function TabNavigator() {
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ProductList">
+      <Stack.Navigator initialRouteName="SplashStore">
+        <Stack.Screen name="SplashStore" component={SplashStore} options={{ headerShown: false }}/>
         <Stack.Screen
           name="Login"
           component={Login}
@@ -119,7 +125,7 @@ export default function AppNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="ProductList"
+          name="Home"
           component={TabNavigator}
           options={{ headerShown: false }}
         />

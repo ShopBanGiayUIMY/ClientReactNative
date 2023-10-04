@@ -14,6 +14,7 @@ import { faMoneyBill1, faStar } from "@fortawesome/free-solid-svg-icons";
 import loading from "../../images/loading.gif";
 import Header from "../../components/Header";
 import HeaderBanner from "../../components/HeaderBanner";
+import MenuCategory from "../../components/MenuCategory";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import Product from "../../components/Product";
@@ -50,6 +51,7 @@ export default function ListProduct({ navigation }) {
 
   const handlePresDetailProduct = (item) => {
     navigation.navigate("ProductDetail", { product: item });
+  
   };
  const handleRefresh = () => {
     setIsloading(true);
@@ -91,7 +93,9 @@ export default function ListProduct({ navigation }) {
           {/* banner */}
           <View style={styles.viewBanner}>
             <HeaderBanner />
+            <MenuCategory />
           </View>
+         
           <View style={styles.productList}>
             {data &&
               data.map((product, index) => (
@@ -149,7 +153,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   viewBanner: {
-    height: 200,
+    height: 300,
     paddingHorizontal: 3,
     paddingVertical: 3,
   },
