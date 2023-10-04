@@ -29,10 +29,9 @@ export default function Product(props) {
             <View style={styles.price}>
               <Image style={styles.star} source={{ uri: "https://iili.io/Jdk4y5G.png"}}/>
               <Text style={styles.item_price}>
-                {dataProd.discount}
-                
+                {dataProd.price}
               </Text>
-              <Text style={styles.kihieu}>đ</Text>
+              <Text style={styles.kihieu}>$</Text>
             </View>
          
             <View style={styles.info}>
@@ -132,11 +131,10 @@ const styles = StyleSheet.create({
   kihieu: {
     fontSize: 20,
     color: "#FF4500",
-    textDecorationLine: "underline",
     fontFamily: "Roboto",
     fontWeight: "bold",
     marginHorizontal: 4,
-    paddingTop: 7,
+    
   },
   txtSales:{
    width:'28%',
