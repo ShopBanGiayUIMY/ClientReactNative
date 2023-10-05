@@ -86,6 +86,7 @@ function TabNavigator() {
         options={{
           tabBarShowLabel: false,
           title: "Cart",
+          headerShown:false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="cart" color={color} size={20} />
           ),

@@ -22,7 +22,7 @@ const ProductDetail = ({ route, navigation }) => {
 
   //tính % sale off của sản phẩm: Số-tiền-sau-khi-giảm-giá = Giá-tiền x [ (100 – %giảm-giá)/100]
   const saleOff = () => {
-    const discountAmount = product.sales * [(100 - product.discount) / 100];
+    const discountAmount = product.price * [(100 - product.discount) / 100];
     // Làm tròn đến 2 chữ số thập phân
     const discountedPrice = discountAmount.toFixed(2);
     //Không  Làm tròn đến 2 chữ số thập phân
@@ -47,16 +47,16 @@ const ProductDetail = ({ route, navigation }) => {
         </ScrollView>
         <View style={styles.productDiscount}>
           <Text style={styles.txtDiscount}>
-            {product.discount}%{"\n"} off
+            {product.discount}%{"\n"}off
           </Text>
         </View>
         <View style={styles.productInfo}>
           <Text style={styles.productName}>{product.nameproduct}</Text>
           <View style={{ flexDirection: "row" }}>
             <View style={styles.viewUnderLine}></View>
-            <Text style={styles.productPrice1}>{product.sales} đ </Text>
+            <Text style={styles.productPrice1}>{product.price} $ </Text>
             <Text style={styles.productPrice}> - </Text>
-            <Text style={styles.productPrice}>{saleOff()} đ</Text>
+            <Text style={styles.productPrice}>{saleOff()} $ </Text>
           </View>
 
           <Text style={styles.productDescription}>

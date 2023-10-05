@@ -4,13 +4,10 @@ import {
   ScrollView,
   StyleSheet,
   Image,
-  Text,
   Dimensions,
   RefreshControl,
-  TouchableOpacity,
 } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faMoneyBill1, faStar } from "@fortawesome/free-solid-svg-icons";
+
 import loading from "../../images/loading.gif";
 import Header from "../../components/Header";
 import HeaderBanner from "../../components/HeaderBanner";
