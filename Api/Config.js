@@ -1,6 +1,6 @@
 // config.js
 const Config = {
-  API_BASE_URL: 'http://192.168.0.105:3000/v1',
+  API_BASE_URL: 'http://192.168.1.10:8080/api/v1',
   configHeaders: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
