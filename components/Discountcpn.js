@@ -21,7 +21,7 @@ const Discountcpn = (props) => {
   const [isExpired, setIsExpired] = useState(false);
   const [soLuongPhieu, setSoLuongPhieu] = useState(dataProd.solansudung);
   const [isHidden, setIsHidden] = useState(false);
-
+  
   const handleThuThapDiscount = () => {
     if (isExpired) {
       alert("Thu  thập mã giảm giá thành công");

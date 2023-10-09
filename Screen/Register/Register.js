@@ -39,7 +39,6 @@ export default function Register({navigation}) {
     e.preventDefault();
     // Gọi hàm registerUser từ hook useAuth để xử lý đăng ký
     registerUser(formData);
-    console.log(formData);
   };
 
   return (

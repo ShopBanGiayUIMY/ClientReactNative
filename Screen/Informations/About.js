@@ -33,7 +33,7 @@ const About = () => {
         }}
       >
         <Image
-          style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
+          style={{ width: 32, height: 30, marginRight: 8, marginStart: 5 }}
           source={{ uri: "https://iili.io/JdjSFSI.png" }}
         />
         <Text style={{ fontSize: 20 }}>Đã Thích</Text>
