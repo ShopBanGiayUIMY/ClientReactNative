@@ -5,7 +5,7 @@ export default function authHeader() {
     .then(userData => {
       if (userData) {
         const user = JSON.parse(userData);
-        return { token: 'Bearer ' + user.accesstoken };
+        return { token: 'Bearer ' + user };
       } else {
         return {};
       }

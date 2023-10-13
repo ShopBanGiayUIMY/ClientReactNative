@@ -11,16 +11,18 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialIcons } from "@expo/vector-icons";
 import  useAuth  from "../../Services/auth.services";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 export default function Register({navigation}) {
   useLayoutEffect(() => { 
     navigation.setOptions({ 
-      headerTitle: 'Re git tơ',
+      headerTitle: 'Đăng ký',
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{ marginLeft: 5 ,marginRight: 10}}
         >
-          <Text style={{ color: 'red', fontSize: 18 }}>{"<-"}</Text>
+         
+         <FontAwesome name="arrow-left" size={24} color="black" style={styles.icon}/>
         </TouchableOpacity>
       ),
     }) 
@@ -318,5 +320,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#768487",
     marginTop: -3,
+  },
+  icon: {
+    fontSize: 20,
+    color: "#7DDDFF",
+    marginTop: 3,
   },
 });

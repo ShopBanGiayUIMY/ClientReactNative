@@ -6,7 +6,7 @@ export default function Category(){
 return(
      // <ModalBottom/>
      <View style={style.container}>
-          <Discount/>
+          {/* <Discount/> */}
      </View>
 )
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   View,
   Text,
@@ -7,35 +7,35 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
+
 import avatar from "../../images/avatar.png";
 import background from "../../images/backgroundprofile.png";
 import login from "../../images/login.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { AuthStatus } from "../../Services/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function Information({ navigation }) {
-  const { state } = AuthStatus();
 
-  const logout = async () => {
-    // Xóa trạng thái đăng nhập khỏi AsyncStorage khi người dùng đăng xuất
-    await AsyncStorage.removeItem("isLoggedIn");
-    await AsyncStorage.removeItem("user_id");
-    await AsyncStorage.removeItem("accesstoken");
-    dispatch({ type: "LOGOUT" });
-  };
+
+export default function Information({ navigation }) {
+  const { state ,dispatch} = AuthStatus();
+
+
+ 
 
   console.log(state.isLoggedIn);
   const handleLogin = () => {
-    navigation.navigate("Login"); // Corrected the typo here
+  
+    navigation.navigate("Login"); 
   };
   const handleRegister = () => {
-    navigation.navigate("Register"); // Corrected the typo here
+    navigation.navigate("Register"); 
   };
 
   return (
     <View style={styles.container}>
       <Image style={styles.backgroundImage} source={background} />
+     
+
       <View style={styles.header}>
         {!state.isLoggedIn ? (
           <View>
@@ -100,7 +100,7 @@ export default function Information({ navigation }) {
           <View>
             <TouchableOpacity
               style={styles.settingsIcon}
-              onPress={() => logout()}
+              onPress={() => navigation.navigate("Setting")}
             >
               <FontAwesomeIcon icon={faCog} size={24} style={styles.cogIcon} />
             </TouchableOpacity>
