@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer } from "react";
 
 // Tạo một React Context với giá trị mặc định
 const AuthContext = createContext();
@@ -17,17 +17,23 @@ export const AuthProvider = ({ children }) => {
 // Hàm reducer (để quản lý các hành động liên quan đến xác thực)
 const authReducer = (state, action) => {
   switch (action.type) {
-    case 'LOGIN':
+    case "LOGIN":
       return {
         ...state,
         isLoggedIn: true,
         user: action.payload,
       };
-    case 'LOGOUT':
+    case "LOGOUT":
       return {
         ...state,
         isLoggedIn: false,
         user: null,
+      };
+    case "USERINFO":
+      return {
+        ...state,
+        isLoggedIn: true,
+        userInfo: action.payload,
       };
     default:
       return state;
@@ -38,6 +44,7 @@ const authReducer = (state, action) => {
 const initialState = {
   isLoggedIn: false,
   user: null,
+  userInfo: [],
 };
 
 // Custom hook để sử dụng giá trị và hàm dispatch từ Context

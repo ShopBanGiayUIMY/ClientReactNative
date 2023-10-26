@@ -5,16 +5,21 @@ import face from "../../images/facebook.png";
 import google from "../../images/google.png";
 import Checkbox from 'expo-checkbox';
 import  useAuth  from "../../Services/auth.services";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 export default function Login ({navigation})  {
+  const [isloading, setIsloading] = useState(false);
   useLayoutEffect(() => { 
     navigation.setOptions({ 
-      headerTitle: 'Lô gin',
+      headerTitle: 'Đăng nhập',
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{ marginLeft: 5 ,marginRight: 10}}
         >
-          <Text style={{ color: 'red', fontSize: 18 }}>{"<-"}</Text>
+         
+         <FontAwesome name="arrow-left" size={24} color="black" style={styles.icon}/>
         </TouchableOpacity>
       ),
     }) 
@@ -23,7 +28,7 @@ export default function Login ({navigation})  {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-  });
+  }); 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const handleLogin =() =>{
@@ -38,7 +43,15 @@ export default function Login ({navigation})  {
       return;
     }
     else {
-         loginUser(formData);
+         loginUser(formData).then(() => {
+
+          setIsloading(true);  
+          setTimeout(() => {
+          setIsloading(false);
+          navigation.replace('SplashStore');
+          }, 2000);
+         });
+         
         ToastAndroid.show('Chúc mừng bạn đăng nhập thành công ✓', ToastAndroid.SHORT);
     }
     } catch (error) {
@@ -48,6 +61,7 @@ export default function Login ({navigation})  {
   }
   return (
     <View style={styles.container}>
+       <LoadingScreen isVisible={isloading} navigation={navigation} />
       <Text style={styles.hi}>Hi, Welcome Back!{'\n'} </Text>
       <Text style={styles.vaytay}>👋</Text>
       <Text style={styles.nameapp}>Mini <Text style={styles.shop}> Shop</Text></Text>
@@ -253,5 +267,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+  icon: {
+    fontSize: 20,
+    color: "#7DDDFF",
+    marginTop: 3,
   },
 });

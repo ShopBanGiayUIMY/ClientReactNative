@@ -11,10 +11,15 @@ import Login from "./Screen/Login/Login";
 import ProductDetail from "./Screen/Products/ProductDetail";
 import SplashStore from "./Screen/Splash/SplashStore";
 import Home from "./Screen/Home/Home";
+import Setting from "./Screen/Setting/Setting";
+import ResetPassword from "./Screen/SecurityAccount/ResetPassword";
+import FormSecurity from "./Screen/SecurityAccount/FormSecurity/FormSecurity";
+import PasswordNew from "./Screen/SecurityAccount/PasswordNew";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect } from "react";
+import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import { View, TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 function TabButton({ onPress, accessibilityState, children }) {
@@ -60,12 +65,11 @@ function TabNavigator() {
           headerShown: false,
           tabBarShowLabel: false,
           title: "Chào mừng bạn",
-          
+
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" color={color} size={20} />
           ),
           tabBarButton: (props) => <TabButton {...props} />,
-        
         }}
       />
       <Tab.Screen
@@ -86,7 +90,7 @@ function TabNavigator() {
         options={{
           tabBarShowLabel: false,
           title: "Cart",
-          headerShown:false,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="cart" color={color} size={20} />
           ),
@@ -98,7 +102,7 @@ function TabNavigator() {
         component={Profile}
         options={{
           tabBarShowLabel: false,
-          headerShown:false,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account" color={color} size={20} />
           ),
@@ -113,12 +117,12 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashStore">
-        <Stack.Screen name="SplashStore" component={SplashStore} options={{ headerShown: false }}/>
         <Stack.Screen
-          name="Login"
-          component={Login}
-        
+          name="SplashStore"
+          component={SplashStore}
+          options={{ headerShown: false }}
         />
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen
           name="ProductDetail"
@@ -130,6 +134,17 @@ export default function AppNavigator() {
           component={TabNavigator}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Setting" component={Setting} />
+        <Stack.Screen
+          name="AccountInfo"
+          component={AccountInfo}
+          options={{
+            resetOnBlur: true,
+          }}
+        />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} />
+        <Stack.Screen name="FormSecurity" component={FormSecurity} />
+        <Stack.Screen name="PasswordNew" component={PasswordNew} />
       </Stack.Navigator>
     </NavigationContainer>
   );
