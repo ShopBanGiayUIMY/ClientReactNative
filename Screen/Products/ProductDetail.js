@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,36 +6,67 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  Modal
 } from "react-native";
 import Header from "../../components/Header";
 import Payment from "../../components/AddtoCard";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faHeart,
+  faShare,
+  faComment,
+  faStar
+} from "@fortawesome/free-solid-svg-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
 const ProductDetail = ({ route, navigation }) => {
   const { product } = route.params;
-  const [expanded, setExpanded] = useState(false); // Trạng thái cho việc mở rộng văn bản
+  const [expanded, setExpanded] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+
+  // Kiểm tra trạng thái "thích" khi màn hình được tải
+  useEffect(() => {
+    checkLikeStatus();
+  }, []);
 
   const toggleExpand = () => {
     setExpanded(!expanded);
   };
 
-  //tính % sale off của sản phẩm: Số-tiền-sau-khi-giảm-giá = Giá-tiền x [ (100 – %giảm-giá)/100]
-  const saleOff = () => {
-    const discountAmount = product.price * [(100 - product.discount) / 100];
-    // Làm tròn đến 2 chữ số thập phân
-    const discountedPrice = discountAmount.toFixed(2);
-    //Không  Làm tròn đến 2 chữ số thập phân
-    // const discountedPrice = discountAmount;
-    return discountedPrice;
+  const checkLikeStatus = async () => {
+    try {
+      // Lấy trạng thái "thích" từ AsyncStorage
+      const likedStatus = await AsyncStorage.getItem("likedProduct" + product.product_id);
+      if (likedStatus !== null) {
+        setIsLiked(JSON.parse(likedStatus));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  const handleLikeProduct = async () => {
+    // Đảm bảo bạn lưu trạng thái "thích" vào AsyncStorage
+    try {
+      await AsyncStorage.setItem("likedProduct" + product.product_id, JSON.stringify(!isLiked));
+    } catch (error) {
+      console.error(error);
+    }
+
+    setIsLiked(!isLiked);
+  };
+
 
   return (
     <View style={styles.container}>
-      <Header navigation={navigation}/>
+      <Header navigation={navigation} />
       <ScrollView style={styles.scrollVieww}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Image source={{ uri: product.image }} style={styles.productImage} />
+          <Image
+            source={{ uri: product.thumbnail }}
+            style={styles.productImage}
+          />
           <TouchableOpacity
             style={styles.iconn}
             onPress={() => {
@@ -44,44 +75,36 @@ const ProductDetail = ({ route, navigation }) => {
           >
             <FontAwesomeIcon icon={faArrowLeft} size={25} color="#ADD8E6" />
           </TouchableOpacity>
+          <View style={styles.nameAndHeart}>
+            <Text style={styles.txtNameProduct}>{product.product_name}</Text>
+            <View style={styles.moreFuntion}>
+              <TouchableOpacity style={{ marginRight: 30 }}>
+                <FontAwesomeIcon icon={faShare} size={20} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity style={{ marginRight: 30 }} onPress={handleLikeProduct}>
+                <FontAwesomeIcon icon={faHeart} size={20} color={isLiked ? "red" : "white"} />
+              </TouchableOpacity>
+              <TouchableOpacity style={{ marginRight: 0 }}>
+                <FontAwesomeIcon icon={faComment} size={20} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', marginStart: 10, marginEnd: 10, marginTop: 10 }}>
+            <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
+            <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
+            <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
+            <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
+            <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
+            <Text style={{ marginLeft: 10, marginTop: -2, fontWeight: 'bold' }}>5.0</Text>
+          </View>
+          <View style={styles.line}></View>
+          <View style={styles.top}>
+            <Text style={styles.txtMoTa}>{product.product_description}</Text>
+          </View>
+          <View>
+            <Text style={styles.txtPrice}>{product.product_price} $</Text>
+          </View>
         </ScrollView>
-        <View style={styles.productDiscount}>
-          <Text style={styles.txtDiscount}>
-            {product.discount}%{"\n"}off
-          </Text>
-        </View>
-        <View style={styles.productInfo}>
-          <Text style={styles.productName}>{product.nameproduct}</Text>
-          <View style={{ flexDirection: "row" }}>
-            <View style={styles.viewUnderLine}></View>
-            <Text style={styles.productPrice1}>{product.price} $ </Text>
-            <Text style={styles.productPrice}> - </Text>
-            <Text style={styles.productPrice}>{saleOff()} $ </Text>
-          </View>
-
-          <Text style={styles.productDescription}>
-            {expanded ? product.describe : product.describe.slice(0, 40)}
-          </Text>
-          {product.describe.length > 40 && (
-            <TouchableOpacity onPress={toggleExpand}>
-              <Text style={styles.toggleButton}>
-                {expanded ? "Thu gọn" : "Xem thêm"}
-              </Text>
-            </TouchableOpacity>
-          )}
-          <View style={styles.productRow}>
-            <Image style={styles.iconStar} source={{uri:"https://iili.io/HgVbF2t.png"}}/>
-            <Text style={styles.productRating}>{product.rating}</Text>
-          </View>
-          <Text style={styles.productSales}>Đã bán: {product.sales}</Text>
-          <View style={styles.productRow1}>
-            <Text style={styles.productColor}>Màu: {product.color}</Text>
-            <Text style={styles.productQuantity}>
-            Số lượng: {product.quantity}
-          </Text>
-          </View>
-          
-        </View>
       </ScrollView>
       <View style={styles.viewPayment}>
         <Payment />
@@ -90,13 +113,14 @@ const ProductDetail = ({ route, navigation }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#A9CDEE",
   },
-  scrollVieww:{
-    marginBottom:20
+  scrollVieww: {
+    marginBottom: 20,
   },
   iconn: {
     position: "absolute",
@@ -105,90 +129,43 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: "100%",
-    height: 350, 
+    height: 350,
   },
-  productInfo: {
-    padding: 16,
+  nameAndHeart: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    marginStart: 10,
+    marginEnd: 10,
   },
-  productName: {
+  moreFuntion: {
+    flexDirection: "row",
+    marginTop: 15,
+  },
+  txtNameProduct: {
+    marginTop: "3%",
     fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 8,
+    fontWeight: "700",
   },
-  viewUnderLine: {
-    borderBottomWidth: 3,
-    borderColor: "red",
-    position: "absolute",
-    width: "14%",
-    top: 15,
+  line: {
+    width: "100%",
+    borderWidth: 0.5,
+    color: "gray",
+    marginTop: 20,
   },
-  productPrice1: {
-    fontSize: 24,
-    color: "red",
-    marginBottom: 16,
+  top: {
+    marginTop: 20,
   },
-  productPrice: {
-    fontSize: 24,
-    color: "red",
-    marginBottom: 16,
+  txtMoTa: {
+    fontSize: 13,
+    marginStart: 10,
+    marginEnd: 10,
   },
-  productDescription: {
-    fontSize: 16,
-    marginBottom: 20, 
-    color: "gray", 
-  },
-  toggleButton:{
-    position:'relative',
-    top:-20, color:'gray'
-  },
-  productRow: {
-    flexDirection: "row",
-    marginBottom: 10, 
-  },
-  productRow1: {
-    flexDirection: "row",
-    marginBottom: 10, 
-    justifyContent:'space-between'
-  },
-  iconStar:{
-    width:35,
-    height:35,
-  },
-  productRating: {
-    fontSize: 25, 
-    color: "orange", 
-    marginVertical:1
-  },
-  productSales: {
-    fontSize: 18, 
-    position:'relative',
-    top:-40, 
-    left:250
-  },
-  productColor: {
-    fontSize: 18, 
-  },
-  productDiscount: {
-    fontSize: 15,
-    width: 45,
-    height: 45,
-    position: "absolute",
-    alignItems: "center",
-    top: 20,
-    right: 20,
-    paddingTop: 7,
-    backgroundColor: "#C60C30",
-    borderRadius: 45 / 2, 
-  },
-  txtDiscount: {
-    color: "white",
-  },
-  productQuantity: {
-    fontSize: 18, 
-    marginBottom: 10, 
-  },
-  productSellNumber: {
-    fontSize: 18, 
+  txtPrice:{
+    fontSize:14,
+    fontWeight:'600',
+    color:'red', 
+    margin:10
   },
   viewPayment: {
     width: "90%",
@@ -200,7 +177,6 @@ const styles = StyleSheet.create({
     position: "relative",
     top: -20,
     borderRadius: 5,
-    
   },
 });
 

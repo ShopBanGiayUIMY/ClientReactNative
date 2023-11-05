@@ -1,7 +1,9 @@
 import React from "react";
-import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
-
-const About = () => {
+import { ScrollView, View, Text, TouchableOpacity, Image, ToastAndroid } from "react-native";
+const About = ({navigation}) => {
+  const handlePageLikeProduct =()=>{
+    // navigation.navigate('LikeProducts')
+  }
   return (
     <ScrollView>
       <TouchableOpacity
@@ -31,6 +33,7 @@ const About = () => {
           height: 50,
           alignItems: "center",
         }}
+        onPress={ handlePageLikeProduct}
       >
         <Image
           style={{ width: 32, height: 30, marginRight: 8, marginStart: 5 }}
