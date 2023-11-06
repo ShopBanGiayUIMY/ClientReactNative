@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     width: 180,
     height:310 
+
+    
   },
   star_sold_product: {
     flexDirection: "row",
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#FFFBF9",
-    flex:1
+    flex:1,
   },
 
   info: {

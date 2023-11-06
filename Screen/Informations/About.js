@@ -40,7 +40,6 @@ const About = ({navigation}) => {
           alignItems: "center",
           justifyContent: "space-between",
         }}
-        onPress={ handlePageLikeProduct}
       >
         <Image
           style={{ width: 32, height: 30, marginRight: 8, marginStart: 5 }}
@@ -158,28 +157,6 @@ const About = ({navigation}) => {
           source={{ uri: "https://iili.io/JdjSJPR.png" }}
         />
         <Text style={{ fontSize: 20,position:"absolute",left:45 }}>Trò chuyện với UIMY </Text>
-        <Image
-          style={{ width: 25, height: 25,marginRight: 10, marginStart: 5,tintColor:"#CDCDCD" }}
-          source={{ uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png" }}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          marginTop: 5,
-          marginBottom: 5,
-          backgroundColor: "#fff",
-          width: "100%",
-          height: 50,
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Image
-          style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
-          source={{ uri: "https://iili.io/JdjSJPR.png" }}
-        />
-        <Text style={{ fontSize: 20,position:"absolute",left:45 }}>Log out</Text>
         <Image
           style={{ width: 25, height: 25,marginRight: 10, marginStart: 5,tintColor:"#CDCDCD" }}
           source={{ uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png" }}

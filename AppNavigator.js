@@ -68,7 +68,7 @@ function TabNavigator() {
           
           tabBarShowLabel: false,
           title: "Chào mừng bạn",
-
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" color={color} size={20} />
           ),

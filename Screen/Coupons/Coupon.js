@@ -36,7 +36,7 @@ export default function Coupon({ navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "Max giảm giá",
+      headerTitle: "Mã giảm giá",
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -94,7 +94,6 @@ export default function Coupon({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "rgba(216, 234, 245, 0.8)",
-    marginBottom: 55,
   },
   icon: {
     marginLeft: 5,

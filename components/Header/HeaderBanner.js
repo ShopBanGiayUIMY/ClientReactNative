@@ -99,7 +99,7 @@ const Slideshow = () => {
               setCurrentIndex(index);
             }}
           >
-            <Image source={{ uri: image }} style={styles.image} />
+            <Image source={{ uri: image }} resizeMode="contain" style={styles.image} />
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -128,19 +128,19 @@ const Slideshow = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width,
-   
+    flex: 1,
   },
   scrollViewContent: {
-    paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView
+    paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView\
   },
   imageContainer: {
-    width,
+    width: width,
     height: 150,
+   
   
   },
   image: {
-    width,
+    width: "100%",
     height: "100%",
     borderRadius: 5,
     resizeMode: "cover",
