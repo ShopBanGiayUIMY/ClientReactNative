@@ -14,6 +14,7 @@ import Setting from "./Screen/Setting/Setting";
 import ResetPassword from "./Screen/SecurityAccount/ResetPassword";
 import FormSecurity from "./Screen/SecurityAccount/FormSecurity/FormSecurity";
 import PasswordNew from "./Screen/SecurityAccount/PasswordNew";
+import Coupon from "./Screen/Coupons/Coupon";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
@@ -22,6 +23,8 @@ import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import { View, TouchableWithoutFeedback } from "react-native";
 import LikeProducts from "./Screen/Informations/LikeProducts";
 
+import Icon from "react-native-vector-icons/FontAwesome";
+import ModalBottom from "./Screen/Modal/modal.bottom";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
@@ -62,10 +65,10 @@ function TabNavigator() {
         name="Homes"
         component={Home}
         options={{
-          headerShown: false,
+          
           tabBarShowLabel: false,
           title: "Chào mừng bạn",
-
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" color={color} size={20} />
           ),
@@ -74,7 +77,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Notification"
-        component={Notification}
+        component={ModalBottom}
         options={{
           tabBarShowLabel: false,
           title: "Thông báo",
@@ -150,6 +153,7 @@ export default function AppNavigator() {
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
         <Stack.Screen name="FormSecurity" component={FormSecurity} />
         <Stack.Screen name="PasswordNew" component={PasswordNew} />
+        <Stack.Screen name="Coupon" component={Coupon} />
       </Stack.Navigator>
     </NavigationContainer>
   );

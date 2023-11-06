@@ -9,9 +9,9 @@ import {
 } from "react-native";
 
 import loading from "../../images/loading.gif";
-import Header from "../../components/Header";
-import HeaderBanner from "../../components/HeaderBanner";
-import MenuCategory from "../../components/MenuCategory";
+import Header from "../../components/Header/Header";
+import HeaderBanner from "../../components/Header/HeaderBanner";
+import MenuCategory from "../../components/MenuCategory/MenuCategory";
 import Product from "../../components/Product";
 
 const WIDTH = Dimensions.get("window").width;
@@ -113,6 +113,7 @@ export default function ListProduct({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: WIDTH,
     backgroundColor: "#A9CDEE",
     paddingBottom: 50,
   },
@@ -151,13 +152,9 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   viewBanner: {
-    height: 300,
-    paddingHorizontal: 3,
-    paddingVertical: 3,
-  },
-  image: {
     width: WIDTH,
-    height: HEIGHT * 0.25,
+    
+    
   },
   viewProductsContainer: {
     flexGrow: 1,

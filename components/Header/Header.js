@@ -1,0 +1,127 @@
+import React from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  Dimensions,
+  StatusBar
+} from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faSearch,
+  faQrcode,
+  faShoppingCart,
+  faBell,
+} from "@fortawesome/free-solid-svg-icons";
+const { width } = Dimensions.get("window");
+
+const Header = (props) => {
+  const { backgroundOpacity } = props;
+  return (
+    
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: `rgba(94, 121, 230, ${backgroundOpacity})` },
+      ]}
+    >
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={ styles.icon}
+        >
+          <FontAwesomeIcon icon={faQrcode} size={24} style={ styles.iconitem} />
+        </TouchableOpacity>
+        <View style={styles.center}>
+          <View style={styles.inputWrapper}>
+          <TouchableOpacity
+          style={ styles.iconsearch}
+        >
+          <FontAwesomeIcon
+              icon={faSearch}
+              size={18}
+              style={styles.searchIcon}
+            />
+        </TouchableOpacity>
+           
+            <TextInput
+              style={styles.input}
+              placeholder="Tìm kiếm..."
+              placeholderTextColor="#999"
+            />
+          </View>
+        </View>
+        <View style={styles.right}>
+          <TouchableOpacity
+           style={ styles.icon}
+          >
+            <FontAwesomeIcon icon={faShoppingCart} size={24} style={ styles.iconitem} />
+          </TouchableOpacity>
+          <TouchableOpacity
+          style={ styles.icon}
+          >
+            <FontAwesomeIcon icon={faBell} size={24} style={ styles.iconitem} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = {
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+    width: width,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  container: {
+    flexDirection: "row",
+    height: 60,
+    marginTop: 10,
+  },
+  center: {
+    flex: 4,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "rgba(0, 199, 218, 0.8)",
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    color: "#333", // Màu chữ
+  },
+  right: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginLeft: 10,
+  },
+  icon: {
+    width: 30,
+    height: 25,
+    alignSelf: "center",
+    color: "#fff",
+    marginRight: 10,
+  },
+  iconitem: {
+    width: 30,
+    height: 30,
+    alignSelf: "center",
+    color: "#fff",
+  },
+};
+
+export default Header;

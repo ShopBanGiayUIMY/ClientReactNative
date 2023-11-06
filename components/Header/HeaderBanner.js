@@ -23,12 +23,25 @@ const images = [
 const Slideshow = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef();
+  const contentOffsetX = useRef(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   const handleMomentumScrollEnd = (event) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
     const newIndex = Math.round(contentOffset / width);
     setCurrentIndex(newIndex);
+
+    // Chỉ cập nhật giá trị contentOffset khi cần thiết
+    if (contentOffset !== contentOffsetX.current) {
+      contentOffsetX.current = contentOffset;
+      const newScrollX = newIndex * width;
+
+      // Scroll đến vị trí mới mà không có animation
+      scrollViewRef.current.scrollTo({
+        x: newScrollX,
+        animated: false,
+      });
+    }
   };
 
   useEffect(() => {
@@ -36,7 +49,7 @@ const Slideshow = () => {
       if (!isSwiping) {
         const newIndex = (currentIndex + 1) % images.length;
         setCurrentIndex(newIndex);
-        scrollViewRef.current.scrollTo({ 
+        scrollViewRef.current.scrollTo({
           x: newIndex * width,
           animated: true,
         });
@@ -70,6 +83,8 @@ const Slideshow = () => {
         onScrollEndDrag={handleScrollEnd}
         scrollEventThrottle={16}
         contentContainerStyle={styles.scrollViewContent}
+        decelerationRate="fast" // Giảm tốc nhanh hơn
+        overScrollMode="never" // Ngăn không cho overscroll
       >
         {images.map((image, index) => (
           <TouchableOpacity
@@ -80,14 +95,15 @@ const Slideshow = () => {
                 x: index * width,
                 animated: true,
               });
-              handleBannerPress(index)
+              handleBannerPress(index);
               setCurrentIndex(index);
             }}
           >
-            <Image source={{ uri: image }} style={styles.image} />
+            <Image source={{ uri: image }} resizeMode="contain" style={styles.image} />
           </TouchableOpacity>
         ))}
       </ScrollView>
+
       <View style={styles.pagination}>
         {images.map((_, i) => (
           <TouchableOpacity
@@ -112,19 +128,19 @@ const Slideshow = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width,
-    paddingRight: 6,
+    flex: 1,
   },
   scrollViewContent: {
-    paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView
+    paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView\
   },
   imageContainer: {
-    width,
-    height: 200,
-    
+    width: width,
+    height: 150,
+   
+  
   },
   image: {
-    width,
+    width: "100%",
     height: "100%",
     borderRadius: 5,
     resizeMode: "cover",
@@ -146,7 +162,7 @@ const styles = StyleSheet.create({
   activeDot: {
     backgroundColor: "#66B2FF",
     width: 12,
-    height:12,
+    height: 12,
     borderRadius: 10,
     borderWidth: 1,
     position: "relative",

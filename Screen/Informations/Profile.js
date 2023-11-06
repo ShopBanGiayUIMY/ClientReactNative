@@ -18,7 +18,7 @@ export default Profile = ({ navigation }) => {
         <Repurchase navigation={navigation} />
       </View>
       <View style={styles.section}>
-        <About />
+        <About navigation={navigation}/>
       </View>
     </ScrollView>
   );
