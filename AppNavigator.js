@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ListProduct from "./Screen/Products/ListProduct";
+import ListProduct from "./Screen/Products/ListProduct";
 import Cart from "./Screen/Cart";
 import Register from "./Screen/Register/Register";
 import Notification from "./Screen/Notification";
@@ -15,6 +16,7 @@ import Setting from "./Screen/Setting/Setting";
 import ResetPassword from "./Screen/SecurityAccount/ResetPassword";
 import FormSecurity from "./Screen/SecurityAccount/FormSecurity/FormSecurity";
 import PasswordNew from "./Screen/SecurityAccount/PasswordNew";
+import Coupon from "./Screen/Coupons/Coupon";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
@@ -22,6 +24,7 @@ import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import { View, TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import ModalBottom from "./Screen/Modal/modal.bottom";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
@@ -62,7 +65,7 @@ function TabNavigator() {
         name="Homes"
         component={Home}
         options={{
-          headerShown: false,
+          
           tabBarShowLabel: false,
           title: "Chào mừng bạn",
 
@@ -74,7 +77,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Notification"
-        component={Notification}
+        component={ModalBottom}
         options={{
           tabBarShowLabel: false,
           title: "Thông báo",
@@ -145,6 +148,7 @@ export default function AppNavigator() {
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
         <Stack.Screen name="FormSecurity" component={FormSecurity} />
         <Stack.Screen name="PasswordNew" component={PasswordNew} />
+        <Stack.Screen name="Coupon" component={Coupon} />
       </Stack.Navigator>
     </NavigationContainer>
   );

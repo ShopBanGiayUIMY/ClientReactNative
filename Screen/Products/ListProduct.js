@@ -9,8 +9,8 @@ import {
 } from "react-native";
 
 import loading from "../../images/loading.gif";
-import Header from "../../components/Header";
-import HeaderBanner from "../../components/HeaderBanner";
+import Header from "../../components/Header/Header";
+import HeaderBanner from "../../components/Header/HeaderBanner";
 import MenuCategory from "../../components/MenuCategory";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
