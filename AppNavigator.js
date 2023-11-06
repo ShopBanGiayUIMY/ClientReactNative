@@ -2,8 +2,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ListProduct from "./Screen/Products/ListProduct";
-import ListProduct from "./Screen/Products/ListProduct";
 import Cart from "./Screen/Cart";
 import Register from "./Screen/Register/Register";
 import Notification from "./Screen/Notification";
@@ -23,6 +21,8 @@ import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import { View, TouchableWithoutFeedback } from "react-native";
+import LikeProducts from "./Screen/Informations/LikeProducts";
+
 import Icon from "react-native-vector-icons/FontAwesome";
 import ModalBottom from "./Screen/Modal/modal.bottom";
 function TabButton({ onPress, accessibilityState, children }) {
@@ -135,6 +135,11 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Home"
           component={TabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LikeProducts"
+          component={LikeProducts}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Setting" component={Setting} />

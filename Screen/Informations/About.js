@@ -40,6 +40,7 @@ const About = ({navigation}) => {
           alignItems: "center",
           justifyContent: "space-between",
         }}
+        onPress={ handlePageLikeProduct}
       >
         <Image
           style={{ width: 32, height: 30, marginRight: 8, marginStart: 5 }}

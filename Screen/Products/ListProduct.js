@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -12,15 +12,18 @@ import loading from "../../images/loading.gif";
 import Header from "../../components/Header/Header";
 import HeaderBanner from "../../components/Header/HeaderBanner";
 import MenuCategory from "../../components/MenuCategory";
+import Product from "../../components/Product";
+
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-import Product from "../../components/Product";
+
 export default function ListProduct({ navigation }) {
   const [data, setData] = useState(null);
+  const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [isloading, setIsloading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  useEffect(() => {
+  const [backgroundOpacity, setBackgroundOpacity] = useState(0);
+
+  const fetchData = () => {
     // Define the API URL
     const apiUrl = "https://64e6e269b0fd9648b78f008b.mockapi.io/api/shopquanao";
 
@@ -30,15 +33,18 @@ export default function ListProduct({ navigation }) {
       .then((responseData) => {
         // Handle the retrieved data by updating the state
         setData(responseData);
-        setIsloading(false);
+        setIsLoading(false);
+        setRefreshing(false);
         console.log("đã load dữ liệu thành công");
       })
       .catch((error) => {
         console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
       });
-  }, [isRefreshing]);
-    
-  const [backgroundOpacity, setBackgroundOpacity] = useState(0);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [refreshing]);
 
   const handleScroll = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
@@ -46,17 +52,16 @@ export default function ListProduct({ navigation }) {
     setBackgroundOpacity(newOpacity);
   };
 
-  const handlePresDetailProduct = (item) => {
+  const handlePressDetailProduct = (item) => {
     navigation.navigate("ProductDetail", { product: item });
-  
   };
- const handleRefresh = () => {
-    setIsloading(true);
-    setIsRefreshing(!isRefreshing);
-    setTimeout(() => {
-      setIsloading(false);
-    }, 3500);
-  }
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setRefreshing(true);
+    fetchData();
+  };
+
   return (
     <View style={styles.container}>
       <View
@@ -70,10 +75,7 @@ export default function ListProduct({ navigation }) {
         <Header backgroundOpacity={backgroundOpacity} />
       </View>
       {isloading ? (
-        <Image
-          source={loading}
-          style={styles.loadingImage}
-        />
+        <Image source={loading} style={styles.loadingImage} />
       ) : (
         <ScrollView
           contentContainerStyle={styles.viewProductsContainer}
@@ -92,14 +94,13 @@ export default function ListProduct({ navigation }) {
             <HeaderBanner />
             <MenuCategory />
           </View>
-         
           <View style={styles.productList}>
             {data &&
               data.map((product, index) => (
                 <Product
                   key={index}
                   dataProd={product}
-                  handlePress={handlePresDetailProduct}
+                  handlePress={handlePressDetailProduct}
                 />
               ))}
           </View>
