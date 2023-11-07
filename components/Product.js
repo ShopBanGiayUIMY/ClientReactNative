@@ -54,7 +54,6 @@ export default function Product(props) {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 10,
-    marginRight: 10,
     borderRadius: 5,
     backgroundColor: "#FFFBF9",
     shadowOpacity: 0.1,
