@@ -73,7 +73,7 @@ const LikeProducts = ({ navigation }) => {
           likedProducts.map((product, index) => (
             <TouchableOpacity
               onPress={() => {
-                alert("Bạn đã ấn vào id_item số:  " + product.product_id);
+                alert("Bạn đã ấn vào id số:  " + product.product_id);
               }}
               key={index}
               style={styles.item}
@@ -99,7 +99,7 @@ const LikeProducts = ({ navigation }) => {
                     height: 30,
                     borderRadius: 2,
                     borderColor: "orange",
-                    borderWidth: 1,
+                    borderWidth: 1 , 
                   }}
                 >
                   <Text
