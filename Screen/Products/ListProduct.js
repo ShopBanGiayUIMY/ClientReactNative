@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   RefreshControl,
+  SafeAreaView
 } from "react-native";
 
 import loading from "../../images/loading.gif";
@@ -16,7 +17,6 @@ import Product from "../../components/Product/Product";
 import { FlatGrid } from "react-native-super-grid";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-
 export default function ListProduct({ navigation }) {
   const [data, setData] = useState(null);
   const [isloading, setIsLoading] = useState(true);
@@ -85,7 +85,7 @@ export default function ListProduct({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}  >
       <View
         style={{
           width: "100%",
@@ -120,7 +120,7 @@ export default function ListProduct({ navigation }) {
           </View>
           <View style={styles.productList}>
           <FlatGrid
-          itemDimension={180}
+          itemDimension={WIDTH/3}
           scrollEnabled={false}
           data={data}
           renderItem={({ item }) => (
@@ -130,7 +130,7 @@ export default function ListProduct({ navigation }) {
           </View>
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

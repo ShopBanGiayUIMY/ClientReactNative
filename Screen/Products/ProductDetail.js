@@ -80,8 +80,8 @@ const ProductDetail = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Header navigation={navigation} style={styles.header} />
       <ScrollView style={styles.scrollVieww}>
+      <Header navigation={navigation} style={styles.header} />
           <Image
             source={{ uri: product.thumbnail }}
             style={styles.productImage}
@@ -150,7 +150,7 @@ const ProductDetail = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: "white",
     width: "100%",
     height: "100%",
    
@@ -160,12 +160,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position:'relative',
-    marginTop: "19%",
+    
 
   },
   iconn: {
     position: "absolute",
-    top: 10,
+    top: 90,
     left: 10,
     zIndex: 1,
   },
