@@ -6,7 +6,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Modal
+  Modal,
 } from "react-native";
 import Header from "../../components/Header/Header";
 import Payment from "../../components/AddtoCard";
@@ -16,7 +16,7 @@ import {
   faHeart,
   faShare,
   faComment,
-  faStar
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
@@ -30,14 +30,14 @@ const ProductDetail = ({ route, navigation }) => {
     checkLikeStatus();
   }, []);
 
-  const toggleExpand = () => {
-    setExpanded(!expanded);
-  };
+ 
 
   const checkLikeStatus = async () => {
     try {
       // Lấy trạng thái "thích" từ AsyncStorage
-      const likedStatus = await AsyncStorage.getItem("likedProduct" + product.product_id);
+      const likedStatus = await AsyncStorage.getItem(
+        "likedProducts" + product.product_id
+      );
       if (likedStatus !== null) {
         setIsLiked(JSON.parse(likedStatus));
       }
@@ -47,16 +47,36 @@ const ProductDetail = ({ route, navigation }) => {
   };
 
   const handleLikeProduct = async () => {
-    // Đảm bảo bạn lưu trạng thái "thích" vào AsyncStorage
     try {
-      await AsyncStorage.setItem("likedProduct" + product.product_id, JSON.stringify(!isLiked));
+      // Lấy danh sách sản phẩm đã thích từ AsyncStorage (nếu có)
+      const likedProducts = await AsyncStorage.getItem("likedProducts");
+      let updatedLikedProducts = [];
+
+      if (likedProducts) {
+        // Nếu đã có dữ liệu trong AsyncStorage, chuyển nó thành mảng
+        updatedLikedProducts = JSON.parse(likedProducts);
+      }
+
+      // Kiểm tra nếu sản phẩm đã tồn tại trong danh sách, thì loại bỏ nó
+      const existingProductIndex = updatedLikedProducts.findIndex(
+        (item) => item.product_id === product.product_id
+      );
+      if (existingProductIndex !== -1) {
+        updatedLikedProducts.splice(existingProductIndex, 1);
+      } else {
+        // Nếu sản phẩm chưa tồn tại, thêm nó vào danh sách
+        updatedLikedProducts.push(product);
+      }
+
+      // Lưu danh sách sản phẩm đã thích vào AsyncStorage
+      await AsyncStorage.setItem("likedProducts", JSON.stringify(updatedLikedProducts));
+
+      // Cập nhật trạng thái thích
+      setIsLiked(!isLiked);
     } catch (error) {
-      console.error(error);
+      console.error("Lỗi khi lưu trạng thái thích sản phẩm: ", error);
     }
-
-    setIsLiked(!isLiked);
   };
-
 
   return (
     <View style={styles.container}>
@@ -81,21 +101,37 @@ const ProductDetail = ({ route, navigation }) => {
               <TouchableOpacity style={{ marginRight: 30 }}>
                 <FontAwesomeIcon icon={faShare} size={20} color="black" />
               </TouchableOpacity>
-              <TouchableOpacity style={{ marginRight: 30 }} onPress={handleLikeProduct}>
-                <FontAwesomeIcon icon={faHeart} size={20} color={isLiked ? "red" : "white"} />
+              <TouchableOpacity
+                style={{ marginRight: 30 }}
+                onPress={handleLikeProduct}
+              >
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  size={20}
+                  color={isLiked ? "red" : "white"}
+                />
               </TouchableOpacity>
               <TouchableOpacity style={{ marginRight: 0 }}>
                 <FontAwesomeIcon icon={faComment} size={20} color="black" />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', marginStart: 10, marginEnd: 10, marginTop: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              marginStart: 10,
+              marginEnd: 10,
+              marginTop: 10,
+            }}
+          >
             <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
             <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
             <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
             <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
             <FontAwesomeIcon icon={faStar} size={15} color="yellow" />
-            <Text style={{ marginLeft: 10, marginTop: -2, fontWeight: 'bold' }}>5.0</Text>
+            <Text style={{ marginLeft: 10, marginTop: -2, fontWeight: "bold" }}>
+              5.0
+            </Text>
           </View>
           <View style={styles.line}></View>
           <View style={styles.top}>
@@ -113,7 +149,6 @@ const ProductDetail = ({ route, navigation }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -121,6 +156,8 @@ const styles = StyleSheet.create({
   },
   scrollVieww: {
     marginBottom: 20,
+    position:'relative',
+    top:-60
   },
   iconn: {
     position: "absolute",
@@ -161,11 +198,11 @@ const styles = StyleSheet.create({
     marginStart: 10,
     marginEnd: 10,
   },
-  txtPrice:{
-    fontSize:14,
-    fontWeight:'600',
-    color:'red', 
-    margin:10
+  txtPrice: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "red",
+    margin: 10,
   },
   viewPayment: {
     width: "90%",
