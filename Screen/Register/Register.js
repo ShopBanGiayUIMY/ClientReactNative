@@ -8,6 +8,7 @@ import {
   Image,
   ToastAndroid,
 } from "react-native";
+import logo from "../../assets/images/logo.png";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialIcons } from "@expo/vector-icons";
 import  useAuth  from "../../Services/auth.services";
@@ -45,15 +46,16 @@ export default function Register({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Create an account</Text>
-      <View style={styles.inputContainer}>
+    <Image source={logo} style={styles.logo} resizeMode="contain"/>
+      <Text style={styles.nameapp}>Snake Nike <Text style={styles.shop}> Shop</Text></Text>
+      {/* <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, fullname: text })}
           value={formData.fullname}
           style={styles.input}
           placeholder="Enter Your FullName"
         />
-      </View>
+      </View> */}
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, email: text })}
@@ -62,14 +64,14 @@ export default function Register({navigation}) {
           placeholder="Enter Your Email"
         />
       </View>
-      <View style={styles.inputContainer}>
+      {/* <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, phone: text })}
           value={formData.phone}
           style={styles.input}
           placeholder="Enter Your Phone Number"
         />
-      </View>
+      </View> */}
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, username: text })}
@@ -168,22 +170,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingVertical: 50,
+   
   },
   inputContainer: {
-    width: "80%",
+    width: "75%",
     marginBottom: 20,
   },
   inputContainer_pass: {
-    width: "80%",
+    width: "75%",
     marginBottom: 10,
   },
   inputContainerButton: {
     width: "75%",
-    marginBottom: 20,
+    marginBottom: 10,
     marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: 35,
@@ -324,6 +327,20 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 20,
     color: "#7DDDFF",
-    marginTop: 3,
+    marginTop: 0,
+  },
+  logo: {
+    width: 90,
+    height: 90,
+    marginTop: 10,
+  },
+  nameapp: {
+    fontSize: 30,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  shop: {
+    color: 'rgba(255, 198, 0, 1)',
   },
 });

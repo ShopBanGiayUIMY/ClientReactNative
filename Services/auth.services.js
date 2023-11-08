@@ -43,6 +43,7 @@ const useAuth =() => {
         );
         AsyncStorage.setItem("user_id", JSON.stringify(response.data.user_id));
         AsyncStorage.setItem("isLoggedIn", "true");
+        return response.data;
       }
     } catch (error) {
       console.error("Lỗi dăng nhập :", error);

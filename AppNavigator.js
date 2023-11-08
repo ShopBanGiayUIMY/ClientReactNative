@@ -22,7 +22,7 @@ import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import { View, TouchableWithoutFeedback } from "react-native";
 import LikeProducts from "./Screen/Informations/LikeProducts";
-
+import Search from "./Screen/Search/Search";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ModalBottom from "./Screen/Modal/modal.bottom";
 function TabButton({ onPress, accessibilityState, children }) {
@@ -154,6 +154,7 @@ export default function AppNavigator() {
         <Stack.Screen name="FormSecurity" component={FormSecurity} />
         <Stack.Screen name="PasswordNew" component={PasswordNew} />
         <Stack.Screen name="Coupon" component={Coupon} />
+        <Stack.Screen name="Search" component={Search} />
       </Stack.Navigator>
     </NavigationContainer>
   );

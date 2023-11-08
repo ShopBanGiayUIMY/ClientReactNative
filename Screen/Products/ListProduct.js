@@ -12,8 +12,8 @@ import loading from "../../images/loading.gif";
 import Header from "../../components/Header/Header";
 import HeaderBanner from "../../components/Header/HeaderBanner";
 import MenuCategory from "../../components/MenuCategory/MenuCategory";
-import Product from "../../components/Product";
-
+import Product from "../../components/Product/Product";
+import { FlatGrid } from "react-native-super-grid";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -22,20 +22,20 @@ export default function ListProduct({ navigation }) {
   const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
-
+  const [visibleItems, setVisibleItems] = useState(4); 
   const fetchData = () => {
     // Define the API URL
     const apiUrl = "https://64e6e269b0fd9648b78f008b.mockapi.io/api/shopquanao";
-
     // Make the GET request using fetch
     fetch(apiUrl)
       .then((response) => response.json())
       .then((responseData) => {
         // Handle the retrieved data by updating the state
-        setData(responseData);
+        const first10Items = responseData.slice(0, visibleItems);
+        setData(first10Items);
         setIsLoading(false);
         setRefreshing(false);
-        console.log("đã load dữ liệu thành công");
+        
       })
       .catch((error) => {
         console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
@@ -43,12 +43,30 @@ export default function ListProduct({ navigation }) {
   };
 
   useEffect(() => {
-    fetchData();
+    if(!refreshing){
+      fetchData();
+    }
+   
   }, [refreshing]);
 
+   useEffect(() => {
+      if(visibleItems>4)
+      setTimeout(() => {
+        setRefreshing(true);
+      fetchData();
+      }
+      , 1200);
+    
+  }, [visibleItems]);
   const handleScroll = (event) => {
-    const scrollY = event.nativeEvent.contentOffset.y;
-    const newOpacity = Math.min(scrollY / 100, 1);
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const height = event.nativeEvent.layoutMeasurement.height;
+    if (offsetY + height >= contentHeight-20) {
+      setVisibleItems(visibleItems + 4);
+    }
+
+    const newOpacity = Math.min(offsetY / 100, 1);
     setBackgroundOpacity(newOpacity);
   };
 
@@ -58,8 +76,12 @@ export default function ListProduct({ navigation }) {
 
   const handleRefresh = () => {
     setIsLoading(true);
-    setRefreshing(true);
+    setVisibleItems(4);
+    setTimeout(() => {
+      setRefreshing(true);
     fetchData();
+    }, 1700);
+    
   };
 
   return (
@@ -72,7 +94,7 @@ export default function ListProduct({ navigation }) {
           height: 90,
         }}
       >
-        <Header backgroundOpacity={backgroundOpacity} />
+        <Header backgroundOpacity={backgroundOpacity}  navigation={navigation}/>
       </View>
       {isloading ? (
         <Image source={loading} style={styles.loadingImage} />
@@ -88,6 +110,8 @@ export default function ListProduct({ navigation }) {
               colors={["#9Bd35A", "#689F38"]}
             />
           }
+          nestedScrollEnabled={true}
+          style={{ flex: 0, marginBottom: 10 }}
         >
           {/* banner */}
           <View style={styles.viewBanner}>
@@ -95,14 +119,14 @@ export default function ListProduct({ navigation }) {
             <MenuCategory />
           </View>
           <View style={styles.productList}>
-            {data &&
-              data.map((product, index) => (
-                <Product
-                  key={index}
-                  dataProd={product}
-                  handlePress={handlePressDetailProduct}
-                />
-              ))}
+          <FlatGrid
+          itemDimension={180}
+          scrollEnabled={false}
+          data={data}
+          renderItem={({ item }) => (
+            <Product dataProd={item} handlePress={handlePressDetailProduct} />
+          )}
+        />
           </View>
         </ScrollView>
       )}
@@ -112,10 +136,12 @@ export default function ListProduct({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     width: WIDTH,
-    backgroundColor: "#A9CDEE",
+    flex: 1,
     paddingBottom: 50,
+    alignItems: "center",
+    alignContent: "center",
+    height: HEIGHT,
   },
   searchs: {
     flexDirection: "row",
@@ -153,19 +179,22 @@ const styles = StyleSheet.create({
   },
   viewBanner: {
     width: WIDTH,
-    
-    
   },
   viewProductsContainer: {
     flexGrow: 1,
     paddingBottom: 10,
   },
   productList: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginTop: 12,
-    paddingHorizontal: 13,
+    // flexDirection: "row",
+    // flexWrap: "wrap",
+    // justifyContent: "space-around",
+    // marginTop: 12,
+    // alignSelf: "center",
+    // width: WIDTH-10,
+    // borderColor: "red",
+    // borderWidth: 1,
+    
+
   },
   loadingImage: {
     width: 100,
