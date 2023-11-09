@@ -1,20 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Register from './Screen/Register';
-import Login from './Screen/Login';
-import ListProduct from './Screen/ListProduct';
-import Home from './TabButtomNavigation/Home';
-const Stack = createNativeStackNavigator();
-export default function App() {
+import React,{useEffect} from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthStatus,AuthProvider } from './Services/AuthContext';
+import AppNavigator from './AppNavigator';
+import  useAuth  from "./Services/auth.services";
+const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" >
-        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
   );
-}
+};
 
+const MainApp = () => {
+  const { InfoAuth } = useAuth();
+  const { dispatch } = AuthStatus();
+  const fetchData = async () => {
+    try {
+      const data = await InfoAuth();
+      if (data) {
+        dispatch({ type: 'USERINFO', payload: data });
+        console.log("email",data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+          fetchData();
+          const user = await AsyncStorage.getItem('user_id');
+          dispatch({ type: 'LOGIN', payload: JSON.parse(user) });
+          
+        }
+      } catch (error) {
+        console.error('Error reading data from AsyncStorage:', error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []); 
+
+  return (
+    <AppNavigator />
+  );
+};
+
+export default App;

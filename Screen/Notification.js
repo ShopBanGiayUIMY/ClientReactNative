@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import {View, Text, StyleSheet} from 'react-native';
-export default function Category(){
+
+
+export default function Notification(){
 return(
-     // <ModalBottom/>
      <View style={style.container}>
-          {/* <Discount/> */}
+          <Text>This is screen Notification</Text>
      </View>
 )
 }
@@ -14,9 +15,7 @@ const style = StyleSheet.create({
      container:{
           flex:1,
           justifyContent:'center',
-          alignItems:'center',
-          backgroundColor:'#A9CDEE',
-          
+          alignItems:'center'
      }
 })
 

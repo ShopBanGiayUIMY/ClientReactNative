@@ -1,116 +1,93 @@
-import React, { useState,Component } from "react";
+import React, { useState,Component,useLayoutEffect  } from "react";
 import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,ToastAndroid } from "react-native";
-import eye from "../image/eys.jpg";
-import face from "../image/facebook.png";
-import google from "../image/google.png";
-import axios from "axios";
+import eye from "../../images/eys.jpg";
+import face from "../../images/facebook.png";
+import google from "../../images/google.png";
 import Checkbox from 'expo-checkbox';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-export default class Login extends Component  {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-      userList: [],
-      isPasswordVisible: false,
-      isChecked: false,
-    };
-  }
+import  useAuth  from "../../Services/auth.services";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import logo from "../../assets/images/logo.png";
+export default function Login ({navigation})  {
+  const [isloading, setIsLoading] = useState(false);
+  useLayoutEffect(() => { 
+    navigation.setOptions({ 
+      headerTitle: 'Đăng nhập',
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginLeft: 5 ,marginRight: 10}}
+        >
+         
+         <FontAwesome name="arrow-left" size={24} color="black" style={styles.icon}/>
+        </TouchableOpacity>
+      ),
+    }) 
+  }, [])
+  const { loginUser } = useAuth();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  }); 
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const checkemail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-
-  togglePasswordVisibility = () => {
-    this.setState((prevState) => ({
-      isPasswordVisible: !prevState.isPasswordVisible,
-    }));
-  };
-  togglexacnhan = () => {
-    this.setState((prevState) => ({
-      isChecked: !prevState.isChecked,
-    }));
-  };
-
-  componentDidMount() {
-    this.getData();
-  }
-  getData() {
-    const url = "https://64ffde2c18c34dee0cd40218.mockapi.io/registration/users";
-    axios
-      .get(url)
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          userList: response.data,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  handleLogin() {
-    const { username, password, userList,isChecked } = this.state;
+  const handleLogin = async () =>{
+    
     try {
-      const user = userList.find((user) => user.username === username.trim() && user.password === password);
-    const usernameExists = userList.some((user) => user.username === username.trim());
-    const passwordExists = userList.some((user) => user.password === password);
-
-    if (username.trim().length === 0) {
+    if (formData.username.trim().length === 0) {
       ToastAndroid.show('Không để rỗng!', ToastAndroid.SHORT);
       return;
     } 
-    else if (!isChecked) {
+    else if (!agreeToTerms) {
       ToastAndroid.show('Bạn chưa đồng ý với điều khoản!', ToastAndroid.SHORT);
       return;
     }
-    else if (!usernameExists) {
-      ToastAndroid.show('Tài khoản không tồn tại!', ToastAndroid.SHORT);
-    }
-    else if (!passwordExists) {
-      ToastAndroid.show('Mật khẩu không đúng!', ToastAndroid.SHORT);
-    }
-    else if (!user) {
-      ToastAndroid.show('Tài khoản hoặc mật khẩu không chính xác!', ToastAndroid.SHORT);
-    }
-    
     else {
-      const userId = user.id.toString();
-      AsyncStorage.setItem('userId', userId).then(() => {
-        this.props.navigation.reset({
-          index: 0,
-          routes: [{ name: 'ListProduct' }],
-        });
+      const response = await loginUser(formData);
+      if (response) {
+        console.log(response,"huydz");
+        setIsLoading(true);
         ToastAndroid.show('Chúc mừng bạn đăng nhập thành công ✓', ToastAndroid.SHORT);
-      });
+        setTimeout(() => {
+          setIsLoading(false);
+          navigation.replace("SplashStore");
+        }, 2000);
+      } else {
+        // Xử lý trường hợp không nhận được dữ liệu từ hàm loginUser
+        console.error("Tài khoản hoặc mật khẩu không tồn tại");
+      }
+         
+       
     }
     } catch (error) {
       ToastAndroid.show('Lỗi Mạng ✓', ToastAndroid.SHORT);
     }
     
   }
-render(){
-  const { isChecked, isPasswordVisible } = this.state;
   return (
     <View style={styles.container}>
-      <Text style={styles.hi}>Hi, Welcome Back!{'\n'} </Text>
-      <Text style={styles.vaytay}>👋</Text>
-      <Text style={styles.nameapp}>Mini <Text style={styles.shop}> Shop</Text></Text>
+       <LoadingScreen isVisible={isloading} navigation={navigation} />
+      <Image source={logo} style={styles.logo} resizeMode="contain"/>
+      <Text style={styles.nameapp}>Snake Nike <Text style={styles.shop}> Shop</Text></Text>
 
       <View style={styles.view}>
-        <TextInput
-          onChangeText={(text) => this.setState({ username: text })}
-          value={this.state.username}
+      <TextInput
+          onChangeText={(text) => setFormData({ ...formData, username: text })}
+          value={formData.username}
           style={styles.input}
-          placeholder="Enter your name"
+          placeholder="Enter your username or email"
         />
-        <View style={styles.passwordInput}>
+       <View style={styles.passwordInput}>
           <TextInput
-           onChangeText={(text) => this.setState({ password: text })}
-           value={this.state.password}
+            onChangeText={(text) => setFormData({ ...formData, password: text })}
+            value={formData.password}
             style={styles.input}
             placeholder="Enter your password"
             secureTextEntry={!isPasswordVisible}
           />
-          <TouchableOpacity onPress={this.togglePasswordVisibility} style={styles.eyeContainer}>
+          <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeContainer}>
             <Image source={eye} style={[styles.eye, isPasswordVisible && styles.invisibleEye]} />
           </TouchableOpacity>
         </View>
@@ -119,16 +96,16 @@ render(){
       <View style={styles.checkboxx}>
         <Checkbox
           style={styles.checkbox}
-          value={isChecked}
-          onValueChange={this.togglexacnhan}
-          color={isChecked ? '#4630EB' : undefined}
+          value={agreeToTerms}
+          onValueChange={()=>setAgreeToTerms(!agreeToTerms)}
+          color={agreeToTerms ? '#4630EB' : undefined}
         />
         <Text style={{ marginLeft: 10, marginTop: 2 }}>Remember me? </Text>
         <Text style={styles.forgotpassword}>Forgot the password?</Text>
       </View>
 
       <View style={styles.login}>
-        <TouchableOpacity onPress={() => this.handleLogin()}>
+        <TouchableOpacity onPress={() => handleLogin()}>
           <Text style={styles.touchablecity}>Login</Text>
         </TouchableOpacity>
       </View>
@@ -163,25 +140,16 @@ render(){
     </View>
   );
 }
-}
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginTop: 50,
-    paddingHorizontal: '5%',
+    
   },
-  hi: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: 'black',
-    marginTop: 60,
-    marginLeft: 30,
-  },
-  vaytay: {
-    textAlign: 'center',
-    fontSize: 30,
-    marginTop: -30,
+  logo: {
+    width: 90,
+    height: 90,
+    marginTop: 20,
   },
   nameapp: {
     fontSize: 30,
@@ -192,7 +160,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 198, 0, 1)',
   },
   view: {
-    marginTop: 60,
+    marginTop: 20,
   },
   input: {
     borderRadius: 10,
@@ -208,12 +176,13 @@ const styles = StyleSheet.create({
   },
   eyeContainer: {
     position: 'absolute',
-    top: 29,
+    top: 34,
     right: 15,
+    justifyContent: 'center',
   },
   eye: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
   },
   invisibleEye: {
     opacity: 0.3,
@@ -245,9 +214,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   orWith: {
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    justifyContent: 'center',
   },
   buttonContainer: {
     borderWidth: 1,
@@ -298,5 +268,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+  icon: {
+    fontSize: 20,
+    color: "#7DDDFF",
+    marginTop: 3,
   },
 });
