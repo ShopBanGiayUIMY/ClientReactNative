@@ -69,6 +69,7 @@ function TabNavigator() {
           tabBarShowLabel: false,
           title: "Chào mừng bạn",
           headerShown: false,
+          
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" color={color} size={20} />
           ),
@@ -123,7 +124,7 @@ export default function AppNavigator() {
         <Stack.Screen
           name="SplashStore"
           component={SplashStore}
-          options={{ headerShown: false }}
+          options={{ headerShown: false}}
         />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
