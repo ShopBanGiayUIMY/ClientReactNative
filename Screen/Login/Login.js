@@ -7,9 +7,9 @@ import Checkbox from 'expo-checkbox';
 import  useAuth  from "../../Services/auth.services";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
+import logo from "../../assets/images/logo.png";
 export default function Login ({navigation})  {
-  const [isloading, setIsloading] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
   useLayoutEffect(() => { 
     navigation.setOptions({ 
       headerTitle: 'Đăng nhập',
@@ -31,7 +31,9 @@ export default function Login ({navigation})  {
   }); 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const handleLogin =() =>{
+  const checkemail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  const handleLogin = async () =>{
     
     try {
     if (formData.username.trim().length === 0) {
@@ -43,16 +45,21 @@ export default function Login ({navigation})  {
       return;
     }
     else {
-         loginUser(formData).then(() => {
-
-          setIsloading(true);  
-          setTimeout(() => {
-          setIsloading(false);
-          navigation.replace('SplashStore');
-          }, 2000);
-         });
-         
+      const response = await loginUser(formData);
+      if (response) {
+        console.log(response,"huydz");
+        setIsLoading(true);
         ToastAndroid.show('Chúc mừng bạn đăng nhập thành công ✓', ToastAndroid.SHORT);
+        setTimeout(() => {
+          setIsLoading(false);
+          navigation.replace("SplashStore");
+        }, 2000);
+      } else {
+        // Xử lý trường hợp không nhận được dữ liệu từ hàm loginUser
+        console.error("Tài khoản hoặc mật khẩu không tồn tại");
+      }
+         
+       
     }
     } catch (error) {
       ToastAndroid.show('Lỗi Mạng ✓', ToastAndroid.SHORT);
@@ -62,16 +69,15 @@ export default function Login ({navigation})  {
   return (
     <View style={styles.container}>
        <LoadingScreen isVisible={isloading} navigation={navigation} />
-      <Text style={styles.hi}>Hi, Welcome Back!{'\n'} </Text>
-      <Text style={styles.vaytay}>👋</Text>
-      <Text style={styles.nameapp}>Mini <Text style={styles.shop}> Shop</Text></Text>
+      <Image source={logo} style={styles.logo} resizeMode="contain"/>
+      <Text style={styles.nameapp}>Snake Nike <Text style={styles.shop}> Shop</Text></Text>
 
       <View style={styles.view}>
       <TextInput
           onChangeText={(text) => setFormData({ ...formData, username: text })}
           value={formData.username}
           style={styles.input}
-          placeholder="Enter your name"
+          placeholder="Enter your username or email"
         />
        <View style={styles.passwordInput}>
           <TextInput
@@ -138,19 +144,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    paddingHorizontal: '5%',
+    
   },
-  hi: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: 'black',
-    marginTop: 60,
-    marginLeft: 30,
-  },
-  vaytay: {
-    textAlign: 'center',
-    fontSize: 30,
-    marginTop: -30,
+  logo: {
+    width: 90,
+    height: 90,
+    marginTop: 20,
   },
   nameapp: {
     fontSize: 30,
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 198, 0, 1)',
   },
   view: {
-    marginTop: 60,
+    marginTop: 20,
   },
   input: {
     borderRadius: 10,
@@ -177,12 +176,13 @@ const styles = StyleSheet.create({
   },
   eyeContainer: {
     position: 'absolute',
-    top: 29,
+    top: 34,
     right: 15,
+    justifyContent: 'center',
   },
   eye: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
   },
   invisibleEye: {
     opacity: 0.3,
@@ -214,9 +214,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   orWith: {
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    justifyContent: 'center',
   },
   buttonContainer: {
     borderWidth: 1,

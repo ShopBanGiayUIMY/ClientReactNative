@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     width: "20%",
   },
   text_tvc: {
-    fontSize: 15,
+    fontSize: 12,
     textAlign: "center",
     color: "rgba(255, 255, 255, 1)",
   },

@@ -80,9 +80,8 @@ const ProductDetail = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Header navigation={navigation} />
       <ScrollView style={styles.scrollVieww}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+      <Header navigation={navigation} style={styles.header} />
           <Image
             source={{ uri: product.thumbnail }}
             style={styles.productImage}
@@ -140,7 +139,6 @@ const ProductDetail = ({ route, navigation }) => {
           <View>
             <Text style={styles.txtPrice}>{product.product_price} $</Text>
           </View>
-        </ScrollView>
       </ScrollView>
       <View style={styles.viewPayment}>
         <Payment />
@@ -152,21 +150,30 @@ const ProductDetail = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#A9CDEE",
+    backgroundColor: "white",
+    width: "100%",
+    height: "100%",
+   
+    
   },
   scrollVieww: {
-    marginBottom: 20,
+    width: "100%",
+    height: "100%",
     position:'relative',
-    top:-60
+    
+
   },
   iconn: {
     position: "absolute",
-    top: 20,
-    left: 20,
+    top: 90,
+    left: 10,
+    zIndex: 1,
   },
   productImage: {
+    position: "relative",
     width: "100%",
     height: 350,
+    resizeMode: "cover",
   },
   nameAndHeart: {
     flexDirection: "row",
