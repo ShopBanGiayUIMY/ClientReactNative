@@ -5,7 +5,6 @@ import {
   Image,
   StyleSheet,
   TouchableWithoutFeedback,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
