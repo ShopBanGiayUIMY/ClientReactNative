@@ -129,6 +129,7 @@ const Slideshow = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginHorizontal: 10,
   },
   scrollViewContent: {
     paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView\
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   
   },
   image: {
-    width: "100%",
+    width: "95%",
     height: "100%",
     borderRadius: 5,
     resizeMode: "cover",
