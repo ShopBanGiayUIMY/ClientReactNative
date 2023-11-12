@@ -27,7 +27,7 @@ export default function Product(props) {
         <Image source={{ uri: dataProd.thumbnail }} style={styles.img} />
         <Text style={styles.tensp}>{tensp}</Text>
         <View style={styles.price}>
-          <Text style={styles.kihieu}>đ</Text>
+          <Text style={styles.kihieu}>$</Text>
           <Text style={styles.item_price}>{dataProd.product_price}</Text>
         </View>
         <View style={styles.addToCart}>
