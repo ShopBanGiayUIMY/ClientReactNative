@@ -19,7 +19,7 @@ const MainApp = () => {
       const data = await InfoAuth();
       if (data) {
         dispatch({ type: 'USERINFO', payload: data });
-        console.log("email",data);
+        console.log("emaildd",data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

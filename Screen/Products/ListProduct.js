@@ -6,7 +6,7 @@ import {
   Image,
   Dimensions,
   RefreshControl,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 
 import loading from "../../images/loading.gif";

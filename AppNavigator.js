@@ -78,7 +78,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Notification"
-        component={ModalBottom}
+        component={Notification}
         options={{
           tabBarShowLabel: false,
           title: "Thông báo",
