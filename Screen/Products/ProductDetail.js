@@ -233,6 +233,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position:'relative',
+    
+
+
+    marginBottom: 20,
+    position: "relative",
+    top: -60,
   },
   iconn: {
     position: "absolute",
