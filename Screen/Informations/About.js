@@ -103,7 +103,7 @@ const About = ({ navigation }) => {
           }}
           source={{ uri: "https://iili.io/JfxcmOb.png" }}
         />
-        <Text style={{ fontSize: 20, position: "absolute", left: 45, width: 100 }}>
+        <Text style={{ fontSize: 20, position: "absolute", left: 45, width: "100%" }}>
           Mã giảm giá
         </Text>
         <Image
@@ -167,7 +167,7 @@ const About = ({ navigation }) => {
           style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
           source={{ uri: "https://iili.io/HgVbF2t.png" }}
         />
-        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:120 }}>
+        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:"100%" }}>
           Đánh giá của tôi
         </Text>
         <Image

@@ -30,14 +30,7 @@ export default function CouponComponent(props) {
     const endTime =
       DateTime.fromSeconds(endDateTime).setZone("Asia/Ho_Chi_Minh");
     const timenow = DateTime.now().setZone("Asia/Ho_Chi_Minh");
-    console.log(startTime, endTime);
     const oneDayInSeconds = 24 * 60 * 60; // Number of seconds in a day
-    console.log(Math.floor(startTime.diff(timenow, "days").days), "ngày check");
-    console.log(
-      Math.floor(startTime.diff(timenow, "hours").hours),
-      "giờ check"
-    );
-    console.log(startTime.diff(timenow, "seconds").seconds, "giây check");
 
     if (
       startTime.diff(timenow, "days").days > 1 &&
@@ -81,13 +74,13 @@ export default function CouponComponent(props) {
   if (dataVouchers.voucher_type == "1") {
     imgvoucher =
       "https://images.vexels.com/media/users/3/200093/isolated/preview/596f0d8cb733b17268752d044976f102-shopping-bag-icon.png";
-    widthvoucher = "45%";
-    heightvoucher = "45%";
+    widthvoucher = "35%";
+    heightvoucher = "35%";
     voucher_bg = "https://iili.io/JqhCJjt.png";
   } else if (dataVouchers.voucher_type == "2") {
     imgvoucher = "https://iili.io/JqukDpR.png";
-    widthvoucher = "45%";
-    heightvoucher = "45%";
+    widthvoucher = "40%";
+    heightvoucher = "40%";
     voucher_bg = "https://iili.io/JqhCHuI.png";
   }
   let discount_amount;
@@ -153,7 +146,7 @@ export default function CouponComponent(props) {
       
               }}
             >
-              <Text style={{ color: "white", fontSize: 12,fontWeight:"bold" }}>Thu thập ngay</Text>
+              <Text style={{ color: "white", fontSize: 10,fontWeight:"bold" }}>Thu thập ngay</Text>
             </LinearGradient>
           </Pressable>
         </ImageBackground>
@@ -187,22 +180,27 @@ const styles = StyleSheet.create({
   wallet_page_right: {
     width: width / 1.59,
     height: 140,
-    position: "absolute",
+    position: "relative",
     borderRadius: 10,
     justifyContent: "center",
-    right: 0,
+    alignItems: "center",
+    
   },
 
   textvoucher_txt_page_left: {
     color: "white",
-    fontSize: 16,
+    fontSize: 13,
     marginVertical: 10,
+    
   },
   code_txt_page_right: {
     color: "black",
     fontSize: 16,
     marginVertical: 10,
     marginHorizontal: 10,
+    position: "absolute",
+    top: 40,
+    left: 72,
   },
   value_txt_page_right: {
     position: "absolute",
@@ -227,6 +225,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     marginHorizontal: 10,
+    position: "absolute",
+    top: 20,
   },
   button_page_right: {
     width: 100,
@@ -236,5 +236,8 @@ const styles = StyleSheet.create({
     bottom: 35,
     justifyContent: "center",
     
+  },
+  imgvoucher_image_page_left: {
+    marginTop: 20
   },
 });

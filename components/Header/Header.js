@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
-  StatusBar
+  StatusBar,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -17,9 +18,8 @@ import {
 const { width } = Dimensions.get("window");
 
 const Header = (props) => {
-  const { backgroundOpacity } = props;
+  const { backgroundOpacity, navigation } = props;
   return (
-    
     <SafeAreaView
       style={[
         styles.safeArea,
@@ -27,40 +27,41 @@ const Header = (props) => {
       ]}
     >
       <View style={styles.container}>
-        <TouchableOpacity
-          style={ styles.icon}
-        >
-          <FontAwesomeIcon icon={faQrcode} size={24} style={ styles.iconitem} />
+        <TouchableOpacity style={styles.icon}>
+          <FontAwesomeIcon icon={faQrcode} size={24} style={styles.iconitem} />
         </TouchableOpacity>
-        <View style={styles.center}>
-          <View style={styles.inputWrapper}>
-          <TouchableOpacity
-          style={ styles.iconsearch}
-        >
-          <FontAwesomeIcon
-              icon={faSearch}
-              size={18}
-              style={styles.searchIcon}
-            />
-        </TouchableOpacity>
-           
-            <TextInput
-              style={styles.input}
-              placeholder="Tìm kiếm..."
-              placeholderTextColor="#999"
-            />
-          </View>
-        </View>
-        <View style={styles.right}>
-          <TouchableOpacity
-           style={ styles.icon}
-          >
-            <FontAwesomeIcon icon={faShoppingCart} size={24} style={ styles.iconitem} />
+        <TouchableWithoutFeedback>
+          <TouchableOpacity style={styles.center}>
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={styles.iconsearch}
+                onPress={() => navigation.navigate("Search")}
+              >
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  size={18}
+                  style={styles.searchIcon}
+                />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder="Tìm kiếm..."
+                placeholderTextColor="#999"
+                onPressIn={() => navigation.navigate("Search")}
+              />
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity
-          style={ styles.icon}
-          >
-            <FontAwesomeIcon icon={faBell} size={24} style={ styles.iconitem} />
+        </TouchableWithoutFeedback>
+        <View style={styles.right}>
+          <TouchableOpacity style={styles.icon}>
+            <FontAwesomeIcon
+              icon={faShoppingCart}
+              size={24}
+              style={styles.iconitem}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.icon}>
+            <FontAwesomeIcon icon={faBell} size={24} style={styles.iconitem} />
           </TouchableOpacity>
         </View>
       </View>
@@ -113,14 +114,14 @@ const styles = {
     width: 30,
     height: 25,
     alignSelf: "center",
-    color: "#fff",
+    color: "black",
     marginRight: 10,
   },
   iconitem: {
     width: 30,
     height: 30,
     alignSelf: "center",
-    color: "#fff",
+    color: "black",
   },
 };
 
