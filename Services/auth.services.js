@@ -1,11 +1,11 @@
 import Config from "../Api/Config";
 import { useState, useEffect } from "react";
-import { ToastAndroid } from 'react-native';
+import { ToastAndroid } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import authHeader from "./auth.header";
 import { AuthStatus } from "./AuthContext";
-const useAuth =() => {
+const useAuth = () => {
   // khai báo hàm lưu trạng thái đăng nhập
   const { dispatch } = AuthStatus();
   //
@@ -67,11 +67,13 @@ const useAuth =() => {
     const headers = await authHeader();
     const userid = await AsyncStorage.getItem("user_id");
     try {
-      const response = await axios.get(`${Config.API_BASE_URL}/auth/infouser/${userid}`, {
-        headers: headers,
-      });
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/auth/infouser/${userid}`,
+        {
+          headers: headers,
+        }
+      );
       if (response.data) {
-        console.log("thông tin người dùng", response.data);
         return response.data;
       }
     } catch (error) {
@@ -80,8 +82,8 @@ const useAuth =() => {
   };
   const CheckOtp = async (user) => {
     try {
-      const headers = await authHeader(); 
-      const userid = await AsyncStorage.getItem('user_id');
+      const headers = await authHeader();
+      const userid = await AsyncStorage.getItem("user_id");
       const response = await axios.post(
         `${Config.API_BASE_URL}/auth/verify-user/${userid}`,
         user,
@@ -90,16 +92,16 @@ const useAuth =() => {
         }
       );
       if (response.data) {
-        console.log('Reset thành công', response.data);
+        console.log("Reset thành công", response.data);
       }
     } catch (error) {
-      console.error('Lỗi gửi otp:', error);
+      console.error("Lỗi gửi otp:", error);
     }
   };
   const CreatePasswordUser = async (user) => {
     try {
-      const headers = await authHeader(); 
-      const userid = await AsyncStorage.getItem('user_id');
+      const headers = await authHeader();
+      const userid = await AsyncStorage.getItem("user_id");
       const response = await axios.post(
         `${Config.API_BASE_URL}/auth/authentication-otp/${userid}`,
         user,
@@ -108,14 +110,35 @@ const useAuth =() => {
         }
       );
       if (response.data) {
-        console.log('otp đúng', response.data);
+        console.log("otp đúng", response.data);
         return response.data;
       }
     } catch (error) {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
-  }
-  return { loginUser, registerUser, InfoAuth, CheckOtp ,CreatePasswordUser};
+  };
+  const GetCart = async (cart) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(`${Config.API_BASE_URL}/carts/`, {
+        headers: headers,
+      });
+      if (response.data) {
+        
+        return JSON.stringify(response.data);
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  };
+  return {
+    loginUser,
+    registerUser,
+    InfoAuth,
+    CheckOtp,
+    CreatePasswordUser,
+    GetCart,
+  };
 };
 
 export default useAuth;
