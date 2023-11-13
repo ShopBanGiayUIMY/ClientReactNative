@@ -7,9 +7,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
+  Pressable,
 } from "react-native";
 import Header from "../../components/Header/Header";
-import Payment from "../../components/AddtoCard";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowLeft,
@@ -17,20 +17,21 @@ import {
   faShare,
   faComment,
   faStar,
+  faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const ProductDetail = ({ route, navigation }) => {
   const { product } = route.params;
-  const [expanded, setExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+
+  const insets = useSafeAreaInsets();
 
   // Kiểm tra trạng thái "thích" khi màn hình được tải
   useEffect(() => {
     checkLikeStatus();
   }, []);
-
- 
 
   const checkLikeStatus = async () => {
     try {
@@ -69,7 +70,10 @@ const ProductDetail = ({ route, navigation }) => {
       }
 
       // Lưu danh sách sản phẩm đã thích vào AsyncStorage
-      await AsyncStorage.setItem("likedProducts", JSON.stringify(updatedLikedProducts));
+      await AsyncStorage.setItem(
+        "likedProducts",
+        JSON.stringify(updatedLikedProducts)
+      );
 
       // Cập nhật trạng thái thích
       setIsLiked(!isLiked);
@@ -77,6 +81,53 @@ const ProductDetail = ({ route, navigation }) => {
       console.error("Lỗi khi lưu trạng thái thích sản phẩm: ", error);
     }
   };
+  const handleAddProductToCart = async () => {
+    // Destructure the product object to get the required fields
+    const {
+      product_id,
+      product_price,
+      product_description,
+      product_name,
+      thumbnail,
+      category_id,
+    } = product;
+  
+    // Create the payload with the required fields
+    const payload = {
+      product_id,
+      product_price,
+      product_description,
+      product_name,
+      thumbnail,
+      category_id,
+    };
+  
+    // Send the request to add the product to the cart
+    try {
+      const response = await fetch(
+        "https://654cec0077200d6ba859b242.mockapi.io/api/v1/addtocart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+  
+      if (response.ok) {
+        // Handle success if needed
+      } else {
+        console.error(
+          "Error adding the product to the cart:",
+          response.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Error adding the product to the cart:", error);
+    }
+  };
+  
 
   return (
     <View style={styles.container}>
@@ -140,9 +191,31 @@ const ProductDetail = ({ route, navigation }) => {
             <Text style={styles.txtPrice}>{product.product_price} $</Text>
           </View>
       </ScrollView>
-      <View style={styles.viewPayment}>
-        <Payment />
-      </View>
+      <Pressable
+        style={[styles.viewPayment, { bottom: Math.max(insets.bottom, 16) }]}
+        onPress={() => {
+          handleAddProductToCart();
+        }}
+      >
+        <FontAwesomeIcon
+          icon={faCartShopping}
+          color="#fff"
+          size={20}
+          style={{ position: "absolute", top: 14, left: 120 }}
+        />
+        <Text
+          style={{
+            width: "100%",
+            textAlign: "center",
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "white",
+            marginTop: 12,
+          }}
+        >
+          Add to cart
+        </Text>
+      </Pressable>
     </View>
   );
 };
@@ -162,6 +235,10 @@ const styles = StyleSheet.create({
     position:'relative',
     
 
+
+    marginBottom: 20,
+    position: "relative",
+    top: -60,
   },
   iconn: {
     position: "absolute",
@@ -212,15 +289,10 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   viewPayment: {
-    width: "90%",
+    width: "100%",
     height: 50,
-    backgroundColor: "#f0f",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-    top: -20,
-    borderRadius: 5,
+    backgroundColor: "black",
+    borderRadius: 10,
   },
 });
 
