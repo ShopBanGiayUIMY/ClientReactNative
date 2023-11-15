@@ -12,7 +12,6 @@ import {
 import loading from "../images/loading.gif";
 import ProductInCart from "../components/Cart/ProductInCart";
 
-const WIDTH = Dimensions.get("window").width;
 
 export default function Category({ navigation }) {
   const [data, setData] = useState([]);
@@ -97,6 +96,6 @@ const style = StyleSheet.create({
   flatList: {
     padding: 10,
     marginTop: '10%',
-   
+   marginBottom:65
   },
 });
