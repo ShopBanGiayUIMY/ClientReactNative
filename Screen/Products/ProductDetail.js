@@ -6,8 +6,8 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Modal,
   Pressable,
+  ToastAndroid
 } from "react-native";
 import Header from "../../components/Header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -21,18 +21,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useAuth from "../../Services/auth.services";
+
 
 const ProductDetail = ({ route, navigation }) => {
   const { product } = route.params;
   const [isLiked, setIsLiked] = useState(false);
-
   const insets = useSafeAreaInsets();
-
+  const {GetCart} = useAuth();
   // Kiểm tra trạng thái "thích" khi màn hình được tải
   useEffect(() => {
     checkLikeStatus();
   }, []);
-
   const checkLikeStatus = async () => {
     try {
       // Lấy trạng thái "thích" từ AsyncStorage
@@ -46,7 +46,6 @@ const ProductDetail = ({ route, navigation }) => {
       console.error(error);
     }
   };
-
   const handleLikeProduct = async () => {
     try {
       // Lấy danh sách sản phẩm đã thích từ AsyncStorage (nếu có)
@@ -81,53 +80,55 @@ const ProductDetail = ({ route, navigation }) => {
       console.error("Lỗi khi lưu trạng thái thích sản phẩm: ", error);
     }
   };
-  const handleAddProductToCart = async () => {
-    // Destructure the product object to get the required fields
-    const {
-      product_id,
-      product_price,
-      product_description,
-      product_name,
-      thumbnail,
-      category_id,
-    } = product;
-  
-    // Create the payload with the required fields
-    const payload = {
-      product_id,
-      product_price,
-      product_description,
-      product_name,
-      thumbnail,
-      category_id,
-    };
-  
-    // Send the request to add the product to the cart
-    try {
-      const response = await fetch(
-        "https://654cec0077200d6ba859b242.mockapi.io/api/v1/addtocart",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-  
-      if (response.ok) {
-        // Handle success if needed
-      } else {
-        console.error(
-          "Error adding the product to the cart:",
-          response.statusText
-        );
-      }
-    } catch (error) {
-      console.error("Error adding the product to the cart:", error);
-    }
-  };
-  
+// Trong hàm handleAddProductToCart
+const handleAddProductToCart = async () => {
+  try {
+    const checkLoginn = await GetCart();
+    if (!checkLoginn) {
+      ToastAndroid.show(`Bạn chưa đăng nhập.\nHãy đăng nhập để có trải nghiệm tốt hơn`, ToastAndroid.SHORT);
+      // Chuyển hướng đến trang đăng nhập 
+      navigation.navigate('Login');
+    } else {
+    //   // Người dùng đã đăng nhập, thực hiện POST request lên API
+    //   const userId = checkLoginn.user_id;
+    //   const cartData = {
+    //     user_id: userId,
+    //     CartItems: [
+    //       {
+    //         item_id: product.product_id, // Sử dụng item_id tùy thuộc vào logic của bạn
+    //         quantity: 1, // Số lượng sản phẩm
+    //         ProductDetail: {
+    //           detail_id: 1, // Tương tự, sử dụng detail_id tùy thuộc vào logic của bạn
+    //           product_id: product.product_id,
+    //           color: "Black",
+    //           size: "US 9",
+    //           stock: 100,
+    //         },
+    //       },
+    //     ],
+    //   };
+    //   const response = await fetch('http://18.140.65.191/api/v1/carts/1', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(cartData),
+    //   });
+
+    //   if (response.ok) {
+    //     // Xử lý khi request thành công
+    //     // Hiển thị thông báo, cập nhật giao diện, v.v.
+    //     console.log('Thêm thành công');
+    //   } else {
+    //     // Xử lý khi request thất bại
+    //     console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', response.statusText);
+    //   }
+    ToastAndroid.show('Bạn đã thêm '+ product.product_name+' vào giỏ hàng!',ToastAndroid.SHORT)
+     }
+  } catch (error) {
+    console.error("Lỗi khi kiểm tra trạng thái đăng nhập:", error);
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -223,7 +224,7 @@ const ProductDetail = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#ADD8E6",
     width: "100%",
     height: "100%",
    
@@ -233,12 +234,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position:'relative',
-    
-
-
     marginBottom: 20,
     position: "relative",
-    top: -60,
   },
   iconn: {
     position: "absolute",

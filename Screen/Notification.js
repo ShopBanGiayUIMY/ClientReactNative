@@ -13,6 +13,13 @@ export default function Notification() {
       item.CartItems.forEach((cartItem) => {
         console.log("Item ID:", cartItem.item_id);
         console.log("Quantity:", cartItem.quantity);
+        const productDetail = cartItem.ProductDetail;
+        const product = productDetail.Product;
+
+        console.log("Product Name:", product.product_name);
+        console.log("Product Description:", product.product_description);
+        console.log("Product Price:", product.product_price);
+        // Add any other product details you want to retrieve
       });
     });
   };
