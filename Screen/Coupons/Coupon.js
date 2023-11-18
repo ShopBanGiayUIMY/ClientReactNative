@@ -13,24 +13,19 @@ const windowWidth = Dimensions.get("window").width;
 import ModalCoupon from "./modal.coupon";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CouponComponent from "../../components/Coupon/CouponComponent";
+import useAuth from "../../Services/auth.services";
 export default function Coupon({ navigation }) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isclick, setIsClick] = useState(false);
+  const { GetVoucher } = useAuth();
   useEffect(() => {
-    // Define the API URL
-    const apiUrl =
-      "https://653caee5d5d6790f5ec82b3c.mockapi.io/api/v1/vouchers  ";
-    // Make the GET request using fetch
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((responseData) => {
-        // Handle the retrieved data by updating the state
-        setData(responseData);
-        console.log("đã load dữ liệu thành công");
+    GetVoucher()
+      .then((result) => {
+        setData(result);
       })
       .catch((error) => {
-        console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
+        console.error(error);
       });
   }, [refreshing]);
 
@@ -60,17 +55,16 @@ export default function Coupon({ navigation }) {
   };
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.modal}> 
-      <ModalCoupon
-        check={isclick}
-        handlePress={() => setIsClick(false)}
-        fun_search={handlePresSearch}
-      />
+      <View style={styles.modal}>
+        <ModalCoupon
+          check={isclick}
+          handlePress={() => setIsClick(false)}
+          fun_search={handlePresSearch}
+        />
       </View>
-     
+
       <View style={styles.header}>
-        <Pressable style={styles.textHeader}
-         onPress={fun_handlePress}>
+        <Pressable style={styles.textHeader} onPress={fun_handlePress}>
           <Image
             source={{ uri: "https://iili.io/JqAuyDN.png" }}
             style={styles.img}
