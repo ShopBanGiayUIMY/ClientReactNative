@@ -20,46 +20,61 @@ export default function CouponComponent(props) {
   const [value, setvalue] = useState();
 
   useEffect(() => {
-    checkVoucherStatus();
+    const intervalId = setInterval(() => {
+      checkVoucherStatus();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
   const checkVoucherStatus = () => {
-    const startDateTime = new Date(dataVouchers.start_time).getTime();
-    const endDateTime = new Date(dataVouchers.end_time).getTime();
-    const startTime =
-      DateTime.fromSeconds(startDateTime).setZone("Asia/Ho_Chi_Minh");
-    const endTime =
-      DateTime.fromSeconds(endDateTime).setZone("Asia/Ho_Chi_Minh");
-    const timenow = DateTime.now().setZone("Asia/Ho_Chi_Minh");
-    const oneDayInSeconds = 24 * 60 * 60; // Number of seconds in a day
+    const startDateTimeInSeconds = parseFloat(dataVouchers.start_time);
+    const endDateTimeInSeconds = parseFloat(dataVouchers.end_time);
 
-    if (
-      startTime.diff(timenow, "days").days > 1 &&
-      startTime.diff(timenow, "days").days < 2
-    ) {
+    const startTime = DateTime.fromSeconds(startDateTimeInSeconds, {
+      zone: "Asia/Ho_Chi_Minh",
+    });
+    const endTime = DateTime.fromSeconds(endDateTimeInSeconds, {
+      zone: "Asia/Ho_Chi_Minh",
+    });
+    const timenow = DateTime.now({ zone: "Asia/Ho_Chi_Minh" });
+
+    if (startTime.diff(timenow, "days").days === 1) {
       setvalue("Có hiệu lực sau 1 ngày");
-    }
-    if (
+    } else if (
       startTime.diff(timenow, "hours").hours < 24 &&
-      startTime.diff(timenow, "hours").hours > 0
-    ) {
-      setvalue(`Còn ${Math.floor(startTime.diff(timenow, "hours").hours)} giờ`);
-    }
-    if (
-      startTime.diff(timenow, "hours").hours < 1 &&
-      startTime.diff(timenow, "hours").hours > 0
+      startTime.diff(timenow, "hours").hours >= 1
     ) {
       setvalue(
-        `Còn ${Math.floor(startTime.diff(timenow, "minutes").minutes)} phút`
+        `Có hiệu lực sau ${Math.floor(
+          startTime.diff(timenow, "hours").hours
+        )} giờ`
       );
-    }
-    if (
-      endTime.diff(timenow, "hours").hours > 0 &&
-      timenow.diff(startTime, "seconds").seconds > 0
+    } else if (
+      startTime.diff(timenow, "minutes").minutes <= 60 &&
+      startTime.diff(timenow, "minutes").minutes > 1
+    ) {
+      setvalue(
+        `Có hiệu lực sau ${Math.floor(
+          startTime.diff(timenow, "minutes").minutes
+        )} phút`
+      );
+    } else if (
+      startTime.diff(timenow, "seconds").seconds <= 60 &&
+      startTime.diff(timenow, "seconds").seconds >= 1
+    ) {
+      setvalue(
+        `Có hiệu lực sau ${Math.floor(
+          startTime.diff(timenow, "seconds").seconds
+        )} giây`
+      );
+    } else if (
+      startTime.diff(timenow, "seconds").seconds <= 0 &&
+      timenow.diff(endTime, "seconds").seconds <= 0
     ) {
       setvalue(`HSD ${endTime.toFormat("dd/MM/yyyy")}`);
-    }
-    if (
+    } else if (
       timenow.diff(startTime, "seconds").seconds < 0 &&
+      endTime.diff(timenow, "seconds").seconds >= 0 &&
       endTime.diff(startTime, "seconds").seconds > 0
     ) {
       seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
@@ -71,13 +86,14 @@ export default function CouponComponent(props) {
   };
 
   let imgvoucher, widthvoucher, heightvoucher, voucher_bg, clock_icon;
-  if (dataVouchers.voucher_type == "1") {
+
+  if (dataVouchers.reward_type == "2") {
     imgvoucher =
       "https://images.vexels.com/media/users/3/200093/isolated/preview/596f0d8cb733b17268752d044976f102-shopping-bag-icon.png";
     widthvoucher = "35%";
     heightvoucher = "35%";
     voucher_bg = "https://iili.io/JqhCJjt.png";
-  } else if (dataVouchers.voucher_type == "2") {
+  } else if (dataVouchers.reward_type == "3") {
     imgvoucher = "https://iili.io/JqukDpR.png";
     widthvoucher = "40%";
     heightvoucher = "40%";
@@ -119,7 +135,7 @@ export default function CouponComponent(props) {
           </View>
           <View style={styles.wallet_page_right}>
             <Text style={styles.namevoucher_txt_page_right}>
-              {discount_amount}
+              {dataVouchers.voucher_name}
             </Text>
             <Text style={styles.code_txt_page_right}>
               {dataVouchers.voucher_code}
@@ -143,10 +159,13 @@ export default function CouponComponent(props) {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 15,
-      
               }}
             >
-              <Text style={{ color: "white", fontSize: 10,fontWeight:"bold" }}>Thu thập ngay</Text>
+              <Text
+                style={{ color: "white", fontSize: 10, fontWeight: "bold" }}
+              >
+                Thu thập ngay
+              </Text>
             </LinearGradient>
           </Pressable>
         </ImageBackground>
@@ -184,14 +203,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    
   },
 
   textvoucher_txt_page_left: {
     color: "white",
     fontSize: 13,
     marginVertical: 10,
-    
   },
   code_txt_page_right: {
     color: "black",
@@ -207,18 +224,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     top: 110,
     marginVertical: 10,
-    alignItems: "center",
+    left: 72,
     marginHorizontal: 10,
   },
   icon: {
     width: 15,
     height: 15,
     tintColor: "red",
+    position: "absolute",
+    left: -8,
   },
   value: {
     color: "red",
     fontSize: 11,
-    marginLeft: 5,
+    position: "absolute",
+    left: 13,
   },
   namevoucher_txt_page_right: {
     color: "black",
@@ -235,9 +255,8 @@ const styles = StyleSheet.create({
     right: 15,
     bottom: 35,
     justifyContent: "center",
-    
   },
   imgvoucher_image_page_left: {
-    marginTop: 20
+    marginTop: 20,
   },
 });

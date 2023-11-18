@@ -125,12 +125,25 @@ const useAuth = () => {
       });
       if (response.data) {
         
-        return JSON.stringify(response.data);
+        return response.data;
       }
     } catch (error) {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
   };
+  const GetVoucher = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(`${Config.API_BASE_URL}/vouchers/`, {
+        headers: headers,
+      });
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  }
   return {
     loginUser,
     registerUser,
@@ -138,6 +151,7 @@ const useAuth = () => {
     CheckOtp,
     CreatePasswordUser,
     GetCart,
+    GetVoucher
   };
 };
 

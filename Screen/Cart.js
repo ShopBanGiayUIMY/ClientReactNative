@@ -9,9 +9,11 @@ import {
   FlatList,
   
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import loading from "../images/loading.gif";
 import ProductInCart from "../components/Cart/ProductInCart";
-
+import { AuthStatus } from "../Services/AuthContext";
+  
 
 export default function Category({ navigation }) {
   const [data, setData] = useState([]);
@@ -19,7 +21,7 @@ export default function Category({ navigation }) {
   const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
-
+  const { state ,dispatch} = AuthStatus();
   const fetchData = async () => {
     try {
       const response = await fetch(apiURL);
@@ -35,9 +37,12 @@ export default function Category({ navigation }) {
     }
   };
 
+  
+   
   useEffect(() => {
-    fetchData();
-  }, []);
+    state.isLoggedIn ? fetchData() :navigation.navigate("Login");
+    
+  }, [navigation]);
 
   const handleRefresh = () => {
     setIsLoading(true);
