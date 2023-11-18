@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
   },
   kihieu: {
     color: "red",
-    textDecorationLine: "underline",
     fontWeight: "600",
     fontSize: 15,
   },

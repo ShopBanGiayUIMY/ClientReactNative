@@ -1,5 +1,5 @@
 import React, { useState,Component,useLayoutEffect  } from "react";
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,ToastAndroid } from "react-native";
+import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,ToastAndroid, Pressable } from "react-native";
 import eye from "../../images/eys.jpg";
 import face from "../../images/facebook.png";
 import google from "../../images/google.png";
@@ -135,7 +135,8 @@ export default function Login ({navigation})  {
       </View>
 
       <View style={styles.createaccount}>
-        <Text style={styles.texttt}>Don't have an account? <Text style={styles.texttt1}>Create an account</Text></Text>
+        <Text style={styles.txt}>Don't have an account? </Text>
+        <Pressable onPress={() =>{navigation.navigate('Register'); ToastAndroid.show('Đăng ký tài khoản !', ToastAndroid.SHORT);}}><Text style={styles.texttt1}>Create an account</Text></Pressable>
       </View>
     </View>
   );
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    
+    flex:1
   },
   logo: {
     width: 90,
@@ -206,12 +207,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     height: 45,
+    borderColor:'white'
   },
   touchablecity: {
     color: 'white',
     textAlign: 'center',
     marginTop: 12,
     fontSize: 15,
+    width:'100%'
   },
   orWith: {
     marginTop: 10,
@@ -222,18 +225,21 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: 'rgba(14, 100, 210, 1)', // Add some padding for better spacing
+    backgroundColor: 'rgba(14, 100, 210, 1)', 
     marginTop: 10,
     width: 300,
+    borderColor:'white'
+
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // Arrange the image and text horizontally
-    alignItems: 'center', // Center the items vertically
+    flexDirection: 'row', 
+    alignItems: 'center', 
     padding: 10,
   },
   buttonText: {
     marginLeft: 60,
-    color: 'white', // Add some left margin to create space between the image and text
+    color: 'white', 
+    width:'100%'
   },
   imagess: {
     width: 20,
@@ -243,9 +249,10 @@ const styles = StyleSheet.create({
   buttonContainer1: {
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#C0C0C0',
     marginTop: 30,
     width: 300,
+    borderColor:'white'
   },
   buttonInnerContainer1: {
     flexDirection: 'row',
@@ -255,6 +262,7 @@ const styles = StyleSheet.create({
   buttonText1: {
     marginLeft: 60,
     color: 'black',
+    width:200
   },
   imagess1: {
     width: 20,
@@ -263,11 +271,15 @@ const styles = StyleSheet.create({
   },
   createaccount: {
     marginTop: 30,
+    width:'100%',
+    flexDirection:'row',
+   paddingStart:85,
+   
   },
   texttt1: {
-    textAlign: 'center',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+    
   },
   icon: {
     fontSize: 20,

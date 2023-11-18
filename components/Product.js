@@ -29,7 +29,7 @@ export default function Product(props) {
           <Text style={styles.tensp}>{tensp}</Text>
           <View style={styles.price}>
             <Text style={styles.item_price}>{dataProd.product_price}</Text>
-            <Text style={styles.kihieu}>$</Text>
+            {/* <Text style={styles.kihieu}>$</Text> */}
           </View>
           <TouchableOpacity
             onPress={() => {
