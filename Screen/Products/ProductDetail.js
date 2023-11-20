@@ -89,40 +89,6 @@ const handleAddProductToCart = async () => {
       // Chuyển hướng đến trang đăng nhập 
       navigation.navigate('Login');
     } else {
-    //   // Người dùng đã đăng nhập, thực hiện POST request lên API
-    //   const userId = checkLoginn.user_id;
-    //   const cartData = {
-    //     user_id: userId,
-    //     CartItems: [
-    //       {
-    //         item_id: product.product_id, // Sử dụng item_id tùy thuộc vào logic của bạn
-    //         quantity: 1, // Số lượng sản phẩm
-    //         ProductDetail: {
-    //           detail_id: 1, // Tương tự, sử dụng detail_id tùy thuộc vào logic của bạn
-    //           product_id: product.product_id,
-    //           color: "Black",
-    //           size: "US 9",
-    //           stock: 100,
-    //         },
-    //       },
-    //     ],
-    //   };
-    //   const response = await fetch('http://18.140.65.191/api/v1/carts/1', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(cartData),
-    //   });
-
-    //   if (response.ok) {
-    //     // Xử lý khi request thành công
-    //     // Hiển thị thông báo, cập nhật giao diện, v.v.
-    //     console.log('Thêm thành công');
-    //   } else {
-    //     // Xử lý khi request thất bại
-    //     console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', response.statusText);
-    //   }
     ToastAndroid.show('Bạn đã thêm '+ product.product_name+' vào giỏ hàng!',ToastAndroid.SHORT)
      }
   } catch (error) {
@@ -189,7 +155,7 @@ const handleAddProductToCart = async () => {
             <Text style={styles.txtMoTa}>{product.product_description}</Text>
           </View>
           <View>
-            <Text style={styles.txtPrice}>{product.product_price} $</Text>
+            <Text style={styles.txtPrice}>${product.product_price} </Text>
           </View>
       </ScrollView>
       <Pressable
