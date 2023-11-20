@@ -17,9 +17,9 @@ export default function Product(props) {
   };
 
   let tensp =
-    dataProd.product_name.length > 25
-      ? dataProd.product_name.slice(0, 25) + "..."
-      : dataProd.product_name;
+    dataProd.name.length > 25
+      ? dataProd.name.slice(0, 25) + "..."
+      : dataProd.name;
 
   return (
     <TouchableOpacity onPress={fun_handlePress} style={styles.container}>
@@ -28,7 +28,7 @@ export default function Product(props) {
         <Text style={styles.tensp}>{tensp}</Text>
         <View style={styles.price}>
           <Text style={styles.kihieu}>$</Text>
-          <Text style={styles.item_price}>{dataProd.product_price}</Text>
+          <Text style={styles.item_price}>{dataProd.price}</Text>
         </View>
         <View style={styles.addToCart}>
           <FontAwesomeIcon
