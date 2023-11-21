@@ -29,8 +29,10 @@ const CpnProductDetail = ({ product, navigation }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([
-    { label: "Apple", value: "1" },
-    { label: "Banana", value: "2" },
+    { label: "M", value: "1" },
+    { label: "L", value: "2" },
+    { label: "XL", value: "3" },
+    { label: "XXL", value: "4" },
   ]);
   //thêm giỏ hàng tại đây
   const { state, dispatch } = AuthStatus();
@@ -58,8 +60,8 @@ const CpnProductDetail = ({ product, navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.vImage}>
-        <ScrollView showsVerticalScrollIndicator={false} >
-          <ScrollView horizontal={true}  style={{ flex: 1 }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView horizontal={true} style={{ flex: 1 }}>
             <View style={{ flexDirection: "row" }}>
               <Image
                 source={{ uri: product.thumbnail }}
@@ -78,7 +80,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 setItems={setItems}
                 multiple={true}
                 min={1}
-                max={5}
+                max={1}
                 autoScroll={true}
                 style={{ width: "100%", height: 40 }}
                 zIndex={9999}
@@ -100,7 +102,25 @@ const CpnProductDetail = ({ product, navigation }) => {
               />
             </View>
             <View style={styles.heartContainer}>
-              <FontAwesomeIcon icon={faHeart} size={20} color="#fff" />
+              <TouchableOpacity
+                style={{
+                  width: 40,
+                  height: 40,
+                  alignItems: "center",
+                  paddingTop: 10,
+                  borderRadius: 25,
+                  borderWidth: 0.5,
+                  borderColor: "white",
+                  marginLeft: 50,
+                  backgroundColor: "white",
+                  shadowColor: "black",
+                  shadowOffset: { width: 5, height: 0 }, // 5px bên tay phải
+                  shadowOpacity: 0.5,
+                  shadowRadius: 5,
+                }}
+              >
+                <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+              </TouchableOpacity>
             </View>
           </View>
           <View
@@ -161,7 +181,7 @@ const CpnProductDetail = ({ product, navigation }) => {
               color: "white",
             }}
           >
-            ADD TO CART
+            THÊM VÀO GIỎ HÀNG
           </Text>
         </Pressable>
       </View>
@@ -209,10 +229,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 60,
-    borderColor: "white",
-    borderWidth: 0.5,
-    width: 40,
     height: 50,
   },
 });

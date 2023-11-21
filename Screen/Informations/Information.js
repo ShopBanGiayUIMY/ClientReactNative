@@ -18,10 +18,6 @@ import { AuthStatus } from "../../Services/AuthContext";
 
 export default function Information({ navigation }) {
   const { state ,dispatch} = AuthStatus();
-
-
- 
-
   console.log(state.isLoggedIn);
   const handleLogin = () => {
   
@@ -34,8 +30,6 @@ export default function Information({ navigation }) {
   return (
     <View style={styles.container}>
       <Image style={styles.backgroundImage} source={background} />
-     
-
       <View style={styles.header}>
         {!state.isLoggedIn ? (
           <View>

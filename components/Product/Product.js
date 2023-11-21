@@ -30,13 +30,15 @@ export default function Product(props) {
           <Text style={styles.kihieu}>$</Text>
           <Text style={styles.item_price}>{dataProd.price}</Text>
         </View>
-        <View style={styles.addToCart}>
-          <FontAwesomeIcon
-            style={styles.iconAddToCart}
-            icon={faCartShopping}
-            size={20}
-            color="black"
-          />
+        <View >
+          <TouchableOpacity style={styles.addToCart} onPress={()=>{alert('Thêm vào giỏ hàng')}}>
+            <FontAwesomeIcon
+              style={styles.iconAddToCart}
+              icon={faCartShopping}
+              size={20}
+              color="black"
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
