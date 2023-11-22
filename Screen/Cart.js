@@ -17,7 +17,7 @@ import { AuthStatus } from "../Services/AuthContext";
 
 export default function Category({ navigation }) {
   const [data, setData] = useState([]);
-  const apiURL = "https://654cec0077200d6ba859b242.mockapi.io/api/v1/addtocart";
+  const apiURL = "https://655b76d4ab37729791a92814.mockapi.io/shopabc";
   const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);

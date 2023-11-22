@@ -25,7 +25,7 @@ export default function ListProduct({ navigation }) {
   const [visibleItems, setVisibleItems] = useState(4); 
   const fetchData = () => {
     // Define the API URL huy
-    const apiUrl = "https://64e6e269b0fd9648b78f008b.mockapi.io/api/shopquanao";
+    const apiUrl = "https://655b76d4ab37729791a92814.mockapi.io/shopabc";
     // Make the GET request using fetch
     fetch(apiUrl)
       .then((response) => response.json())

@@ -37,12 +37,7 @@ const useAuth = () => {
       if (response.data) {
         console.log("Đăng nhập thành công", response.data);
         dispatch({ type: "LOGIN", payload: response.data.user_id });
-        AsyncStorage.setItem(
-          "accesstoken",
-          JSON.stringify(response.data.accesstoken)
-        );
-        AsyncStorage.setItem("user_id", JSON.stringify(response.data.user_id));
-        AsyncStorage.setItem("isLoggedIn", "true");
+       
         return response.data;
       }
     } catch (error) {
@@ -56,9 +51,7 @@ const useAuth = () => {
         `${Config.API_BASE_URL}/auth/register`,
         user
       );
-      if (response.data) {
-        console.log("Đăng ký thành công", response.data);
-      }
+      return response.data;
     } catch (error) {
       console.error("Lỗi đăng ký tài khoản:", error);
     }

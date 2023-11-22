@@ -1,4 +1,4 @@
-import React, { Component,useState,useLayoutEffect } from "react";
+import React, { Component, useState, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -7,27 +7,33 @@ import {
   TouchableOpacity,
   Image,
   ToastAndroid,
+  ActivityIndicator,
+  Modal,
 } from "react-native";
 import logo from "../../assets/images/logo.png";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialIcons } from "@expo/vector-icons";
-import  useAuth  from "../../Services/auth.services";
+import useAuth from "../../Services/auth.services";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-export default function Register({navigation}) {
-  useLayoutEffect(() => { 
-    navigation.setOptions({ 
-      headerTitle: 'Đăng ký',
+export default function Register({ navigation }) {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Đăng ký",
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{ marginLeft: 5 ,marginRight: 10}}
+          style={{ marginLeft: 5, marginRight: 10 }}
         >
-         
-         <FontAwesome name="arrow-left" size={24} color="black" style={styles.icon}/>
+          <FontAwesome
+            name="arrow-left"
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
         </TouchableOpacity>
       ),
-    }) 
-  }, [])
+    });
+  }, []);
   const { registerUser } = useAuth();
   const [formData, setFormData] = useState({
     fullname: "",
@@ -36,26 +42,71 @@ export default function Register({navigation}) {
     username: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const regemail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const handleRegister = (e) => {
     e.preventDefault();
-    // Gọi hàm registerUser từ hook useAuth để xử lý đăng ký
-    registerUser(formData);
+    if (!regemail.test(formData.email)) {
+      ToastAndroid.show("Email không hợp lệ", ToastAndroid.SHORT);
+      return false;
+    }
+    if (formData.username.length < 6) {
+      ToastAndroid.show("Username phải có ít nhất 6 ký tự", ToastAndroid.SHORT);
+      return false;
+    }
+    if (formData.password.length < 6) {
+      ToastAndroid.show("Mật khẩu phải có ít nhất 6 ký tự", ToastAndroid.SHORT);
+      return false;
+    }
+    if (!agreeToTerms) {
+      ToastAndroid.show("Bạn chưa đồng ý với điều khoản", ToastAndroid.SHORT);
+      return false;
+    } else {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        registerUser(formData).then((result) => {
+          console.log("result", result);
+          if (result&& !result.success) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            return false;
+          }
+          if (result && result.success) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            // navigation.navigate("Login");
+            return true;
+          }
+         
+        }
+        );
+
+      }, 1000);
+   
+    }
   };
 
   return (
     <View style={styles.container}>
-    <Image source={logo} style={styles.logo} resizeMode="contain"/>
-      <Text style={styles.nameapp}>Snake Nike <Text style={styles.shop}> Shop</Text></Text>
-      {/* <View style={styles.inputContainer}>
+      <Modal transparent={true} animationType="slide" visible={loading}>
+        <View style={styles.modalContainer}>
+          <ActivityIndicator size="large" color="#DFDFDF" />
+        </View>
+      </Modal>
+
+      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <Text style={styles.nameapp}>
+        Snake Nike <Text style={styles.shop}> Shop</Text>
+      </Text>
+      <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, fullname: text })}
           value={formData.fullname}
           style={styles.input}
           placeholder="Enter Your FullName"
         />
-      </View> */}
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, email: text })}
@@ -64,14 +115,6 @@ export default function Register({navigation}) {
           placeholder="Enter Your Email"
         />
       </View>
-      {/* <View style={styles.inputContainer}>
-        <TextInput
-          onChangeText={(text) => setFormData({ ...formData, phone: text })}
-          value={formData.phone}
-          style={styles.input}
-          placeholder="Enter Your Phone Number"
-        />
-      </View> */}
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(text) => setFormData({ ...formData, username: text })}
@@ -170,7 +213,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-   
   },
   inputContainer: {
     width: "75%",
@@ -198,7 +240,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: 45,
+    height: 50,
     borderColor: "gray",
     borderWidth: 1,
     padding: 12,
@@ -208,7 +250,7 @@ const styles = StyleSheet.create({
   passwordVisible: {
     position: "absolute",
     right: 15,
-    top: 12,
+    top: 15,
     justifyContent: "center",
     textAlign: "center",
   },
@@ -336,11 +378,17 @@ const styles = StyleSheet.create({
   },
   nameapp: {
     fontSize: 30,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
     marginBottom: 10,
   },
   shop: {
-    color: 'rgba(255, 198, 0, 1)',
+    color: "rgba(255, 198, 0, 1)",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
 });
