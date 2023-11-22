@@ -21,7 +21,7 @@ const Repurchase = () => {
         </View>
       <View>
         <Text style={{ fontSize: 20, color: "red", marginLeft: 10 }}>
-           bn làm ảnh ở đây và nhớ tạo rồi import vào nhé!
+           
         </Text>
       </View>
     </View>

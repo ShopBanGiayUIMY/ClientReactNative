@@ -43,8 +43,8 @@ export default MenuCategory = ({navigation}) => {
           {
             id: "6",
             image:
-              "https://m.media-amazon.com/images/G/31/img20/Events/Jup21dealsgrid/All_Icons_Template_1_icons_01.jpg",
-            name: "Mobiles",
+              "https://2c3698e1213f692c1f30-e875ca96b66c757445b3b9b63d20195d.ssl.cf3.rackcdn.com/files/cf2afee48a9b5ef017e9356157a6d1aa.png",
+            name: "Giá",
           },
     ];
   return (

@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     marginHorizontal: 5,
-    height: Dimensions.get("window").height / 2.9,
+    height: Dimensions.get("window").height / 3,
   },
   shadow: {
     borderRadius: 10,

@@ -6,7 +6,7 @@ const ProductDetail = ({ route, navigation }) => {
   const { product } = route.params;
   return (
     <SafeAreaView style={styles.container}>
-      <CpnProductDetail product={product} />
+      <CpnProductDetail product={product} navigation={navigation} />
     </SafeAreaView>
   );
 };

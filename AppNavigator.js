@@ -31,13 +31,13 @@ function TabButton({ onPress, accessibilityState, children }) {
   useEffect(() => {
     if (accessibilityState.selected) {
       viewRef.current.animate({
-        0: { scale: 0.5, rotate: "0deg" },
-        1: { scale: 1.8, rotate: "360deg" },
+        0: { scale: 0.3,  },
+        1: { scale: 2,  },
       });
     } else {
       viewRef.current.animate({
-        0: { scale: 0.5, rotate: "360deg" },
-        1: { scale: 1.5, rotate: "0deg" },
+        0: { scale: 0.5,  },
+        1: { scale: 1.5,  },
       });
     }
   }, [accessibilityState.selected]);
@@ -59,6 +59,9 @@ function TabNavigator() {
           height: 55,
           position: "absolute",
           backgroundColor: "#fff",
+          borderRadius: 30,
+          marginHorizontal: 5,
+          marginBottom: 10,
         },
       }}
     >
@@ -72,9 +75,10 @@ function TabNavigator() {
           headerShown: false,
           
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="home" color={color} size={20} />
+            <MaterialCommunityIcons name="home" color={color} size={20}  />
           ),
           tabBarButton: (props) => <TabButton {...props} />,
+         
         }}
       />
       <Tab.Screen
@@ -89,15 +93,27 @@ function TabNavigator() {
           tabBarButton: (props) => <TabButton {...props} />,
         }}
       />
+     
       <Tab.Screen
         name="Cart"
         component={Cart}
         options={{
           tabBarShowLabel: false,
           title: "Cart",
-          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="cart" color={color} size={20} />
+          ),
+          tabBarButton: (props) => <TabButton {...props} />,
+        }}
+      />
+       <Tab.Screen
+        name="Notificationf"
+        component={Notification}
+        options={{
+          tabBarShowLabel: false,
+          title: "Thông báo",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="bell" color={color} size={20} />
           ),
           tabBarButton: (props) => <TabButton {...props} />,
         }}
