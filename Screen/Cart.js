@@ -19,7 +19,7 @@ export default function Category({ navigation }) {
   const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
-  const { state ,dispatch} = AuthStatus();
+  const { state, dispatch } = AuthStatus();
   const fetchData = async () => {
     try {
       const response = await fetch(apiURL);
@@ -35,11 +35,8 @@ export default function Category({ navigation }) {
     }
   };
 
-  
-   
   useEffect(() => {
-    state.isLoggedIn ? fetchData() :navigation.navigate("Login");
-    
+    state.isLoggedIn ? fetchData() : navigation.navigate("Login");
   }, [navigation]);
 
   const handleRefresh = () => {
@@ -64,7 +61,7 @@ export default function Category({ navigation }) {
 
   return (
     <View style={style.container}>
-      <ProductInCart />
+      <ProductInCart  navigation={navigation}/>
     </View>
   );
 }
@@ -73,5 +70,5 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#A9CDEE",
-  }
+  },
 });

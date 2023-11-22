@@ -50,7 +50,7 @@ export default function Login({ navigation }) {
   const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
   const checkInternetConnection = async () => {
     const netInfoState = await NetInfo.fetch();
-  
+
     if (netInfoState.isConnected) {
       console.log("Đã kết nối với internet");
     } else {
@@ -87,15 +87,18 @@ export default function Login({ navigation }) {
             // navigation.navigate("Home");
           }, 2000);
         }
-        if (result && !result.success&& agreeToTerms ) {
+        if (result && !result.success && agreeToTerms) {
           ToastAndroid.show(result.message, ToastAndroid.SHORT);
           return false;
         }
-        if (!agreeToTerms && formData.username.length>0&&formData.email.length>0) {
-          ToastAndroid.show("Bạn chưa đồng ý điều khoản !", ToastAndroid.SHORT);
-        }
-        if(formData.username.length===0&&formData.email.length===0){
+        
+        if (formData.username.length === 0 && formData.email.length === 0) {
           ToastAndroid.show("Các trường không để rỗng", ToastAndroid.SHORT);
+          
+        }else{
+          if (!agreeToTerms) {
+            ToastAndroid.show("Bạn chưa đồng ý điều khoản !", ToastAndroid.SHORT);
+          }
         }
       });
     } catch (error) {
@@ -247,14 +250,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     height: 45,
-    borderColor:'white'
+    borderColor: "white",
   },
   touchablecity: {
     color: "white",
     textAlign: "center",
     marginTop: 12,
     fontSize: 15,
-    width:'100%'
+    width: "100%",
   },
   orWith: {
     marginTop: 10,
@@ -268,8 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(14, 100, 210, 1)", // Add some padding for better spacing
     marginTop: 10,
     width: 300,
-    borderColor:'white'
-
+    borderColor: "white",
   },
   buttonInnerContainer: {
     flexDirection: "row", // Arrange the image and text horizontally
@@ -291,7 +293,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginTop: 30,
     width: 300,
-    borderColor:'white'
+    borderColor: "white",
   },
   buttonInnerContainer1: {
     flexDirection: "row",
@@ -309,10 +311,9 @@ const styles = StyleSheet.create({
   },
   createaccount: {
     marginTop: 30,
-    width:'100%',
-    flexDirection:'row',
-   paddingStart:85,
-   
+    width: "100%",
+    flexDirection: "row",
+    paddingStart: 85,
   },
   texttt1: {
     textAlign: "center",

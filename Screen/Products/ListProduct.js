@@ -23,9 +23,10 @@ export default function ListProduct({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
   const [visibleItems, setVisibleItems] = useState(4); 
+  
   const fetchData = () => {
     // Define the API URL huy
-    const apiUrl = "http://3.1.222.55/api/v1/products";
+    const apiUrl = "http://103.77.172.199:3000/api/v1/products";
     // Make the GET request using fetch
     fetch(apiUrl)
       .then((response) => response.json())
@@ -33,6 +34,7 @@ export default function ListProduct({ navigation }) {
         // Handle the retrieved data by updating the state
         const first10Items = responseData.slice(0, visibleItems);
         setData(first10Items);
+        console.log("ooooooooooooo", first10Items);
         setIsLoading(false);
         setRefreshing(false);
         

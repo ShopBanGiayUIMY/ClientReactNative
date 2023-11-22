@@ -8,36 +8,71 @@ import {
   TextInput,
   Pressable
 } from "react-native";
-
-export default function ModalBottom() {
-  const [isDrawerVisible, setDrawerVisible] = useState(false);
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faArrowLeft,
+  faShareNodes,
+  faHeart,
+} from "@fortawesome/free-solid-svg-icons";
+import DropDownPicker from "react-native-dropdown-picker";
+export default function ModalBottom(props) {
   const [inputValue, setInputValue] = useState("");
-
-  const openDrawer = () => {
-    setDrawerVisible(true);
-  };
-
-  const closeDrawer = () => {
-    setDrawerVisible(false);
-  };
-
+  const { closeDrawer,openDrawer, } = props;
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState([]);
+  const [items, setItems] = useState([
+    { label: "M", value: "1" },
+    { label: "L", value: "2" },
+    { label: "XL", value: "3" },
+    { label: "XXL", value: "4" },
+  ]);
   const handleInputChange = (text) => {
     setInputValue(text);
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={openDrawer} style={styles.button}>
-        <Text>Show Drawer</Text>
-      </TouchableOpacity>
 
       <Modal
         animationType="slide"
         transparent={true}
-        visible={isDrawerVisible}
+        visible={openDrawer}
         onRequestClose={closeDrawer}
       >
         <Pressable style={styles.modalContainer} onPress={closeDrawer} ></Pressable>
+        <View style={styles.dropdownContainer}>
+            <View style={styles.dropdown}>
+              <DropDownPicker
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                multiple={true}
+                min={1}
+                max={1}
+                autoScroll={true}
+                style={{ width: "100%", height: 40 }}
+                zIndex={9999}
+              />
+            </View>
+            <View style={styles.dropdown}>
+              <DropDownPicker
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                multiple={true}
+                min={1}
+                max={5}
+                autoScroll={true}
+                style={{ width: "100%", height: 40 }}
+              />
+            </View>
+          </View>
         <View style={styles.drawer}>
             <TextInput
               style={styles.input}
@@ -71,7 +106,7 @@ const styles = StyleSheet.create({
   drawer: {
     backgroundColor: "#FFFFFF",
     width: "100%",
-    height: 200,
+    height: 350,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     padding: 20,

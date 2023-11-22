@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import {
   Text,
   View,
@@ -9,88 +9,116 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
+  CheckBox,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import Swipelist from "react-native-swipeable-list-view";
 import {
   faSearch,
   faEllipsisVertical,
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-const ProductInCart = () => {
+
+const ProductInCart = ({ navigation }) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Giỏ hàng của tôi",
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginLeft: 5, marginRight: 10 }}
+        >
+          <FontAwesome
+            name="arrow-left"
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
+  const data = [{ name: 1 }];
   return (
     <View style={styles.container}>
-      <View style={styles.background}>
-        <View style={{ width: WIDTH, height: 88, alignItems: "flex-end" }}>
-          <TouchableOpacity style={styles.pressSearch}>
-            <FontAwesomeIcon
-              style={{}}
-              icon={faSearch}
-              size={20}
-              color="black"
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={{ width: WIDTH, height: 52 }}>
-          <Text style={styles.txtTitle}>Giỏ hàng của tôi</Text>
-        </View>
-      </View>
-      <ScrollView>
-        <View style={{ width: "100%", height: 500 }}>
-          <View style={styles.vProduct}>
-            <View style={styles.vImage}>
-              <Image
-                style={styles.imagee}
-                source={{
-                  uri: "https://cf.shopee.vn/file/b4799a8f363f351245ea3e0d532502f3",
-                }}
-              />
-              <View style={styles.vInforProduct}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 5,
+    
+      <Swipelist
+        data={data}
+        renderRightItem={(data, index) => (
+          <View style={{ width: "100%", height: 500 }}>
+            <View style={styles.vProduct}>
+              <View style={styles.vImage}>
+                <Image
+                  style={styles.imagee}
+                  source={{
+                    uri: "https://cf.shopee.vn/file/b4799a8f363f351245ea3e0d532502f3",
                   }}
-                >
-                  <Text style={styles.txtName}>Giày nai kì</Text>
-                  <TouchableOpacity>
-                    <FontAwesomeIcon
-                      icon={faEllipsisVertical}
-                      size={20}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.vSizeandColor}>
-                  <Text style={styles.txtSizeandColor}>Size: L</Text>
-                  <Text style={styles.txtSizeandColor}>Màu: Đen</Text>
-                </View>
-                <View style={styles.vContainer}>
-                  <View style={styles.vChildContainer}>
-                    <Pressable style={styles.pressTru}>
-                      <Text style={styles.txtTru}>-</Text>
-                    </Pressable>
-                    <View style={styles.vCount}>
-                      <Text style={styles.txtCount}>1</Text>
-                    </View>
-                    <Pressable style={styles.pressCong}>
-                      <Text style={styles.txtCong}>+</Text>
-                    </Pressable>
-                    <View style={styles.vThanhToan}>
-                      <Text>
-                        150.000<Text>đ</Text>
-                      </Text>
+                />
+                <View style={styles.vInforProduct}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      marginTop: 5,
+                    }}
+                  >
+                    <Text style={styles.txtName}>Giày nai kì</Text>
+                    <TouchableOpacity>
+                      <FontAwesomeIcon
+                        icon={faEllipsisVertical}
+                        size={20}
+                        color="gray"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.vSizeandColor}>
+                    <Text style={styles.txtSizeandColor}>Size: L</Text>
+                    <Text style={styles.txtSizeandColor}>Màu: Đen</Text>
+                  </View>
+                  <View style={styles.vContainer}>
+                    <View style={styles.vChildContainer}>
+                      <Pressable style={styles.pressTru}>
+                        <Text style={styles.txtTru}>-</Text>
+                      </Pressable>
+                      <View style={styles.vCount}>
+                        <Text style={styles.txtCount}>1</Text>
+                      </View>
+                      <Pressable style={styles.pressCong}>
+                        <Text style={styles.txtCong}>+</Text>
+                      </Pressable>
+                      <View style={styles.vThanhToan}>
+                        <Text>
+                          150.000<Text>đ</Text>
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>
               </View>
             </View>
           </View>
-          
-        </View>
-      </ScrollView>
+        )}
+        rightOpenValue={200}
+        
+        renderHiddenItem={(data, index) => (
+          <View style={{ flexDirection: "row" }}>
+            <Pressable
+              style={{ width: 100, height: 100, backgroundColor: "red" }}
+            >
+              <Text>xoá</Text>
+            </Pressable>
+            <Pressable
+              style={{ width: 100, height: 100, backgroundColor: "red" }}
+            >
+              <Text>edit</Text>
+            </Pressable>
+          </View>
+        )}
+      />
+
       <View style={{ width: "100%", height: 165 }}>
         <View style={styles.vVoucher}>
           <TextInput
@@ -125,8 +153,9 @@ const styles = StyleSheet.create({
   container: {
     width: WIDTH,
     height: HEIGHT,
+    marginTop: 10,
+    elevation: 5,
   },
-  background: { width: WIDTH, height: 140 },
   pressSearch: {
     width: 25,
     height: 25,
@@ -302,6 +331,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
     color: "white",
+  },
+  icon: {
+    fontSize: 20,
+    color: "#BCBCBC",
+    marginTop: 3,
+    marginLeft: 10,
   },
 });
 
