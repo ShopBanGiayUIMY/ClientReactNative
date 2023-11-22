@@ -53,7 +53,7 @@ const Header = (props) => {
           </TouchableOpacity>
         </TouchableWithoutFeedback>
         <View style={styles.right}>
-          <TouchableOpacity style={styles.icon}>
+          <TouchableOpacity style={styles.icon} onPress={()=>{handlePress()}}>
             <FontAwesomeIcon
               icon={faShoppingCart}
               size={24}
