@@ -365,6 +365,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#768487",
     marginTop: -3,
+    width:185,
   },
   icon: {
     fontSize: 20,

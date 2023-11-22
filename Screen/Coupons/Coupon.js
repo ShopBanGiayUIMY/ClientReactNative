@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 5,
+    
   },
   header: {
     height: 50,

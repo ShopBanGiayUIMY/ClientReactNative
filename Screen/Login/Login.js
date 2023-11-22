@@ -247,12 +247,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     height: 45,
+    borderColor:'white'
   },
   touchablecity: {
     color: "white",
     textAlign: "center",
     marginTop: 12,
     fontSize: 15,
+    width:'100%'
   },
   orWith: {
     marginTop: 10,
@@ -266,6 +268,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(14, 100, 210, 1)", // Add some padding for better spacing
     marginTop: 10,
     width: 300,
+    borderColor:'white'
+
   },
   buttonInnerContainer: {
     flexDirection: "row", // Arrange the image and text horizontally
@@ -287,6 +291,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginTop: 30,
     width: 300,
+    borderColor:'white'
   },
   buttonInnerContainer1: {
     flexDirection: "row",
@@ -304,6 +309,10 @@ const styles = StyleSheet.create({
   },
   createaccount: {
     marginTop: 30,
+    width:'100%',
+    flexDirection:'row',
+   paddingStart:85,
+   
   },
   texttt1: {
     textAlign: "center",
