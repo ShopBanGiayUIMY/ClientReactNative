@@ -41,7 +41,6 @@ const CpnProductDetail = ({ product, navigation }) => {
 
   let position = Animated.divide(scrollX, WIDTH);
 
-  
   const [data, setData] = useState(null);
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
@@ -66,7 +65,6 @@ const CpnProductDetail = ({ product, navigation }) => {
   };
   const hanldeAddToCart = async () => {
     // alert("Bạn đã thêm " + product.name + " vào giỏ hàng! ");
-   
   };
   const renderProduct = ({ item, index }) => {
     return (
@@ -77,8 +75,6 @@ const CpnProductDetail = ({ product, navigation }) => {
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          
-         
         }}
       >
         <Image
@@ -101,21 +97,23 @@ const CpnProductDetail = ({ product, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.vImage}>
-      <StatusBar
-        backgroundColor={COLOURS.backgroundLight}
-        barStyle="dark-content"
-      />
+        <StatusBar
+          backgroundColor={COLOURS.backgroundLight}
+          barStyle="dark-content"
+        />
         <ScrollView showsVerticalScrollIndicator={false}>
-        <ModalBottom   openDrawer={isModalVisible} closeDrawer={toggleModal}/>
+          <ModalBottom openDrawer={isModalVisible} closeDrawer={toggleModal} />
           <View
             style={{
               width: "100%",
               flexDirection: "row",
               justifyContent: "space-between",
-              
             }}
           >
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.back}
+            >
               <Entypo
                 name="chevron-left"
                 style={{
@@ -174,69 +172,63 @@ const CpnProductDetail = ({ product, navigation }) => {
                 })
               : null}
           </View>
-         
+
           <View
             style={{
-              marginStart: 10,
-              marginEnd: 10,
-              width: WIDTH,
-              height: 70,
-              position: "relative",
-              top: -50,
               flexDirection: "row",
               justifyContent: "space-between",
+              alignContent: "center",
             }}
           >
-            <Text style={{ fontSize: 25, fontWeight: "200", paddingLeft: 5 }}>
+            <Text style={{ fontSize: 25, fontWeight: "200", paddingLeft: 10 }}>
               {product.name}
             </Text>
-            <Text style={{ fontSize: 25, fontWeight: "200", paddingRight: 50 }}>
+            <Text style={{ fontSize: 25, fontWeight: "700", paddingRight: 10, color:'red',  }}>
               {product.price}
               <Text>đ</Text>
             </Text>
           </View>
+
           <View
             style={{
-              marginStart: 10,
-              marginEnd: 10,
               position: "relative",
-              top: -55,
+              top: 25,
               paddingBottom: 115,
             }}
           >
-            <Text>{product.description}</Text>
+            <Text style={{marginStart:10, marginEnd:10}}>{product.description}</Text>
           </View>
           <View style={styles.heartContainer}>
-              <TouchableOpacity
-                style={{
-                  width: 40,
-                  height: 40,
-                  alignItems: "center",
-                  paddingTop: 10,
-                  borderRadius: 25,
-                  borderWidth: 0.5,
-                  borderColor: "white",
-                  marginLeft: 50,
-                  backgroundColor: "white",
-                  shadowColor: "black",
-                  shadowOffset: { width: 5, height: 0 }, // 5px bên tay phải
-                  shadowOpacity: 0.5,
-                  shadowRadius: 5,
-                }}
-              >
-                <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={{
+                width: 40,
+                height: 40,
+                alignItems: "center",
+                paddingTop: 10,
+                borderRadius: 25,
+                borderWidth: 0.5,
+                borderColor: "white",
+                marginLeft: 50,
+                backgroundColor: "white",
+                shadowColor: "black",
+                shadowOffset: { width: 5, height: 0 }, // 5px bên tay phải
+                shadowOpacity: 0.5,
+                shadowRadius: 5,
+              }}
+            >
+              <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+            </TouchableOpacity>
+          </View>
         </ScrollView>
-        
+
         <Pressable
           style={{
             position: "absolute",
-            width: 380,
+            width: 345,
             height: 70,
             backgroundColor: "#DB3022",
             justifyContent: "center",
-            bottom: 0,
+            bottom: 35,
             alignSelf: "center",
             marginStart: 10,
             marginEnd: 10,
@@ -247,7 +239,7 @@ const CpnProductDetail = ({ product, navigation }) => {
           <Text
             style={{
               textAlign: "center",
-              fontSize: 25,
+              fontSize: 25 ,
               fontWeight: "bold",
               fontStyle: "italic",
               color: "white",
@@ -305,10 +297,9 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   heartContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 50,
+    position: "absolute",
+    top: 10,
+    right: 10,
   },
 });
 

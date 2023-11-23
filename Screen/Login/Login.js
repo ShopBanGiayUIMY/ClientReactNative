@@ -91,13 +91,15 @@ export default function Login({ navigation }) {
           ToastAndroid.show(result.message, ToastAndroid.SHORT);
           return false;
         }
-        
+
         if (formData.username.length === 0 && formData.email.length === 0) {
           ToastAndroid.show("Các trường không để rỗng", ToastAndroid.SHORT);
-          
-        }else{
+        } else {
           if (!agreeToTerms) {
-            ToastAndroid.show("Bạn chưa đồng ý điều khoản !", ToastAndroid.SHORT);
+            ToastAndroid.show(
+              "Bạn chưa đồng ý điều khoản !",
+              ToastAndroid.SHORT
+            );
           }
         }
       });

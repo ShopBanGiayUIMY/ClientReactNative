@@ -5,24 +5,23 @@ import {
   Image,
   StyleSheet,
   Pressable,
-  ScrollView,
   Dimensions,
   TouchableOpacity,
   TextInput,
-  CheckBox,
+  ScrollView,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import Swipelist from "react-native-swipeable-list-view";
 import {
-  faSearch,
   faEllipsisVertical,
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-const ProductInCart = ({ navigation }) => {
+const ProductInCart = ({ navigation,data }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Giỏ hàng của tôi",
@@ -41,18 +40,45 @@ const ProductInCart = ({ navigation }) => {
       ),
     });
   }, []);
-  const data = [{ name: 1 }];
+
+  const [cartData, setCartData] = useState(data);
+
+  const calculateTotalPrice = (items) => {
+    return items.reduce((total, item) => total + item.soluong * item.price, 0);
+  };
+
+  const handleGiam = (item) => {
+    console.log(`Increasing quantity for item with id ${item.id}`);
+    const updatedData = cartData.map((cartItem) =>
+      cartItem.id === item.id
+        ? { ...cartItem, soluong: Math.max(0, cartItem.soluong - 1) }
+        : cartItem
+    );
+
+    setCartData(updatedData);
+  };
+
+  const handleTang = (item) => {
+    console.log(`Increasing quantity for item with id ${item.id}`);
+    const updatedData = cartData.map((cartItem) =>
+      cartItem.id === item.id
+        ? { ...cartItem, soluong: cartItem.soluong + 1 }
+        : cartItem
+    );
+
+    setCartData(updatedData);
+  };
+
   return (
-    <View style={styles.container}>
-    
+    <ScrollView style={styles.container}>
       <Swipelist
-        data={data}
-        renderRightItem={(data, index) => (
-          <View style={{ width: "100%", height: 500 }}>
+        data={cartData}
+        renderRightItem={(item, index) => (
+          <View style={{ width: "100%" }}>
             <View style={styles.vProduct}>
-              <View style={styles.vImage}>
+             <View style={styles.vImage}>
                 <Image
-                  style={styles.imagee}
+                   style={styles.imagee}
                   source={{
                     uri: "https://cf.shopee.vn/file/b4799a8f363f351245ea3e0d532502f3",
                   }}
@@ -65,7 +91,7 @@ const ProductInCart = ({ navigation }) => {
                       marginTop: 5,
                     }}
                   >
-                    <Text style={styles.txtName}>Giày nai kì</Text>
+                    <Text style={styles.txtName}>{item.name}</Text>
                     <TouchableOpacity>
                       <FontAwesomeIcon
                         icon={faEllipsisVertical}
@@ -80,18 +106,29 @@ const ProductInCart = ({ navigation }) => {
                   </View>
                   <View style={styles.vContainer}>
                     <View style={styles.vChildContainer}>
-                      <Pressable style={styles.pressTru}>
+                      <Pressable
+                        style={styles.pressTru}
+                        onPress={() => {
+                          handleGiam(item);
+                        }}
+                      >
                         <Text style={styles.txtTru}>-</Text>
                       </Pressable>
                       <View style={styles.vCount}>
-                        <Text style={styles.txtCount}>1</Text>
+                        <Text style={styles.txtCount}>{item.soluong}</Text>
                       </View>
-                      <Pressable style={styles.pressCong}>
+                      <Pressable
+                        style={styles.pressCong}
+                        onPress={() => {
+                          handleTang(item);
+                        }}
+                      >
                         <Text style={styles.txtCong}>+</Text>
                       </Pressable>
                       <View style={styles.vThanhToan}>
                         <Text>
-                          150.000<Text>đ</Text>
+                          {item.soluong * item.price}
+                          <Text>đ</Text>
                         </Text>
                       </View>
                     </View>
@@ -102,18 +139,53 @@ const ProductInCart = ({ navigation }) => {
           </View>
         )}
         rightOpenValue={200}
-        
         renderHiddenItem={(data, index) => (
           <View style={{ flexDirection: "row" }}>
             <Pressable
-              style={{ width: 100, height: 100, backgroundColor: "red" }}
+              style={{
+                width: 100,
+                height: 100,
+                backgroundColor: "green",
+                borderRadius: 35,
+                borderWidth: 0.5,
+                borderColor: "white",
+              }}
+              onPress={() => handleXoa()}
             >
-              <Text>xoá</Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 35,
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                xoá
+              </Text>
             </Pressable>
             <Pressable
-              style={{ width: 100, height: 100, backgroundColor: "red" }}
+              style={{
+                width: 100,
+                height: 100,
+                backgroundColor: "green",
+                borderRadius: 35,
+                borderWidth: 0.5,
+                borderColor: "white",
+              }}
+              onPress={() => handleSua()}
             >
-              <Text>edit</Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 35,
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                edit
+              </Text>
             </Pressable>
           </View>
         )}
@@ -138,14 +210,15 @@ const ProductInCart = ({ navigation }) => {
         <View style={styles.vTongtien}>
           <Text style={styles.txtTongTien}>Tổng tiền:</Text>
           <Text style={styles.txtTongSoTien}>
-            150.000<Text>đ</Text>
+            {calculateTotalPrice(cartData)}
+            <Text>đ</Text>
           </Text>
         </View>
         <Pressable style={styles.pressThanhToanNgay}>
           <Text style={styles.txtThanhToanNgay}>Thanh toán ngay</Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -155,6 +228,7 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     marginTop: 10,
     elevation: 5,
+    marginBottom:95
   },
   pressSearch: {
     width: 25,
@@ -172,8 +246,9 @@ const styles = StyleSheet.create({
   },
   vProduct: {
     width: "90%",
-    height: 370,
+    height: 'auto', 
     alignSelf: "center",
+    marginBottom: 10,
   },
   vImage: {
     width: "100%",
@@ -311,7 +386,7 @@ const styles = StyleSheet.create({
     width: 60,
   },
   txtTongSoTien: {
-    width: 60,
+    width: 110,
     marginEnd: 10,
     fontSize: 16,
     color: "white",
@@ -331,6 +406,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
     color: "white",
+   
   },
   icon: {
     fontSize: 20,

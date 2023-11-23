@@ -13,7 +13,7 @@ import ProductInCart from "../components/Cart/ProductInCart";
 import { AuthStatus } from "../Services/AuthContext";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-export default function Category({ navigation }) {
+export default function Category({ navigation, props }) {
   const [data, setData] = useState([]);
   const apiURL = "https://654cec0077200d6ba859b242.mockapi.io/api/v1/addtocart";
   const [isloading, setIsLoading] = useState(true);
@@ -27,9 +27,6 @@ export default function Category({ navigation }) {
       setData(data);
       setIsLoading(false);
       setRefreshing(false);
-      console.log("====================================");
-      console.log(data);
-      console.log("====================================");
     } catch (error) {
       console.log("Error:", error);
     }
@@ -39,29 +36,10 @@ export default function Category({ navigation }) {
     state.isLoggedIn ? fetchData() : navigation.navigate("Login");
   }, [navigation]);
 
-  const handleRefresh = () => {
-    setIsLoading(true);
-    setRefreshing(true);
-    fetchData();
-  };
-
-  const renderProductItem = ({ item }) => (
-    <ProductInCart dataProd={item} handlePress={handlePressItem} />
-  );
-
-  const handlePressItem = (dataProd) => {
-    navigation.navigate("ProductDetail", { product: dataProd });
-  };
-
-  const handleScroll = (event) => {
-    const scrollY = event.nativeEvent.contentOffset.y;
-    const newOpacity = Math.min(scrollY / 100, 1);
-    setBackgroundOpacity(newOpacity);
-  };
 
   return (
     <View style={style.container}>
-      <ProductInCart  navigation={navigation}/>
+      <ProductInCart  navigation={navigation} data={data} />
     </View>
   );
 }
