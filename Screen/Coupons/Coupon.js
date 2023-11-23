@@ -23,6 +23,7 @@ export default function Coupon({ navigation }) {
     GetVoucher()
       .then((result) => {
         setData(result);
+
       })
       .catch((error) => {
         console.error(error);

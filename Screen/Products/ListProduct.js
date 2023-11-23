@@ -17,6 +17,7 @@ import Product from "../../components/Product/Product";
 import { FlatGrid } from "react-native-super-grid";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
+import Config from "../../Api/Config";
 export default function ListProduct({ navigation }) {
   const [data, setData] = useState(null);
   const [isloading, setIsLoading] = useState(true);
@@ -26,7 +27,7 @@ export default function ListProduct({ navigation }) {
   
   const fetchData = () => {
     // Define the API URL huy
-    const apiUrl = "http://103.77.172.199:3000/api/v1/products";
+    const apiUrl = `${Config.API_BASE_URL}/products`;
     // Make the GET request using fetch
     fetch(apiUrl)
       .then((response) => response.json())

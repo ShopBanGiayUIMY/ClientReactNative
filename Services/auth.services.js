@@ -37,7 +37,7 @@ const useAuth = () => {
       if (response.data) {
         console.log("Đăng nhập thành công", response.data);
         dispatch({ type: "LOGIN", payload: response.data.user_id });
-       
+
         return response.data;
       }
     } catch (error) {
@@ -117,7 +117,23 @@ const useAuth = () => {
         headers: headers,
       });
       if (response.data) {
-        
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  };
+  const updateQuantity = async (Cart_id, product_detail_id, quantity) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.patch(
+        `${Config.API_BASE_URL}/carts/${Cart_id}`,
+        {product_detail_id: product_detail_id, quantity: quantity},
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
         return response.data;
       }
     } catch (error) {
@@ -136,7 +152,7 @@ const useAuth = () => {
     } catch (error) {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
-  }
+  };
   return {
     loginUser,
     registerUser,
@@ -144,7 +160,8 @@ const useAuth = () => {
     CheckOtp,
     CreatePasswordUser,
     GetCart,
-    GetVoucher
+    updateQuantity,
+    GetVoucher,
   };
 };
 

@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Cart from "./Screen/Cart";
+import Cart from "./Screen/Cart/Cart";
 import Register from "./Screen/Register/Register";
 import Notification from "./Screen/Notification";
 import Profile from "./Screen/Informations/Profile";

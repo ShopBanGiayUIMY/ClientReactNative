@@ -25,9 +25,18 @@ const HEIGHT = Dimensions.get("window").height;
 const ProductInCart = (props) => {
   const { dataCart, Cart_id ,handlePress} = props;
   const { updateQuantity } = useAuth();
+
+  console.log("dataCart: " + JSON.stringify(dataCart));
+
   const loadlai=()=> {
     handlePress() ;
   }
+  dataCart.forEach((item, index) => {
+    console.log(
+      `Item ${index + 1} item_id:`,
+      item.ProductDetail.Product.thumbnail
+    );
+  });
   const [data, setData] = useState(dataCart);
   const handleInputChange = (text, index) => {
     const newData = [...data];
@@ -37,15 +46,17 @@ const ProductInCart = (props) => {
     setData(newData);
   };
   const handleGiam = (quantity, product_detail_id) => {
+    console.log(`des quantity for item with id ${quantity}`);
+    console.log("cart_id", Cart_id);
     updateQuantity(Cart_id, product_detail_id, quantity - 1).then((result) => {
       console.log("result", result);
-      loadlai();
     });
-    
+    loadlai();
   };
 
   const handleTang = (quantity, product_detail_id) => {
- 
+    console.log(`Increasing quantity for item with id ${product_detail_id}`);
+    console.log("cart_id", Cart_id);
     loadlai();
   };
   const handleQuantityChange = (text, item) => {
@@ -53,6 +64,16 @@ const ProductInCart = (props) => {
   };
   return (
     <ScrollView style={styles.container}>
+      {/* {data.map((item, index) => (
+        <View key={item.id}>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => handleInputChange(text, index)}
+            value={item.value}
+            placeholder={`Nhập giá trị cho mục ${item.id}`}
+          />
+        </View>
+      ))} */}
       <Swipelist
         data={data}
         renderRightItem={(item, index) => (

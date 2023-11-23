@@ -17,7 +17,7 @@ export default function Product(props) {
   };
 
   let tensp =
-    dataProd.name.length > 25
+    dataProd.name.length > 10
       ? dataProd.name.slice(0, 25) + "..."
       : dataProd.name;
 
@@ -26,6 +26,7 @@ export default function Product(props) {
       <View style={styles.shadow}>
         <Image source={{ uri: dataProd.thumbnail }} style={styles.img} />
         <Text style={styles.tensp}>{tensp}</Text>
+        <View style={styles.item_1}>
         <View style={styles.price}>
           <Text style={styles.kihieu}>$</Text>
           <Text style={styles.item_price}>{dataProd.price}</Text>
@@ -36,10 +37,12 @@ export default function Product(props) {
               style={styles.iconAddToCart}
               icon={faCartShopping}
               size={20}
-              color="black"
+              color="rgba(177, 177, 177, 0.72)"
             />
           </TouchableOpacity>
         </View>
+        </View>
+       
       </View>
     </TouchableOpacity>
   );
@@ -47,68 +50,79 @@ export default function Product(props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 5,
-    backgroundColor: "rgba(231, 234, 242, 0.8)",
+    borderRadius: 10,
+    flex: 1,
+  },
+  
+  shadow: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     marginHorizontal: 5,
-    height: Dimensions.get("window").height / 3,
+    
   },
-  shadow: {
-    borderRadius: 10,
-    overflow: "hidden",
-    position: "relative",
+  item_1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginStart: 5,
+    marginEnd: 5,
+    marginTop: 5,
+    marginBottom: 5,
   },
   img: {
-    height: "72%",
-    width: "100%",
+    aspectRatio: 1,
+    width: '100%',
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
   },
   tensp: {
     fontSize: 15,
     marginBottom: 0,
-    fontWeight: "600",
+    fontWeight: '600',
     marginVertical: 3,
     marginLeft: 10,
   },
   price: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     marginStart: 5,
     marginEnd: 5,
     marginTop: 5,
     marginLeft: 11,
   },
   item_price: {
-    color: "#F60000",
-    fontStyle: "normal",
-    fontWeight: "600",
+    color: '#F60000',
+    fontStyle: 'normal',
+    fontWeight: '400',
     marginRight: 5,
   },
   kihieu: {
-    color: "red",
-    fontWeight: "600",
+    color: 'red',
+    fontWeight: '400',
     fontSize: 15,
   },
   addToCart: {
-    position: "absolute",
-    right: 13,
-    bottom: 0, // Đặt bottom hoặc top tùy thuộc vào vị trí bạn muốn hiển thị icon
+    position: 'absolute',
+    right: 5,
+    bottom: -10,
+    
     borderRadius: 50,
     borderWidth: 1,
     width: 25,
     height: 25,
-    backgroundColor: "white", // Đặt màu nền cho icon
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 15,
   },
   iconAddToCart: {
-    position: "absolute",
-    top: 6,
     fontSize: 15,
+    color: 'red',
   },
 });

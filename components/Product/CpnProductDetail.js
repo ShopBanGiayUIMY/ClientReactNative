@@ -17,13 +17,14 @@ import {
   faArrowLeft,
   faShareNodes,
   faHeart,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 const EXTAR_HEIGHT = 542.5;
 import { AuthStatus } from "../../Services/AuthContext";
 import axios from "axios";
-
+import Config from "../../Api/Config";
 import Entypo from "react-native-vector-icons/Entypo";
 const COLOURS = {
   white: "#ffffff",
@@ -51,10 +52,11 @@ const CpnProductDetail = ({ product, navigation }) => {
 
     return unsubscribe;
   }, [navigation]);
+
   const getproductbyid = async () => {
     try {
       const response = await axios.get(
-        `http://103.77.172.199:3000/api/v1/products/${product.id}`
+        `${Config.API_BASE_URL}/products/${product.id}`
       );
       setData(response.data);
       console.log("data", response.data.images);
@@ -175,18 +177,122 @@ const CpnProductDetail = ({ product, navigation }) => {
 
           <View
             style={{
-              flexDirection: "row",
+              width: "100%",
+              flexDirection: "column",
               justifyContent: "space-between",
               alignContent: "center",
             }}
           >
-            <Text style={{ fontSize: 25, fontWeight: "200", paddingLeft: 10 }}>
-              {product.name}
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "200",
+                paddingLeft: 10,
+                paddingRight: 10,
+              }}
+            >
+              {product.name}dhfdjhfjdhfjhddjfhdjfhdjhkdjdfkdjfkdjsdjfkdsjd
             </Text>
-            <Text style={{ fontSize: 25, fontWeight: "700", paddingRight: 10, color:'red',  }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                paddingLeft: 10,
+                paddingTop: 10,
+                color: "red",
+              }}
+            >
               {product.price}
               <Text>đ</Text>
             </Text>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignContent: "center",
+              backgroundColor: "rgba(240, 237, 241, 0.72)",
+              padding: 10,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{ marginLeft: 5, marginTop: 10 }}>12345</Text>
+                <Text
+                  style={{
+                    fontWeight: "200",
+                    paddingLeft: 5,
+                  }}
+                >
+                  5
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 50,
+                }}
+              >
+                <Text style={{ marginLeft: 5 }}>Đã bán</Text>
+                <Text
+                  style={{
+                    fontWeight: "200",
+                    paddingLeft: 5,
+                  }}
+                >
+                  23000
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingRight: 10,
+                position: "relative",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  width: 40,
+                  height: 40,
+                  alignItems: "center",
+                  paddingTop: 10,
+                  borderRadius: 25,
+                  borderWidth: 0.5,
+                  borderColor: "white",
+
+                  backgroundColor: "white",
+                  shadowColor: "black",
+                  shadowOffset: { width: 5, height: 0 },
+                  shadowOpacity: 0.5,
+                  shadowRadius: 5,
+                }}
+              >
+                <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: 40,
+                  height: 40,
+                  alignItems: "center",
+                  paddingTop: 10,
+                  borderRadius: 25,
+                  borderWidth: 0.5,
+                  borderColor: "white",
+                  marginLeft: 30,
+                  backgroundColor: "white",
+                  shadowColor: "black",
+                  shadowOffset: { width: 5, height: 0 },
+                  shadowOpacity: 0.5,
+                  shadowRadius: 5,
+                }}
+              >
+                <FontAwesomeIcon icon={faShare} size={20} color="gray" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View
@@ -196,7 +302,9 @@ const CpnProductDetail = ({ product, navigation }) => {
               paddingBottom: 115,
             }}
           >
-            <Text style={{marginStart:10, marginEnd:10}}>{product.description}</Text>
+            <Text style={{ marginStart: 10, marginEnd: 10 }}>
+              {product.description}
+            </Text>
           </View>
           <View style={styles.heartContainer}>
             <TouchableOpacity
@@ -239,7 +347,7 @@ const CpnProductDetail = ({ product, navigation }) => {
           <Text
             style={{
               textAlign: "center",
-              fontSize: 25 ,
+              fontSize: 25,
               fontWeight: "bold",
               fontStyle: "italic",
               color: "white",
@@ -281,7 +389,7 @@ const styles = StyleSheet.create({
   vImage: {
     width: "100%",
     height: HEIGHT,
-    backgroundColor: "#A9CDEE",
+
     position: "relative",
   },
   dropdownContainer: {
