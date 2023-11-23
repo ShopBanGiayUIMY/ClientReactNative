@@ -25,6 +25,8 @@ const HEIGHT = Dimensions.get("window").height;
 const ProductInCart = (props) => {
   const { dataCart, Cart_id ,handlePress} = props;
   const { updateQuantity } = useAuth();
+  
+  console.log("dataCart: " + JSON.stringify(dataCart));
   const loadlai=()=> {
     handlePress() ;
   }

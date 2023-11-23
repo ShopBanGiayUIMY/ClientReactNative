@@ -35,6 +35,12 @@ const authReducer = (state, action) => {
         isLoggedIn: true,
         userInfo: action.payload,
       };
+    case "INFOCART":
+      return {
+        ...state,
+        isLoggedIn: true,
+        infoCart: action.payload,
+      };
     default:
       return state;
   }

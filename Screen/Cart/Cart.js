@@ -31,10 +31,7 @@ export default function Cart({ navigation, props }) {
     try {
       GetCart().then((result) => {
         setData(result);
-        result.forEach((item, index) => {
-          
-        }
-        );
+        console.log("data", result);
       });
     } catch (error) {
       console.log("Error:", error);
