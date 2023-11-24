@@ -58,10 +58,9 @@ const useAuth = () => {
   };
   const InfoAuth = async () => {
     const headers = await authHeader();
-    const userid = await AsyncStorage.getItem("user_id");
     try {
       const response = await axios.get(
-        `${Config.API_BASE_URL}/auth/infouser/${userid}`,
+        `${Config.API_BASE_URL}/users/info-user/`,
         {
           headers: headers,
         }

@@ -35,7 +35,6 @@ export default function ListProduct({ navigation }) {
         // Handle the retrieved data by updating the state
         const first10Items = responseData.slice(0, visibleItems);
         setData(first10Items);
-        console.log("ooooooooooooo", first10Items);
         setIsLoading(false);
         setRefreshing(false);
         

@@ -66,4 +66,3 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(234, 235, 236, 0.72)",
   },
 });
-

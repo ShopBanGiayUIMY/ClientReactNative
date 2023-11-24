@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import {
   Text,
   View,
@@ -23,19 +23,23 @@ const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const ProductInCart = (props) => {
-  const { dataCart, Cart_id ,handlePress} = props;
+  const { dataCart, Cart_id, handlePress } = props;
   const { updateQuantity } = useAuth();
-  
-  console.log("dataCart: " + JSON.stringify(dataCart));
-  const loadlai=()=> {
-    handlePress() ;
-  }
+  const loadlai = () => {
+    handlePress();
+  };
   const [data, setData] = useState(dataCart);
+  const [quantity, setQuantity] = useState([]);
+  useEffect(() => {
+    setQuantity(dataCart.map((item) => item.quantity));
+  }, [dataCart]);
+  console.log("quantity", quantity);
+  useEffect(() => {
+    setData(dataCart);
+  }, [dataCart]);
   const handleInputChange = (text, index) => {
     const newData = [...data];
     newData[index] = { ...newData[index], quantity: text };
-    console.log("newData", newData[index].quantity);
-    console.log("newDatahhhhh", newData[index].ProductDetail.detail_id);
     setData(newData);
   };
   const handleGiam = (quantity, product_detail_id) => {
@@ -43,16 +47,34 @@ const ProductInCart = (props) => {
       console.log("result", result);
       loadlai();
     });
-    
   };
 
   const handleTang = (quantity, product_detail_id) => {
- 
     loadlai();
   };
   const handleQuantityChange = (text, item) => {
     console.log(`Changing quantity for item with id ${item.item_id}`);
   };
+  function ItemInput({ item, index, handleInputChange }) {
+    const [tempQuantity, setTempQuantity] = useState(item.quantity.toString());
+
+    const handleBlur = () => {
+      handleInputChange(tempQuantity, index);
+      setTimeout(() => {
+        console.log("New state:", tempQuantity);
+      }, 1000);
+    };
+
+    return (
+      <TextInput
+        style={styles.txtCount}
+        value={tempQuantity}
+        onChangeText={(text) => setTempQuantity(text)}
+        keyboardType="numeric"
+        onBlur={handleBlur}
+      />
+    );
+  }
   return (
     <ScrollView style={styles.container}>
       <Swipelist
@@ -108,11 +130,10 @@ const ProductInCart = (props) => {
                       <Text style={styles.txtTru}>-</Text>
                     </TouchableOpacity>
                     <View style={styles.vCount}>
-                      <TextInput
-                        style={styles.txtCount}
-                        value={item.quantity.toString()}
-                        onChangeText={(text) => handleInputChange(text, index)}
-                        keyboardType="numeric"
+                      <ItemInput
+                        item={item}
+                        index={index}
+                        handleInputChange={handleInputChange}
                       />
                     </View>
                     <TouchableOpacity
@@ -147,7 +168,7 @@ const ProductInCart = (props) => {
                 borderWidth: 0.5,
                 borderColor: "white",
               }}
-              onPress={() => handleXoa()}
+              onPress={() => console.log("pressed")}
             >
               <Text
                 style={{

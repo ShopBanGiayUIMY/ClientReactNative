@@ -19,6 +19,7 @@ import { AuthStatus } from "../../Services/AuthContext";
 export default function Information({ navigation }) {
   const { state ,dispatch} = AuthStatus();
   console.log(state.isLoggedIn);
+  console.log(state.userInfo);
   const handleLogin = () => {
   
     navigation.navigate("Login"); 
@@ -101,7 +102,7 @@ export default function Information({ navigation }) {
             <View style={styles.userInfoContainer}>
               <Image style={styles.avatar} source={avatar} />
               <View style={styles.textContainer}>
-                <Text style={styles.userName}>Nguyễn Văn Huy</Text>
+                <Text style={styles.userName}>{state.userInfo.username}</Text>
                 <Text style={styles.likeproducts}>3 sản phẩm đã thích</Text>
                 <Text style={styles.saleOffUser}>100 Phiếu giảm giá</Text>
               </View>
