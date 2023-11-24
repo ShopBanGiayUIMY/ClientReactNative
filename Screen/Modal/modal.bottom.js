@@ -20,7 +20,7 @@ export default function ModalBottom(props) {
   const [inputValue, setInputValue] = useState("");
   const { closeDrawer, openDrawer } = props;
   const [openSize, setOpenSize] = useState(false);
-  const [valueSize, setValueSize] = useState(""); 
+  const [valueSize, setValueSize] = useState("");
   const [itemsSize, setSizeItems] = useState([
     { label: "M", value: "1" },
     { label: "L", value: "2" },
@@ -29,7 +29,7 @@ export default function ModalBottom(props) {
   ]);
 
   const [openColor, setOpenColor] = useState(false);
-  const [valueColor, setValueColor] = useState(""); 
+  const [valueColor, setValueColor] = useState("");
   const [colorItems, setColorItems] = useState([
     { label: "Màu đỏ", value: "1" },
     { label: "Màu đen", value: "2" },
@@ -57,7 +57,7 @@ export default function ModalBottom(props) {
       );
       console.log("====================================");
     }
-    closeDrawer
+    closeDrawer;
   };
 
   return (
@@ -72,47 +72,44 @@ export default function ModalBottom(props) {
           style={styles.modalContainer}
           onPress={closeDrawer}
         ></Pressable>
-        <View
-          style={{
-            flexDirection: "row",
-            width: "90%",
-            height: 55,
-            justifyContent: "space-between",
-            alignSelf: "center",
-            paddingTop: 3,
-          }}
-        >
-          <View style={{ width: "49%" }}>
-            <DropDownPicker
-              open={openSize}
-              value={valueSize}
-              items={itemsSize}
-              setOpen={setOpenSize}
-              setValue={setValueSize}
-              setItems={setSizeItems}
-              autoScroll={true}
-              style={{ width: "100%", height: 40, borderColor: "white" }}
-            />
-          </View>
-          <View style={{ width: "49%" }}>
-            <DropDownPicker
-              open={openColor}
-              value={valueColor}
-              items={colorItems}
-              setOpen={setOpenColor}
-              setValue={setValueColor}
-              setItems={setColorItems}
-              autoScroll={true}
-              style={{ width: "100%", height: 40, borderColor: "white" }}
-            />
-          </View>
-        </View>
+
         <View style={styles.drawer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter text..."
-            onChangeText={handleInputChange}
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              width: "90%",
+              height: 55,
+              justifyContent: "space-between",
+              alignSelf: "center",
+              paddingTop: 3,
+            }}
+          >
+            <View style={{ width: "49%" }}>
+              <DropDownPicker
+                open={openSize}
+                value={valueSize}
+                items={itemsSize}
+                setOpen={setOpenSize}
+                setValue={setValueSize}
+                setItems={setSizeItems}
+                autoScroll={true}
+                style={{ width: "100%", height: 40, borderColor: "white" }}
+              />
+            </View>
+            <View style={{ width: "49%" }}>
+              <DropDownPicker
+                open={openColor}
+                value={valueColor}
+                items={colorItems}
+                setOpen={setOpenColor}
+                setValue={setValueColor}
+                setItems={setColorItems}
+                autoScroll={true}
+                style={{ width: "100%", height: 40, borderColor: "white" }}
+              />
+            </View>
+          </View>
+
           <View
             style={{
               flexDirection: "row",
@@ -121,9 +118,7 @@ export default function ModalBottom(props) {
               alignSelf: "center",
             }}
           >
-            <TouchableOpacity onPress={closeDrawer} style={styles.closeButton}>
-              <Text style={styles.txtLuachon}>Đóng</Text>
-            </TouchableOpacity>
+           
             <TouchableOpacity
               onPress={ConfirmDrawer}
               style={styles.closeButton}

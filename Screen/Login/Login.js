@@ -84,7 +84,7 @@ export default function Login({ navigation }) {
           ToastAndroid.show(result.message, ToastAndroid.SHORT);
           setTimeout(() => {
             setIsLoading(false);
-            // navigation.navigate("Home");
+            navigation.replace("SplashStore");
           }, 2000);
         }
         if (result && !result.success && agreeToTerms) {
@@ -120,6 +120,7 @@ export default function Login({ navigation }) {
           onChangeText={(text) => checkinput(text)}
           style={styles.input}
           placeholder="Enter your username or email"
+          autoCapitalize="none"
         />
         <View style={styles.passwordInput}>
           <TextInput
@@ -130,6 +131,7 @@ export default function Login({ navigation }) {
             style={styles.input}
             placeholder="Enter your password"
             secureTextEntry={!isPasswordVisible}
+            autoCapitalize="none"
           />
           <TouchableOpacity
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -191,6 +193,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     alignItems: "center",
+    flex: 1,
   },
   logo: {
     width: 90,
