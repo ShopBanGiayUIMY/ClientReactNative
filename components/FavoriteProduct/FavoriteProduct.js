@@ -9,8 +9,7 @@ import {
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-
-export default function Product(props) {
+export default function FavoriteProduct(props) {
   const { dataProd, handlePress } = props;
   const fun_handlePress = () => {
     handlePress ? handlePress(dataProd) : null;

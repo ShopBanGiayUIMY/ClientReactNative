@@ -31,10 +31,9 @@ export default function Cart({ navigation, props }) {
     try {
       GetCart().then((result) => {
         setData(result);
-        console.log("data", result);
       });
     } catch (error) {
-      console.log("Error:", error);
+      console.log("Error cart:", error);
     }
   };
   const handlePresDetailProduct = (item) => {

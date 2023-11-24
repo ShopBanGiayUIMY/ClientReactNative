@@ -160,7 +160,7 @@ export default function AppNavigator() {
         <Stack.Screen
           name="LikeProducts"
           component={LikeProducts}
-          options={{ headerShown: false }}
+          
         />
         <Stack.Screen name="Setting" component={Setting} />
         <Stack.Screen

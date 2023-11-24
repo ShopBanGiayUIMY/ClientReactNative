@@ -33,7 +33,6 @@ const ProductInCart = (props) => {
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
   }, [dataCart]);
-  console.log("quantity", quantity);
   useEffect(() => {
     setData(dataCart);
   }, [dataCart]);

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   FlatList,
   Animated,
+  ToastAndroid,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -62,7 +63,7 @@ const CpnProductDetail = ({ product, navigation }) => {
     try {
       const response = await CheckFavoriteByProduct(product.id);
       console.log("thích ", response.message);
-      if (response.message == true ) {
+      if (response.message == true) {
         setFavorites(true);
         return;
       } else {
@@ -76,12 +77,22 @@ const CpnProductDetail = ({ product, navigation }) => {
   const CheckFavorite = async () => {
     try {
       const response = await CheckFavoriteByProduct(product.id);
-      if (response.message == true ) {
+      if (response.message == true) {
         RemoveFavorite(product.id);
         setFavorites(false);
+        ToastAndroid.showWithGravity(
+          "Đã loại bỏ sản phẩm khỏi mục yêu thích",
+          2,
+          ToastAndroid.CENTER
+        );
       } else {
         AddFavorite(product.id);
         setFavorites(true);
+        ToastAndroid.showWithGravity(
+          "Đã thêm sản phẩm vào mục yêu thích",
+          2,
+          ToastAndroid.CENTER
+        );
       }
     } catch (error) {
       console.error("Error fetching product details:", error);
@@ -130,6 +141,7 @@ const CpnProductDetail = ({ product, navigation }) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.vImage}>
@@ -236,7 +248,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 color: "red",
               }}
             >
-              {product.price}
+              {parseFloat(product.price).toLocaleString("vi-VN")}
               <Text>đ</Text>
             </Text>
           </View>
@@ -306,7 +318,11 @@ const CpnProductDetail = ({ product, navigation }) => {
                 }}
                 onPress={() => CheckFavorite()}
               >
-                <FontAwesomeIcon icon={faHeart} size={20} color={favorites ? 'red' : 'gray'} />
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  size={20}
+                  color={favorites ? "red" : "gray"}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -343,6 +359,7 @@ const CpnProductDetail = ({ product, navigation }) => {
           </View>
           <View style={styles.heartContainer}>
             <TouchableOpacity
+              onPress={() => CheckFavorite()}
               style={{
                 width: 40,
                 height: 40,
@@ -359,7 +376,11 @@ const CpnProductDetail = ({ product, navigation }) => {
                 shadowRadius: 5,
               }}
             >
-              <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+              <FontAwesomeIcon
+                icon={faHeart}
+                size={20}
+                color={favorites ? "red" : "gray"}
+              />
             </TouchableOpacity>
           </View>
         </ScrollView>
