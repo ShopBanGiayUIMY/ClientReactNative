@@ -36,6 +36,7 @@ const COLOURS = {
   backgroundMedium: "#B9B9B9",
   backgroundDark: "#777777",
 };
+import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.bottom";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
@@ -45,14 +46,47 @@ const CpnProductDetail = ({ product, navigation }) => {
   const [data, setData] = useState(null);
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
+  const { GetFavorite, AddFavorite, RemoveFavorite, CheckFavoriteByProduct } =
+    useAuth();
+  const [favorites, setFavorites] = useState();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getproductbyid();
+      GetFavoriteProduct();
     });
 
     return unsubscribe;
   }, [navigation]);
 
+  const GetFavoriteProduct = async () => {
+    try {
+      const response = await CheckFavoriteByProduct(product.id);
+      console.log("thích ", response.message);
+      if (response.message == true ) {
+        setFavorites(true);
+        return;
+      } else {
+        setFavorites(false);
+      }
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
+
+  const CheckFavorite = async () => {
+    try {
+      const response = await CheckFavoriteByProduct(product.id);
+      if (response.message == true ) {
+        RemoveFavorite(product.id);
+        setFavorites(false);
+      } else {
+        AddFavorite(product.id);
+        setFavorites(true);
+      }
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
   const getproductbyid = async () => {
     try {
       const response = await axios.get(
@@ -191,7 +225,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 paddingRight: 10,
               }}
             >
-              {product.name}dhfdjhfjdhfjhddjfhdjfhdjhkdjdfkdjfkdjsdjfkdsjd
+              {product.name}
             </Text>
             <Text
               style={{
@@ -270,8 +304,9 @@ const CpnProductDetail = ({ product, navigation }) => {
                   shadowOpacity: 0.5,
                   shadowRadius: 5,
                 }}
+                onPress={() => CheckFavorite()}
               >
-                <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+                <FontAwesomeIcon icon={faHeart} size={20} color={favorites ? 'red' : 'gray'} />
               </TouchableOpacity>
               <TouchableOpacity
                 style={{

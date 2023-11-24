@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
     flex: 1,
+    overflow: 'hidden',
   },
   
   shadow: {
@@ -62,8 +63,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
-    
-    
   },
   item_1: {
     flexDirection: 'row',
@@ -86,6 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginVertical: 3,
     marginLeft: 10,
+    height: 45,
   },
   price: {
     flexDirection: 'row',

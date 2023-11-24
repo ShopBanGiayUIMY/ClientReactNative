@@ -127,7 +127,7 @@ const useAuth = () => {
     try {
       const response = await axios.patch(
         `${Config.API_BASE_URL}/carts/${Cart_id}`,
-        {product_detail_id: product_detail_id, quantity: quantity},
+        { product_detail_id: product_detail_id, quantity: quantity },
         {
           headers: headers,
         }
@@ -152,6 +152,68 @@ const useAuth = () => {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
   };
+  const GetFavorite = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(`${Config.API_BASE_URL}/favorites/`, {
+        headers: headers,
+      });
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  };
+  const AddFavorite = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/favorites/create`,
+        { productId: product_id },
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  };
+  const RemoveFavorite = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.delete(
+        `${Config.API_BASE_URL}/favorites/delete/${product_id}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  };
+  const CheckFavoriteByProduct = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/favorites/check-favorited/${product_id}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+    }
+  };
   return {
     loginUser,
     registerUser,
@@ -161,6 +223,10 @@ const useAuth = () => {
     GetCart,
     updateQuantity,
     GetVoucher,
+    GetFavorite,
+    AddFavorite,
+    RemoveFavorite,
+    CheckFavoriteByProduct,
   };
 };
 

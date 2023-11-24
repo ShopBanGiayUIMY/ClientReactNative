@@ -7,6 +7,7 @@ import {
   Dimensions,
   RefreshControl,
   SafeAreaView,
+  StatusBar
 } from "react-native";
 
 import loading from "../../images/loading.gif";
@@ -88,12 +89,14 @@ export default function ListProduct({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}  >
+      <StatusBar backgroundColor="rgba(234, 235, 236, 0.72)" barStyle="dark-content" />
       <View
         style={{
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          height: 90,
+          
+       
         }}
       >
         <Header backgroundOpacity={backgroundOpacity}  navigation={navigation}/>
@@ -105,6 +108,9 @@ export default function ListProduct({ navigation }) {
           contentContainerStyle={styles.viewProductsContainer}
           showsVerticalScrollIndicator={false}
           onScroll={handleScroll}
+          removeClippedSubviews={true}
+          maximumZoomScale={1}
+          
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -113,7 +119,7 @@ export default function ListProduct({ navigation }) {
             />
           }
           nestedScrollEnabled={true}
-          style={{ flex: 0, marginBottom: 10 }}
+          style={{ flex: 0}}
         >
           {/* banner */}
           <View style={styles.viewBanner}>
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
   },
   viewProductsContainer: {
     flexGrow: 1,
-    paddingBottom: 10,
+    
   },
   productList: {
     // flexDirection: "row",

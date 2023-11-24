@@ -47,7 +47,7 @@ export default function Cart({ navigation, props }) {
 
   return (
     <View style={styles.container}>
-      {data.map((item, index) => (
+      {data && data.length > 0 && data.map((item, index) => (
         <ProductInCart
           key={index}
           dataCart={item.CartItems}
