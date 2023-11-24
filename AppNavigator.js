@@ -16,6 +16,7 @@ import FormSecurity from "./Screen/SecurityAccount/FormSecurity/FormSecurity";
 import PasswordNew from "./Screen/SecurityAccount/PasswordNew";
 import Coupon from "./Screen/Coupons/Coupon";
 import CpnProductDetail from "./components/Product/CpnProductDetail";
+import Address from "./Screen/Informations/Address";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
@@ -173,6 +174,14 @@ export default function AppNavigator() {
           component={CpnProductDetail}
           options={{
             resetOnBlur: true,
+          }}
+        />
+           <Stack.Screen
+          name="Address"
+          component={Address}
+          options={{
+            resetOnBlur: true,
+            headerShown:false
           }}
         />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
