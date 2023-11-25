@@ -28,7 +28,7 @@ export default function Login({ navigation }) {
       headerTitle: "Đăng nhập",
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
           style={{ marginLeft: 5, marginRight: 10 }}
         >
           <FontAwesome
