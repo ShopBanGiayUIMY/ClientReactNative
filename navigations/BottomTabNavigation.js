@@ -104,11 +104,11 @@ const BottomTabNavigation = () => {
                 style={{
                   position: "absolute",
                   bottom: 16,
-                  width: 12,
-                  height: 12,
+                  width: 10,
+                  height: 10,
                   borderRadius: 8,
                   top: -3,
-                  left: -5,
+                  left: 12,
                   backgroundColor: "#3C3C3C",
                   alignItems: "center",
                   justifyContent: "center",
@@ -117,7 +117,7 @@ const BottomTabNavigation = () => {
               >
                 <Text
                   style={{
-                    fontSize: 7,
+                    fontSize: 5,
                     color: "#FFFFFF",
                   }}
                 >
