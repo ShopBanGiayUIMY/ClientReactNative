@@ -35,9 +35,6 @@ const useAuth = () => {
         user
       );
       if (response.data) {
-        console.log("Đăng nhập thành công", response.data);
-        dispatch({ type: "LOGIN", payload: response.data.user_id });
-        
         return response.data;
       }
     } catch (error) {

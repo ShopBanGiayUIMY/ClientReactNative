@@ -54,7 +54,9 @@ const CpnProductDetail = ({ product, navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getproductbyid();
-      GetFavoriteProduct();
+      if(state.isLoggedIn){
+        GetFavoriteProduct();
+      }
     });
 
     return unsubscribe;
@@ -77,6 +79,14 @@ const CpnProductDetail = ({ product, navigation }) => {
 
   const CheckFavorite = async () => {
     try {
+      if (!state.isLoggedIn) {
+        ToastAndroid.showWithGravity(
+          "Bạn cần đăng nhập để thực hiện chức năng này",
+          2,
+          ToastAndroid.CENTER
+        );
+        return;
+      }else{
       const response = await CheckFavoriteByProduct(product.id);
       if (response.message == true) {
         RemoveFavorite(product.id);
@@ -95,6 +105,7 @@ const CpnProductDetail = ({ product, navigation }) => {
           ToastAndroid.CENTER
         );
       }
+    }
     } catch (error) {
       console.error("Error fetching product details:", error);
     }

@@ -14,20 +14,23 @@ import ModalCoupon from "./modal.coupon";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CouponComponent from "../../components/Coupon/CouponComponent";
 import useAuth from "../../Services/auth.services";
+import { AuthStatus } from "../../Services/AuthContext";
 export default function Coupon({ navigation }) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isclick, setIsClick] = useState(false);
   const { GetVoucher } = useAuth();
+  const { state, dispatch } = AuthStatus();
   useEffect(() => {
-    GetVoucher()
-      .then((result) => {
-        setData(result);
-
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    state.isLoggedIn
+      ? GetVoucher()
+          .then((result) => {
+            setData(result);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+      : null;
   }, [refreshing]);
 
   useLayoutEffect(() => {
@@ -54,7 +57,7 @@ export default function Coupon({ navigation }) {
   const handlePresSearch = (item) => {
     console.log(item);
   };
-  return (
+  return state.isLoggedIn ? (
     <ScrollView style={styles.container}>
       <View style={styles.modal}>
         <ModalCoupon
@@ -84,15 +87,25 @@ export default function Coupon({ navigation }) {
           ))}
       </View>
     </ScrollView>
+  ) : (
+    <View style={styles.error}>
+      <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+        Bạn cần đăng nhập để xem !
+      </Text>
+    </View>
   );
 }
 const styles = StyleSheet.create({
+  error: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     backgroundColor: "rgba(216, 234, 245, 0.8)",
   },
   icon: {
     marginLeft: 5,
-    
   },
   header: {
     height: 50,

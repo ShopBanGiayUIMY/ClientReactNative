@@ -71,49 +71,64 @@ export default function Login({ navigation }) {
   };
   const handleLogin = () => {
     try {
-
       checkInternetConnection();
 
       if (formData.username.length === 0 && formData.email.length === 0) {
         ToastAndroid.show("Các trường không để rỗng", ToastAndroid.SHORT);
       } else {
         if (!agreeToTerms) {
-          ToastAndroid.show(
-            "Bạn chưa đồng ý điều khoản !",
-            ToastAndroid.SHORT
-          );
-        }else{
-          loginUser(formData).then((result) => {
-            if (result && result.success) {
-              AsyncStorage.setItem(
-                "accesstoken",
-                JSON.stringify(result.accesstoken)
-              );
-              AsyncStorage.setItem("user_id", JSON.stringify(result.user_id));
-              AsyncStorage.setItem("isLoggedIn", "true");
-              InfoAuth().then((data) => {
-                if (data) {
-                  dispatch({ type: "USERINFO", payload: data });
+          ToastAndroid.show("Bạn chưa đồng ý điều khoản !", ToastAndroid.SHORT);
+        } else {
+          loginUser(formData)
+            .then((result) => {
+              if (result && result.success) {
+                if (result.verified !== "true") {
+                  // User is not verified
+                  console.log(result);
+                  ToastAndroid.show(
+                    "Bạn vui lòng vào gmail để xác nhận tài khoản!",
+                    ToastAndroid.SHORT
+                  );
+                  dispatch({ type: "LOGOUT" });
+                } else {
+                  // User is verified
+                  dispatch({ type: "LOGIN", payload: result.user_id });
+                  AsyncStorage.setItem(
+                    "accesstoken",
+                    JSON.stringify(result.accesstoken)
+                  );
+                  AsyncStorage.setItem(
+                    "user_id",
+                    JSON.stringify(result.user_id)
+                  );
+                  AsyncStorage.setItem("isLoggedIn", "true");
+
+                  InfoAuth().then((data) => {
+                    if (data) {
+                      dispatch({ type: "USERINFO", payload: data });
+                    }
+                  });
+
+                  setIsLoading(true);
+                  ToastAndroid.show(result.message, ToastAndroid.SHORT);
+
+                  setTimeout(() => {
+                    setIsLoading(false);
+                    navigation.replace("SplashStore");
+                  }, 2000);
                 }
-              });
-    
-              setIsLoading(true);
-              ToastAndroid.show(result.message, ToastAndroid.SHORT);
-              setTimeout(() => {
-                setIsLoading(false);
-                navigation.replace("SplashStore");
-              }, 2000);
-            }
-            if (result && !result.success && agreeToTerms) {
-              ToastAndroid.show(result.message, ToastAndroid.SHORT);
-              return false;
-            }
-    
-            
-          });
+              } else if (result && !result.success && agreeToTerms) {
+                // Login failed
+                ToastAndroid.show(result.message, ToastAndroid.SHORT);
+                return false;
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              ToastAndroid.show("Lỗi!", ToastAndroid.SHORT);
+            });
         }
       }
-      
     } catch (error) {
       ToastAndroid.show("Lỗi!", ToastAndroid.SHORT);
     }
