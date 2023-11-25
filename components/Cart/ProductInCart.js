@@ -43,10 +43,12 @@ const ProductInCart = (props) => {
     setData(newData);
   };
   const handleGiam = (quantity, product_detail_id) => {
-    updateQuantity(Cart_id, product_detail_id, quantity - 1).then((result) => {
-      console.log("result", result);
-      loadlai();
-    });
+    if(quantity>1){
+      updateQuantity(Cart_id, product_detail_id, quantity - 1).then((result) => {
+        console.log("result", result);
+        loadlai();
+      });
+    }
   };
 
   const handleTang = (quantity, product_detail_id) => {
@@ -54,7 +56,6 @@ const ProductInCart = (props) => {
       console.log("result", result);
       loadlai();
     });
-    loadlai();
   };
   const handleQuantityChange = (text, item) => {
     console.log(`Changing quantity for item with id ${item.item_id}`);
@@ -65,7 +66,11 @@ const ProductInCart = (props) => {
     const handleBlur = () => {
       handleInputChange(tempQuantity, index);
       setTimeout(() => {
-        console.log("New state:", tempQuantity);
+        console.log("Số lượng mới:", tempQuantity);
+        updateQuantity(Cart_id, item.ProductDetail.detail_id, tempQuantity).then((result) => {
+          console.log("result", result);
+          loadlai();
+        });
       }, 1000);
     };
     return (
