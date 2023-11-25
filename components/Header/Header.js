@@ -19,6 +19,9 @@ const { width } = Dimensions.get("window");
 
 const Header = (props) => {
   const { backgroundOpacity, navigation } = props;
+  const handlePress=()=>{
+    navigation.navigate('Cart')
+  }
   return (
     <SafeAreaView
       style={[
