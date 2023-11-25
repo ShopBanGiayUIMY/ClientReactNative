@@ -50,7 +50,10 @@ const ProductInCart = (props) => {
   };
 
   const handleTang = (quantity, product_detail_id) => {
-    loadlai();
+    updateQuantity(Cart_id, product_detail_id, quantity + 1).then((result) => {
+      console.log("result", result);
+      loadlai();
+    });
   };
   const handleQuantityChange = (text, item) => {
     console.log(`Changing quantity for item with id ${item.item_id}`);

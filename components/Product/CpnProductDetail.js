@@ -191,7 +191,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 paddingRight: 10,
               }}
             >
-              {product.name}dhfdjhfjdhfjhddjfhdjfhdjhkdjdfkdjfkdjsdjfkdsjd
+              {product.name}
             </Text>
             <Text
               style={{
@@ -299,10 +299,9 @@ const CpnProductDetail = ({ product, navigation }) => {
             style={{
               position: "relative",
               top: 25,
-              paddingBottom: 115,
             }}
           >
-            <Text style={{ marginStart: 10, marginEnd: 10 }}>
+            <Text style={{ marginStart: 10, marginEnd: 10, marginBottom: 150 }}>
               {product.description}
             </Text>
           </View>
