@@ -24,12 +24,12 @@ const HEIGHT = Dimensions.get("window").height;
 
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress } = props;
-  const { updateQuantity } = useAuth()
+  const { updateQuantity } = useAuth();
   const loadlai = () => {
     handlePress();
   };
   const [data, setData] = useState(dataCart);
-  
+
   const [quantity, setQuantity] = useState([]);
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
@@ -43,11 +43,13 @@ const ProductInCart = (props) => {
     setData(newData);
   };
   const handleGiam = (quantity, product_detail_id) => {
-    if(quantity>1){
-      updateQuantity(Cart_id, product_detail_id, quantity - 1).then((result) => {
-        console.log("result", result);
-        loadlai();
-      });
+    if (quantity > 1) {
+      updateQuantity(Cart_id, product_detail_id, quantity - 1).then(
+        (result) => {
+          console.log("result", result);
+          loadlai();
+        }
+      );
     }
   };
 
@@ -67,7 +69,11 @@ const ProductInCart = (props) => {
       handleInputChange(tempQuantity, index);
       setTimeout(() => {
         console.log("Số lượng mới:", tempQuantity);
-        updateQuantity(Cart_id, item.ProductDetail.detail_id, tempQuantity).then((result) => {
+        updateQuantity(
+          Cart_id,
+          item.ProductDetail.detail_id,
+          tempQuantity
+        ).then((result) => {
           console.log("result", result);
           loadlai();
         });
@@ -123,8 +129,12 @@ const ProductInCart = (props) => {
                 <View style={styles.vSizeandColor}>
                   <Text style={styles.itemphanloai}>Phân loại</Text>
                   <View style={styles.phanloai}>
-                    <Text style={styles.txtSizeandColor}>Size: {item.ProductDetail.size}</Text>
-                    <Text style={styles.txtSizeandColor}>Màu: {item.ProductDetail.color}</Text>
+                    <Text style={styles.txtSizeandColor}>
+                      Size: {item.ProductDetail.size}
+                    </Text>
+                    <Text style={styles.txtSizeandColor}>
+                      Màu: {item.ProductDetail.color}
+                    </Text>
                   </View>
                 </View>
 
@@ -175,54 +185,22 @@ const ProductInCart = (props) => {
             </View>
           </View>
         )}
-        rightOpenValue={200}
+        rightOpenValue={210}
         renderHiddenItem={(data, index) => (
-          <View style={{ flexDirection: "row" }}>
+          <View style={styles.hiddenItemContainer}>
             <Pressable
-              style={{
-                width: 100,
-                height: 100,
-                backgroundColor: "green",
-                borderRadius: 35,
-                borderWidth: 0.5,
-                borderColor: "white",
-              }}
+              style={styles.editButton}
               onPress={() => console.log("pressed")}
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 35,
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                xoá
-              </Text>
+              <Text style={styles.buttonTextedit}>Chỉnh sửa</Text>
             </Pressable>
             <Pressable
-              style={{
-                width: 100,
-                height: 100,
-                backgroundColor: "green",
-                borderRadius: 35,
-                borderWidth: 0.5,
-                borderColor: "white",
-              }}
-              onPress={() => handleSua()}
+              style={styles.deleteButton}
+              onPress={() =>
+                alert(`Xoá sản phẩm ${data.ProductDetail.detail_id}`)
+              }
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 35,
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                edit
-              </Text>
+              <Text style={styles.buttonTextdelete}>Xoá</Text>
             </Pressable>
           </View>
         )}
@@ -312,6 +290,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 4,
     justifyContent: "center",
+    marginHorizontal: 5,
   },
   txtCount: {
     textAlign: "center",
@@ -333,25 +312,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "gray",
   },
-  vThanhToan: {},
+
   hiddenItemContainer: {
     flexDirection: "row",
-  },
-  hiddenButton: {
-    width: 100,
-    height: 100,
-    backgroundColor: "green",
-    borderRadius: 35,
-    borderWidth: 0.5,
-    borderColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
     marginHorizontal: 5,
+    alignItems: "center",
   },
-  hiddenButtonText: {
+  editButton: {
+    width: 100,
+    height: 160,
+    backgroundColor: "orange",
+    alignContent: "center",
+    borderRadius: 10,
+  },
+  deleteButton: {
+    width: 100,
+    height: 160,
+    backgroundColor: "rgba(245, 65, 2, 0.8)",
+    borderColor: "white",
+    borderRadius: 10,
+  },
+  buttonTextdelete: {
     textAlign: "center",
+    marginTop: 35,
     fontSize: 20,
-    fontWeight: "bold",
+    color: "white",
+  },
+  buttonTextedit: {
+    textAlign: "center",
+    marginTop: 35,
+    fontSize: 20,
     color: "white",
   },
 });
