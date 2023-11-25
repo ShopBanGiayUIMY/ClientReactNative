@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 export default function FavoriteProduct(props) {
   const { dataProd, handlePress } = props;
   const fun_handlePress = () => {
@@ -30,6 +30,7 @@ export default function FavoriteProduct(props) {
           <Text style={styles.kihieu}>đ</Text>
           <Text style={styles.item_price}>{parseFloat(dataProd.price).toLocaleString('vi-VN')}</Text>
         </View>
+        
         <View >
           <TouchableOpacity style={styles.addToCart} onPress={()=>{alert('Thêm vào giỏ hàng')}}>
             <FontAwesomeIcon
@@ -41,7 +42,16 @@ export default function FavoriteProduct(props) {
           </TouchableOpacity>
         </View>
         </View>
-       
+        <View >
+          <TouchableOpacity style={styles.menu} onPress={()=>{alert('Thêm vào giỏ hàng')}}>
+            <FontAwesomeIcon
+              style={styles.itemmenu}
+              icon={faEllipsis}
+              size={25}
+              color="rgba(177, 177, 177, 0.72)"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -113,8 +123,7 @@ const styles = StyleSheet.create({
   addToCart: {
     position: 'absolute',
     right: 5,
-    bottom: -10,
-    
+    marginTop: 10,
     borderRadius: 50,
     borderWidth: 1,
     width: 25,
@@ -128,4 +137,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'red',
   },
+  menu:{
+    marginTop: 5,
+    marginLeft: 10,
+  }
 });

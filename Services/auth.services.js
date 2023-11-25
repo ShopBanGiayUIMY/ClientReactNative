@@ -37,7 +37,7 @@ const useAuth = () => {
       if (response.data) {
         console.log("Đăng nhập thành công", response.data);
         dispatch({ type: "LOGIN", payload: response.data.user_id });
-
+        
         return response.data;
       }
     } catch (error) {
@@ -162,7 +162,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
     }
   };
   const AddFavorite = async (product_id) => {
@@ -179,7 +179,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
     }
   };
   const RemoveFavorite = async (product_id) => {
@@ -211,7 +211,23 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+    }
+  };
+  const getcountFavorites = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/favorites/count-favorites`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      ToastAndroid.show("Mã lỗi không xác định của số lượng Favorite", ToastAndroid.SHORT);
     }
   };
   return {
@@ -227,6 +243,7 @@ const useAuth = () => {
     AddFavorite,
     RemoveFavorite,
     CheckFavoriteByProduct,
+    getcountFavorites,
   };
 };
 

@@ -7,7 +7,8 @@ import {
   Dimensions,
   RefreshControl,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  ToastAndroid,
 } from "react-native";
 
 import loading from "../../images/loading.gif";
@@ -16,6 +17,7 @@ import HeaderBanner from "../../components/Header/HeaderBanner";
 import MenuCategory from "../../components/MenuCategory/MenuCategory";
 import Product from "../../components/Product/Product";
 import { FlatGrid } from "react-native-super-grid";
+import NetInfo from "@react-native-community/netinfo";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import Config from "../../Api/Config";
@@ -24,48 +26,62 @@ export default function ListProduct({ navigation }) {
   const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
-  const [visibleItems, setVisibleItems] = useState(4); 
-  
+  const [visibleItems, setVisibleItems] = useState(4);
+  const [isConnected, setIsConnected] = useState(false);
+  const checkInternetConnection = async () => {
+    const netInfoState = await NetInfo.fetch();
+    if (netInfoState.isConnected) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const fetchData = () => {
     // Define the API URL huy
-    const apiUrl = `${Config.API_BASE_URL}/products`;
-    // Make the GET request using fetch
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((responseData) => {
-        // Handle the retrieved data by updating the state
-        const first10Items = responseData.slice(0, visibleItems);
-        setData(first10Items);
-        setIsLoading(false);
-        setRefreshing(false);
-        
-      })
-      .catch((error) => {
-        console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
-      });
+    if (checkInternetConnection()) {
+      console.log("Internet is connected");
+      const apiUrl = `${Config.API_BASE_URL}/products`;
+      // Make the GET request using fetch
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((responseData) => {
+          // Handle the retrieved data by updating the state
+          const first10Items = responseData.slice(0, visibleItems);
+          setData(first10Items);
+          setIsLoading(false);
+          setRefreshing(false);
+        })
+        .catch((error) => {
+          console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
+          setRefreshing(false);
+          setTimeout(() => {
+            setIsConnected(false);
+            setIsLoading(false);
+            
+            ToastAndroid.show("Không có kết nối internet", ToastAndroid.SHORT);
+          }, 5000);
+        });
+    }
   };
 
   useEffect(() => {
-    if(!refreshing){
+    if (!refreshing) {
       fetchData();
     }
-   
   }, [refreshing]);
 
-   useEffect(() => {
-      if(visibleItems>4)
+  useEffect(() => {
+    if (visibleItems > 4)
       setTimeout(() => {
         setRefreshing(true);
-      fetchData();
-      }
-      , 1200);
-    
+        fetchData();
+      }, 1200);
   }, [visibleItems]);
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const contentHeight = event.nativeEvent.contentSize.height;
     const height = event.nativeEvent.layoutMeasurement.height;
-    if (offsetY + height >= contentHeight-20) {
+    if (offsetY + height >= contentHeight - 20) {
       setVisibleItems(visibleItems + 4);
     }
 
@@ -78,31 +94,61 @@ export default function ListProduct({ navigation }) {
   };
 
   const handleRefresh = () => {
-    setIsLoading(true);
-    setVisibleItems(4);
-    setTimeout(() => {
-      setRefreshing(true);
-    fetchData();
-    }, 1700);
-    
+    if (checkInternetConnection()) {
+      setIsLoading(true);
+      setVisibleItems(4);
+      setTimeout(() => {
+        setRefreshing(true);
+        fetchData();
+        setIsConnected(true);
+        ToastAndroid.show("Đang tải lại dữ liệu", ToastAndroid.SHORT);
+      }, 1700);
+    } else {
+      setTimeout(() => {
+        setIsConnected(false);
+        setIsLoading(false);
+        setRefreshing(false);
+        ToastAndroid.show("Không có kết nối internet", ToastAndroid.SHORT);
+      }, 5000);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}  >
-      <StatusBar backgroundColor="rgba(234, 235, 236, 0.72)" barStyle="dark-content" />
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        backgroundColor="rgba(234, 235, 236, 0.72)"
+        barStyle="dark-content"
+      />
       <View
         style={{
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          
-       
         }}
       >
-        <Header backgroundOpacity={backgroundOpacity}  navigation={navigation}/>
+        <Header backgroundOpacity={backgroundOpacity} navigation={navigation} />
       </View>
       {isloading ? (
-        <Image source={loading} style={styles.loadingImage} />
+        { isConnected } ? (
+          <ScrollView
+            contentContainerStyle={styles.viewProductsContainer}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            removeClippedSubviews={true}
+            maximumZoomScale={1}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={["#9Bd35A", "#689F38"]}
+              />
+            }
+            nestedScrollEnabled={true}
+            style={{ flex: 0 }}
+          >
+            <Image source={loading} style={styles.loadingImage} />
+          </ScrollView>
+        ) : null
       ) : (
         <ScrollView
           contentContainerStyle={styles.viewProductsContainer}
@@ -110,7 +156,6 @@ export default function ListProduct({ navigation }) {
           onScroll={handleScroll}
           removeClippedSubviews={true}
           maximumZoomScale={1}
-          
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -119,7 +164,7 @@ export default function ListProduct({ navigation }) {
             />
           }
           nestedScrollEnabled={true}
-          style={{ flex: 0}}
+          style={{ flex: 0 }}
         >
           {/* banner */}
           <View style={styles.viewBanner}>
@@ -127,14 +172,17 @@ export default function ListProduct({ navigation }) {
             <MenuCategory />
           </View>
           <View style={styles.productList}>
-          <FlatGrid
-          itemDimension={WIDTH/3}
-          scrollEnabled={false}
-          data={data}
-          renderItem={({ item }) => (
-            <Product dataProd={item} handlePress={handlePressDetailProduct} />
-          )}
-        />
+            <FlatGrid
+              itemDimension={WIDTH / 3}
+              scrollEnabled={false}
+              data={data}
+              renderItem={({ item }) => (
+                <Product
+                  dataProd={item}
+                  handlePress={handlePressDetailProduct}
+                />
+              )}
+            />
           </View>
         </ScrollView>
       )}
@@ -190,7 +238,6 @@ const styles = StyleSheet.create({
   },
   viewProductsContainer: {
     flexGrow: 1,
-    
   },
   productList: {
     // flexDirection: "row",
@@ -201,8 +248,6 @@ const styles = StyleSheet.create({
     // width: WIDTH-10,
     // borderColor: "red",
     // borderWidth: 1,
-    
-
   },
   loadingImage: {
     width: 100,

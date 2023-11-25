@@ -87,7 +87,7 @@ export default function CouponComponent(props) {
 
   let imgvoucher, widthvoucher, heightvoucher, voucher_bg, clock_icon;
 
-  if (dataVouchers.reward_type == "2") {
+  if (dataVouchers.reward_type == "2" || dataVouchers.reward_type == "1") {
     imgvoucher =
       "https://images.vexels.com/media/users/3/200093/isolated/preview/596f0d8cb733b17268752d044976f102-shopping-bag-icon.png";
     widthvoucher = "35%";

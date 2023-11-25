@@ -18,8 +18,11 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import logo from "../../assets/images/logo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
+import { AuthStatus } from "../../Services/AuthContext";
 export default function Login({ navigation }) {
   const [isloading, setIsLoading] = useState(false);
+  const { state, dispatch } = AuthStatus();
+  const { InfoAuth } = useAuth();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Đăng nhập",
@@ -60,49 +63,57 @@ export default function Login({ navigation }) {
   const checkinput = (text) => {
     if (checkemail.test(text)) {
       setFormData({ ...formData, email: text, username: "" });
-      console.log("là email");
     } else if (usernameRegex.test(text)) {
       setFormData({ ...formData, username: text, email: "" });
-      console.log("là username");
     } else {
       setFormData({ ...formData, email: text, username: text });
-      console.log("không phải là username và email");
     }
   };
   const handleLogin = () => {
     try {
-      checkInternetConnection();
-      loginUser(formData).then((result) => {
-        if (result && result.success) {
-          AsyncStorage.setItem(
-            "accesstoken",
-            JSON.stringify(result.accesstoken)
-          );
-          AsyncStorage.setItem("user_id", JSON.stringify(result.user_id));
-          AsyncStorage.setItem("isLoggedIn", "true");
-          setIsLoading(true);
-          ToastAndroid.show(result.message, ToastAndroid.SHORT);
-          setTimeout(() => {
-            setIsLoading(false);
-            navigation.replace("SplashStore");
-          }, 2000);
-        }
-        if (result && !result.success && agreeToTerms) {
-          ToastAndroid.show(result.message, ToastAndroid.SHORT);
-          return false;
-        }
 
-        if (formData.username.length === 0 && formData.email.length === 0) {
-          ToastAndroid.show("Các trường không để rỗng", ToastAndroid.SHORT);
-        } else {
-          if (!agreeToTerms) {
-            ToastAndroid.show(
-              "Bạn chưa đồng ý điều khoản !",
-              ToastAndroid.SHORT
-            );
-          }
+      checkInternetConnection();
+
+      if (formData.username.length === 0 && formData.email.length === 0) {
+        ToastAndroid.show("Các trường không để rỗng", ToastAndroid.SHORT);
+      } else {
+        if (!agreeToTerms) {
+          ToastAndroid.show(
+            "Bạn chưa đồng ý điều khoản !",
+            ToastAndroid.SHORT
+          );
+        }else{
+          loginUser(formData).then((result) => {
+            if (result && result.success) {
+              AsyncStorage.setItem(
+                "accesstoken",
+                JSON.stringify(result.accesstoken)
+              );
+              AsyncStorage.setItem("user_id", JSON.stringify(result.user_id));
+              AsyncStorage.setItem("isLoggedIn", "true");
+              InfoAuth().then((data) => {
+                if (data) {
+                  dispatch({ type: "USERINFO", payload: data });
+                }
+              });
+    
+              setIsLoading(true);
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              setTimeout(() => {
+                setIsLoading(false);
+                navigation.replace("SplashStore");
+              }, 2000);
+            }
+            if (result && !result.success && agreeToTerms) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              return false;
+            }
+    
+            
+          });
         }
-      });
+      }
+      
     } catch (error) {
       ToastAndroid.show("Lỗi!", ToastAndroid.SHORT);
     }

@@ -19,6 +19,7 @@ import {
   faShareNodes,
   faHeart,
   faShare,
+  faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -38,7 +39,7 @@ const COLOURS = {
   backgroundDark: "#777777",
 };
 import useAuth from "../../Services/auth.services";
-import ModalBottom from "../../Screen/Modal/modal.bottom";
+import ModalBottom from "../../Screen/Modal/modal.product.detail";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
 
@@ -141,7 +142,12 @@ const CpnProductDetail = ({ product, navigation }) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
+  let totalQuantitySold = product.total_quantity_sold;
+  if (totalQuantitySold === null) {
+    totalQuantitySold = 0;
+  } else {
+    totalQuantitySold = parseInt(totalQuantitySold);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.vImage}>
@@ -288,7 +294,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                     paddingLeft: 5,
                   }}
                 >
-                  23000
+                  {totalQuantitySold}
                 </Text>
               </View>
             </View>
@@ -385,33 +391,20 @@ const CpnProductDetail = ({ product, navigation }) => {
           </View>
         </ScrollView>
 
-        <Pressable
-          style={{
-            position: "absolute",
-            width: 345,
-            height: 70,
-            backgroundColor: "#DB3022",
-            justifyContent: "center",
-            bottom: 35,
-            alignSelf: "center",
-            marginStart: 10,
-            marginEnd: 10,
-            borderRadius: 25,
-          }}
-          onPress={toggleModal}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 25,
-              fontWeight: "bold",
-              fontStyle: "italic",
-              color: "white",
-            }}
-          >
-            THÊM VÀO GIỎ HÀNG
-          </Text>
-        </Pressable>
+        <View style={styles.buttonContainer}>
+          <Pressable style={styles.addToCartButton} onPress={toggleModal}>
+            <FontAwesomeIcon
+              style={styles.iconAddToCart}
+              icon={faCartShopping}
+              size={20}
+              color="white"
+            />
+            <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
+          </Pressable>
+          <Pressable style={styles.buyNowButton} onPress={toggleModal}>
+            <Text style={styles.buttonTextmua}>Mua ngay</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -464,6 +457,43 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  addToCartButton: {
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#26aa99", 
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    width: "50%",
+
+  },
+  buyNowButton: {
+    backgroundColor: "#ee4d2d", 
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+   
+    width: "50%",
+    paddingVertical: 16,
+  },
+  iconAddToCart: {
+    marginRight: 5,
+  },
+  buttonTextadd: {
+    textAlign: "center",
+    fontSize: 10,
+    color: "white",
+   
+  },
+  buttonTextmua: {
+    textAlign: "center",
+    fontSize: 15,
+
+    color: "white",
   },
 });
 

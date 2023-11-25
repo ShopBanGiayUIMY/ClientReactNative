@@ -24,17 +24,21 @@ const HEIGHT = Dimensions.get("window").height;
 
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress } = props;
-  const { updateQuantity } = useAuth();
+  const { updateQuantity } = useAuth()
   const loadlai = () => {
     handlePress();
   };
   const [data, setData] = useState(dataCart);
+  
   const [quantity, setQuantity] = useState([]);
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
   }, [dataCart]);
   useEffect(() => {
+   const time= setTimeout(() => {
     setData(dataCart);
+    }, 1000);
+   clearTimeout(time)
   }, [dataCart]);
   const handleInputChange = (text, index) => {
     const newData = [...data];
@@ -63,7 +67,6 @@ const ProductInCart = (props) => {
         console.log("New state:", tempQuantity);
       }, 1000);
     };
-
     return (
       <TextInput
         style={styles.txtCount}
@@ -114,11 +117,28 @@ const ProductInCart = (props) => {
                 <View style={styles.vSizeandColor}>
                   <Text style={styles.itemphanloai}>Phân loại</Text>
                   <View style={styles.phanloai}>
-                    <Text style={styles.txtSizeandColor}>Size: L</Text>
-                    <Text style={styles.txtSizeandColor}>Màu: Đen</Text>
+                    <Text style={styles.txtSizeandColor}>Size: {item.ProductDetail.size}</Text>
+                    <Text style={styles.txtSizeandColor}>Màu: {item.ProductDetail.color}</Text>
                   </View>
                 </View>
+
                 <View style={styles.vContainer}>
+                  <View style={styles.vThanhToan}>
+                    <Text
+                      style={{
+                        color: "#F60000",
+                        fontStyle: "normal",
+                        fontWeight: "600",
+
+                        fontSize: 15,
+                      }}
+                    >
+                      {parseFloat(
+                        item.ProductDetail.Product.product_price
+                      ).toLocaleString("vi-VN")}
+                      <Text>đ</Text>
+                    </Text>
+                  </View>
                   <View style={styles.vChildContainer}>
                     <TouchableOpacity
                       style={styles.pressTru}
@@ -143,12 +163,6 @@ const ProductInCart = (props) => {
                     >
                       <Text style={styles.txtCong}>+</Text>
                     </TouchableOpacity>
-                    <View style={styles.vThanhToan}>
-                      <Text>
-                        {item.item_id}
-                        <Text>đ</Text>
-                      </Text>
-                    </View>
                   </View>
                 </View>
               </View>
@@ -264,13 +278,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   vContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    marginTop: 10,
   },
   vChildContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
   },
   pressTru: {
     borderRadius: 10,
@@ -315,13 +327,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "gray",
   },
-  vThanhToan: {
-    width: "25%",
-    alignSelf: "flex-end",
-    position: "relative",
-    top: -20,
-    right: -25,
-  },
+  vThanhToan: {},
   hiddenItemContainer: {
     flexDirection: "row",
   },

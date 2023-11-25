@@ -22,12 +22,12 @@ const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
-import { View, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableWithoutFeedback,Text } from "react-native";
 import LikeProducts from "./Screen/Informations/LikeProducts";
 import Search from "./Screen/Search/Search";
 import Icon from "react-native-vector-icons/FontAwesome";
-import ModalBottom from "./Screen/Modal/modal.bottom";
 import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
+
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
@@ -103,7 +103,28 @@ function TabNavigator() {
           tabBarShowLabel: false,
           title: "Cart",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="cart" color={color} size={20} />
+           
+            <View>
+                <View style={{
+                    position: "absolute",
+                    bottom: 16,
+                    width: 12,
+                    height: 12,
+                    borderRadius: 8,
+                    top: -3,
+                    left: -5,
+                    backgroundColor: "#3C3C3C",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 999
+                }}>
+                    <Text style={{
+                        fontSize: 7,
+                        color: "#FFFFFF"
+                    }}>8</Text>
+                </View>
+                 <MaterialCommunityIcons name="cart" color={color} size={20} />
+            </View>
           ),
           tabBarButton: (props) => <TabButton {...props} />,
         }}

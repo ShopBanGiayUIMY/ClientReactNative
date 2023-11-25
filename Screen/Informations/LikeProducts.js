@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from "react-native";
-
+import { AuthStatus } from "../../Services/AuthContext";
 import loading from "../../images/loading.gif";
 import FavoriteProduct from "../../components/FavoriteProduct/FavoriteProduct";
 import { FlatGrid } from "react-native-super-grid";
@@ -24,6 +24,7 @@ export default function LikeProducts({ navigation }) {
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
   const [visibleItems, setVisibleItems] = useState(4);
   const { GetFavorite, RemoveFavorite } = useAuth();
+  const {state}=AuthStatus();
   const fetchData = async () => {
     const responseData = await GetFavorite();
     console.log("responseDataw", responseData);
@@ -38,6 +39,25 @@ export default function LikeProducts({ navigation }) {
       fetchData();
     }
   }, [refreshing]);
+  
+  useEffect(() => {
+    let time;
+  
+    if (state.isLoggedIn) {
+      time = setTimeout(() => {
+        if (!refreshing) {
+          fetchData();
+        }
+      }, 1000);
+    } else {
+      navigation.replace("Login", { focustile: "Home" });
+    }
+  
+    return () => {
+      clearTimeout(time);
+    };
+  }, [navigation, refreshing, state.isLoggedIn]);
+
 
   useEffect(() => {
     if (visibleItems > 4)
