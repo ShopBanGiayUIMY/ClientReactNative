@@ -23,7 +23,7 @@ const Header = (props) => {
     <SafeAreaView
       style={[
         styles.safeArea,
-        { backgroundColor: `rgba(94, 121, 230, ${backgroundOpacity})` },
+        { backgroundColor: `rgba(236, 146, 118,  ${backgroundOpacity})` },
       ]}
     >
       <View style={styles.container}>
@@ -71,16 +71,16 @@ const Header = (props) => {
 
 const styles = {
   safeArea: {
-    flex: 1,
+    
     backgroundColor: "#fff",
     width: width,
     paddingHorizontal: 10,
-    paddingTop: 10,
+    
   },
   container: {
     flexDirection: "row",
     height: 60,
-    marginTop: 10,
+    
   },
   center: {
     flex: 4,

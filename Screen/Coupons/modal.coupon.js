@@ -13,7 +13,6 @@ export default function ModalCoupon(props) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const { check, handlePress,fun_search } = props;
-
   useEffect(() => {
     if (check) {
       toggleModal();

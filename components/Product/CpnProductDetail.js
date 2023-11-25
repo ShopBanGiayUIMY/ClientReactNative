@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   FlatList,
   Animated,
+  ToastAndroid,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -18,6 +19,7 @@ import {
   faShareNodes,
   faHeart,
   faShare,
+  faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -36,7 +38,8 @@ const COLOURS = {
   backgroundMedium: "#B9B9B9",
   backgroundDark: "#777777",
 };
-import ModalBottom from "../../Screen/Modal/modal.bottom";
+import useAuth from "../../Services/auth.services";
+import ModalBottom from "../../Screen/Modal/modal.product.detail";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
 
@@ -45,14 +48,68 @@ const CpnProductDetail = ({ product, navigation }) => {
   const [data, setData] = useState(null);
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
+  const { GetFavorite, AddFavorite, RemoveFavorite, CheckFavoriteByProduct } =
+    useAuth();
+  const [favorites, setFavorites] = useState();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getproductbyid();
+      if(state.isLoggedIn){
+        GetFavoriteProduct();
+      }
     });
 
     return unsubscribe;
   }, [navigation]);
 
+  const GetFavoriteProduct = async () => {
+    try {
+      const response = await CheckFavoriteByProduct(product.id);
+      console.log("thích ", response.message);
+      if (response.message == true) {
+        setFavorites(true);
+        return;
+      } else {
+        setFavorites(false);
+      }
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
+
+  const CheckFavorite = async () => {
+    try {
+      if (!state.isLoggedIn) {
+        ToastAndroid.showWithGravity(
+          "Bạn cần đăng nhập để thực hiện chức năng này",
+          2,
+          ToastAndroid.CENTER
+        );
+        return;
+      }else{
+      const response = await CheckFavoriteByProduct(product.id);
+      if (response.message == true) {
+        RemoveFavorite(product.id);
+        setFavorites(false);
+        ToastAndroid.showWithGravity(
+          "Đã loại bỏ sản phẩm khỏi mục yêu thích",
+          2,
+          ToastAndroid.CENTER
+        );
+      } else {
+        AddFavorite(product.id);
+        setFavorites(true);
+        ToastAndroid.showWithGravity(
+          "Đã thêm sản phẩm vào mục yêu thích",
+          2,
+          ToastAndroid.CENTER
+        );
+      }
+    }
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
   const getproductbyid = async () => {
     try {
       const response = await axios.get(
@@ -87,6 +144,7 @@ const CpnProductDetail = ({ product, navigation }) => {
             resizeMode: "contain",
             borderRadius: 10,
           }}
+          
         />
       </View>
     );
@@ -96,6 +154,12 @@ const CpnProductDetail = ({ product, navigation }) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  let totalQuantitySold = product.total_quantity_sold;
+  if (totalQuantitySold === null) {
+    totalQuantitySold = 0;
+  } else {
+    totalQuantitySold = parseInt(totalQuantitySold);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.vImage}>
@@ -191,7 +255,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 paddingRight: 10,
               }}
             >
-              {product.name}dhfdjhfjdhfjhddjfhdjfhdjhkdjdfkdjfkdjsdjfkdsjd
+              {product.name}
             </Text>
             <Text
               style={{
@@ -202,7 +266,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 color: "red",
               }}
             >
-              {product.price}
+              {parseFloat(product.price).toLocaleString("vi-VN")}
               <Text>đ</Text>
             </Text>
           </View>
@@ -242,7 +306,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                     paddingLeft: 5,
                   }}
                 >
-                  23000
+                  {totalQuantitySold}
                 </Text>
               </View>
             </View>
@@ -270,8 +334,13 @@ const CpnProductDetail = ({ product, navigation }) => {
                   shadowOpacity: 0.5,
                   shadowRadius: 5,
                 }}
+                onPress={() => CheckFavorite()}
               >
-                <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  size={20}
+                  color={favorites ? "red" : "gray"}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -308,6 +377,7 @@ const CpnProductDetail = ({ product, navigation }) => {
           </View>
           <View style={styles.heartContainer}>
             <TouchableOpacity
+              onPress={() => CheckFavorite()}
               style={{
                 width: 40,
                 height: 40,
@@ -324,38 +394,29 @@ const CpnProductDetail = ({ product, navigation }) => {
                 shadowRadius: 5,
               }}
             >
-              <FontAwesomeIcon icon={faHeart} size={20} color="gray" />
+              <FontAwesomeIcon
+                icon={faHeart}
+                size={20}
+                color={favorites ? "red" : "gray"}
+              />
             </TouchableOpacity>
           </View>
         </ScrollView>
 
-        <Pressable
-          style={{
-            position: "absolute",
-            width: 345,
-            height: 70,
-            backgroundColor: "#DB3022",
-            justifyContent: "center",
-            bottom: 35,
-            alignSelf: "center",
-            marginStart: 10,
-            marginEnd: 10,
-            borderRadius: 25,
-          }}
-          onPress={toggleModal}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 25,
-              fontWeight: "bold",
-              fontStyle: "italic",
-              color: "white",
-            }}
-          >
-            THÊM VÀO GIỎ HÀNG
-          </Text>
-        </Pressable>
+        <View style={styles.buttonContainer}>
+          <Pressable style={styles.addToCartButton} onPress={toggleModal}>
+            <FontAwesomeIcon
+              style={styles.iconAddToCart}
+              icon={faCartShopping}
+              size={20}
+              color="white"
+            />
+            <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
+          </Pressable>
+          <Pressable style={styles.buyNowButton} onPress={toggleModal}>
+            <Text style={styles.buttonTextmua}>Mua ngay</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -408,6 +469,43 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  addToCartButton: {
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#26aa99", 
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    width: "50%",
+
+  },
+  buyNowButton: {
+    backgroundColor: "#ee4d2d", 
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+   
+    width: "50%",
+    paddingVertical: 16,
+  },
+  iconAddToCart: {
+    marginRight: 5,
+  },
+  buttonTextadd: {
+    textAlign: "center",
+    fontSize: 10,
+    color: "white",
+   
+  },
+  buttonTextmua: {
+    textAlign: "center",
+    fontSize: 15,
+
+    color: "white",
   },
 });
 
