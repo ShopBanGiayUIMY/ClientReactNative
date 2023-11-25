@@ -4,15 +4,12 @@ import ProductInCart from "../../components/Cart/ProductInCart";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import useAuth from "../../Services/auth.services";
 import Swipelist from "react-native-swipeable-list-view";
-import { useIsFocused } from "@react-navigation/native";
 import { AuthStatus } from "../../Services/AuthContext";
 
-export default function Cart({ navigation, props }) {
+export default function Cart({ navigation}) {
   const [data, setData] = useState([]);
   const { GetCart } = useAuth();
   const { state } = AuthStatus();
-  const isFocused = useIsFocused();
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Giỏ hàng của tôi",
@@ -44,12 +41,11 @@ export default function Cart({ navigation, props }) {
   const handlePressDetailProduct = (item) => {
     fetchData();
   };
-
   useEffect(() => {
     let time;
 
     // Kiểm tra nếu màn hình đang được focus và đã đăng nhập thì mới fetch dữ liệu
-    if (isFocused && state.isLoggedIn) {
+    if (state.isLoggedIn) {
       time = setTimeout(() => {
         fetchData();
       }, 1500);
@@ -59,7 +55,7 @@ export default function Cart({ navigation, props }) {
     return () => {
       clearTimeout(time);
     };
-  }, [navigation, isFocused]);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
