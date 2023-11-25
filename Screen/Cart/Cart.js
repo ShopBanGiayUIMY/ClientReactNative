@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useState, useLayoutEffect,useCallback } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import ProductInCart from "../../components/Cart/ProductInCart";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -6,11 +6,13 @@ import useAuth from "../../Services/auth.services";
 import Swipelist from "react-native-swipeable-list-view";
 import { useIsFocused } from "@react-navigation/native";
 import { AuthStatus } from "../../Services/AuthContext";
+
 export default function Cart({ navigation, props }) {
   const [data, setData] = useState([]);
   const { GetCart } = useAuth();
   const { state } = AuthStatus();
   const isFocused = useIsFocused();
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Giỏ hàng của tôi",
@@ -28,34 +30,36 @@ export default function Cart({ navigation, props }) {
         </TouchableOpacity>
       ),
     });
-  }, []);
-  const fetchData = () => {
+  }, [navigation]);
+
+  const fetchData = useCallback(async () => {
     try {
-      GetCart().then((result) => {
-        setData(result);
-      });
+      const result = await GetCart();
+      setData(result);
     } catch (error) {
       console.log("Error cart:", error);
     }
-  };
-  const handlePresDetailProduct = (item) => {
+  }, [GetCart]);
+
+  const handlePressDetailProduct = (item) => {
     fetchData();
   };
+
   useEffect(() => {
     let time;
 
-    if (state.isLoggedIn) {
+    // Kiểm tra nếu màn hình đang được focus và đã đăng nhập thì mới fetch dữ liệu
+    if (isFocused && state.isLoggedIn) {
       time = setTimeout(() => {
         fetchData();
       }, 1500);
-    } else {
+    } else if (!state.isLoggedIn) {
       navigation.replace("Login");
     }
-
     return () => {
       clearTimeout(time);
     };
-  }, [navigation, isFocused, state.isLoggedIn]);
+  }, [navigation, isFocused]);
 
   return (
     <View style={styles.container}>
@@ -67,7 +71,7 @@ export default function Cart({ navigation, props }) {
             dataCart={item.CartItems}
             Cart_id={item.cart_id}
             navigation={navigation}
-            handlePress={handlePresDetailProduct}
+            handlePress={handlePressDetailProduct}
           />
         ))}
     </View>

@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,StatusBar } from "react-native";
 import ListProduct from "../Products/ListProduct";
 export default function Home({ navigation }) {
   return (
+    
     <View style={styles.container}>
+
       <ListProduct navigation={navigation} />
     </View>
   );

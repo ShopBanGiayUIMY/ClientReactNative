@@ -159,7 +159,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của GetFavorite",
+        ToastAndroid.SHORT
+      );
     }
   };
   const AddFavorite = async (product_id) => {
@@ -176,7 +179,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của GetFavorite",
+        ToastAndroid.SHORT
+      );
     }
   };
   const RemoveFavorite = async (product_id) => {
@@ -208,7 +214,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của GetFavorite",
+        ToastAndroid.SHORT
+      );
     }
   };
   const getcountFavorites = async () => {
@@ -224,9 +233,29 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của số lượng Favorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của số lượng Favorite",
+        ToastAndroid.SHORT
+      );
     }
   };
+  const GetSolidProductById = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/products/solidproduct?id=${product_id}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Network error", error);
+    }
+  };
+
   return {
     loginUser,
     registerUser,
@@ -241,6 +270,7 @@ const useAuth = () => {
     RemoveFavorite,
     CheckFavoriteByProduct,
     getcountFavorites,
+    GetSolidProductById,
   };
 };
 

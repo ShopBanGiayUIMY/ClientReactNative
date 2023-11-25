@@ -27,7 +27,6 @@ export default function LikeProducts({ navigation }) {
   const {state}=AuthStatus();
   const fetchData = async () => {
     const responseData = await GetFavorite();
-    console.log("responseDataw", responseData);
     const first10Items = responseData.slice(0, visibleItems);
     setData(first10Items);
     setIsLoading(false);
@@ -80,6 +79,7 @@ export default function LikeProducts({ navigation }) {
 
   const handlePressDetailProduct = (item) => {
     navigation.navigate("ProductDetail", { product: item });
+    console.log("itemdsdđ", item);
   };
 
   const handleRefresh = () => {

@@ -35,10 +35,7 @@ const ProductInCart = (props) => {
     setQuantity(dataCart.map((item) => item.quantity));
   }, [dataCart]);
   useEffect(() => {
-   const time= setTimeout(() => {
     setData(dataCart);
-    }, 1000);
-   clearTimeout(time)
   }, [dataCart]);
   const handleInputChange = (text, index) => {
     const newData = [...data];
@@ -57,6 +54,7 @@ const ProductInCart = (props) => {
       console.log("result", result);
       loadlai();
     });
+    loadlai();
   };
   const handleQuantityChange = (text, item) => {
     console.log(`Changing quantity for item with id ${item.item_id}`);

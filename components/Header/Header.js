@@ -19,9 +19,9 @@ const { width } = Dimensions.get("window");
 
 const Header = (props) => {
   const { backgroundOpacity, navigation } = props;
-  const handlePress=()=>{
-    navigation.navigate('Cart')
-  }
+  const handlePress = () => {
+    navigation.navigate("Cart");
+  };
   return (
     <SafeAreaView
       style={[
@@ -29,6 +29,11 @@ const Header = (props) => {
         { backgroundColor: `rgba(236, 146, 118,  ${backgroundOpacity})` },
       ]}
     >
+      <StatusBar
+        backgroundColor={`rgba(236, 146, 118,  ${backgroundOpacity})`}
+        barStyle="dark-content"
+        
+      />
       <View style={styles.container}>
         <TouchableOpacity style={styles.icon}>
           <FontAwesomeIcon icon={faQrcode} size={24} style={styles.iconitem} />
@@ -56,7 +61,12 @@ const Header = (props) => {
           </TouchableOpacity>
         </TouchableWithoutFeedback>
         <View style={styles.right}>
-          <TouchableOpacity style={styles.icon} onPress={()=>{handlePress()}}>
+          <TouchableOpacity
+            style={styles.icon}
+            onPress={() => {
+              handlePress();
+            }}
+          >
             <FontAwesomeIcon
               icon={faShoppingCart}
               size={24}
@@ -74,16 +84,13 @@ const Header = (props) => {
 
 const styles = {
   safeArea: {
-    
     backgroundColor: "#fff",
     width: width,
     paddingHorizontal: 10,
-    
   },
   container: {
     flexDirection: "row",
     height: 60,
-    
   },
   center: {
     flex: 4,

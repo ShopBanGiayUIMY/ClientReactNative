@@ -115,10 +115,7 @@ export default function ListProduct({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor="rgba(234, 235, 236, 0.72)"
-        barStyle="dark-content"
-      />
+      
       <View
         style={{
           width: "100%",
