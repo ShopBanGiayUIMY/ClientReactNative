@@ -144,6 +144,7 @@ const CpnProductDetail = ({ product, navigation }) => {
             resizeMode: "contain",
             borderRadius: 10,
           }}
+          
         />
       </View>
     );

@@ -31,18 +31,31 @@ import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
-    if (accessibilityState.selected) {
-      viewRef.current.animate({
-        0: { scale: 0.3,  },
-        1: { scale: 2,  },
-      });
-    } else {
-      viewRef.current.animate({
-        0: { scale: 0.5,  },
-        1: { scale: 1.5,  },
-      });
-    }
+    let animationFrameId;
+  
+    const handleAnimation = () => {
+      if (accessibilityState.selected) {
+        viewRef.current.animate({
+          0: { scale: 0.3 },
+          1: { scale: 2 },
+        });
+      } else {
+        viewRef.current.animate({
+          0: { scale: 0.5 },
+          1: { scale: 1.5 },
+        });
+      }
+    };
+  
+    const handleFrame = () => {
+      animationFrameId = requestAnimationFrame(handleAnimation);
+    };
+  
+    handleFrame();
+  
+    return () => cancelAnimationFrame(animationFrameId);
   }, [accessibilityState.selected]);
+  
 
   return (
     <TouchableWithoutFeedback onPress={onPress} style={{ flex: 1 }}>
@@ -52,7 +65,7 @@ function TabButton({ onPress, accessibilityState, children }) {
     </TouchableWithoutFeedback>
   );
 }
-
+const MemoizedCart = React.memo(Cart);
 function TabNavigator() {
   return (
     <Tab.Navigator
@@ -98,7 +111,7 @@ function TabNavigator() {
      
       <Tab.Screen
         name="Cart"
-        component={Cart}
+        component={MemoizedCart}
         options={{
           tabBarShowLabel: false,
           title: "Cart",
@@ -156,7 +169,7 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
-
+const MemoizedHome = React.memo(TabNavigator);
 export default function AppNavigator() {
   return (
     <NavigationContainer>
@@ -175,7 +188,7 @@ export default function AppNavigator() {
         />
         <Stack.Screen
           name="Home"
-          component={TabNavigator}
+          component={MemoizedHome}
           options={{ headerShown: false }}
         />
         <Stack.Screen
