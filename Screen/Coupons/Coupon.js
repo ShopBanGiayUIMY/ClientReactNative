@@ -8,6 +8,7 @@ import {
   Pressable,
   Image,
   Dimensions,
+
 } from "react-native";
 const windowWidth = Dimensions.get("window").width;
 import ModalCoupon from "./modal.coupon";
@@ -15,22 +16,32 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CouponComponent from "../../components/Coupon/CouponComponent";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
+
+import FlashMessage, {
+  showMessage,
+  renderMessage,
+} from "react-native-flash-message";
+
 export default function Coupon({ navigation }) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isclick, setIsClick] = useState(false);
-  const { GetVoucher } = useAuth();
+  const { GetVoucher, search_voucher_and_add } = useAuth();
   const { state, dispatch } = AuthStatus();
-  useEffect(() => {
+
+  const fetchdata=()=>{
     state.isLoggedIn
-      ? GetVoucher()
-          .then((result) => {
-            setData(result);
-          })
-          .catch((error) => {
-            console.error(error);
-          })
-      : null;
+    ? GetVoucher()
+        .then((result) => {
+          setData(result);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    : null;
+  }
+  useEffect(() => {
+    fetchdata();
   }, [refreshing]);
 
   useLayoutEffect(() => {
@@ -54,11 +65,16 @@ export default function Coupon({ navigation }) {
   const fun_handlePress = (item) => {
     setIsClick(!isclick);
   };
-  const handlePresSearch = (item) => {
-    console.log(item);
+ 
+  const handlePresSearch = () => {
+   const time= setTimeout(() => {
+      fetchdata();
+    }, 1000);
+   
   };
   return state.isLoggedIn ? (
     <ScrollView style={styles.container}>
+     
       <View style={styles.modal}>
         <ModalCoupon
           check={isclick}
@@ -68,6 +84,7 @@ export default function Coupon({ navigation }) {
       </View>
 
       <View style={styles.header}>
+      
         <Pressable style={styles.textHeader} onPress={fun_handlePress}>
           <Image
             source={{ uri: "https://iili.io/JqAuyDN.png" }}
@@ -76,6 +93,7 @@ export default function Coupon({ navigation }) {
           <Text style={styles.text}>Nhập mã voucher</Text>
         </Pressable>
       </View>
+  
       <View>
         {data &&
           data.map((item, index) => (
@@ -100,6 +118,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  
   },
   container: {
     backgroundColor: "rgba(216, 234, 245, 0.8)",

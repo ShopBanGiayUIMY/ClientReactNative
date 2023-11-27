@@ -8,11 +8,16 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-
+import FlashMessage, {
+  showMessage,
+  renderMessage,
+} from "react-native-flash-message";
+import useAuth from "../../Services/auth.services";
 export default function ModalCoupon(props) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const { check, handlePress,fun_search } = props;
+  const { search_voucher_and_add } = useAuth();
+  const { check, handlePress, fun_search, value } = props;
   useEffect(() => {
     if (check) {
       toggleModal();
@@ -23,9 +28,35 @@ export default function ModalCoupon(props) {
     setModalVisible(!isModalVisible);
     handlePress();
   };
-   const search = () => {
-    fun_search?fun_search(inputValue):null;
-   }
+  const search = () => {
+    console.log("value", inputValue);
+    fun_search();
+    if (inputValue == "") {
+      showMessage({
+        message: "Bạn chưa nhập mã giảm giá!",
+        type: "danger",
+        duration: 10000,
+      });
+      return;
+    } else {
+      search_voucher_and_add(inputValue.toLocaleLowerCase()).then((result) => {
+        console.log("result", result);
+        if (result && result.success) {
+          showMessage({
+            message: result.message,
+            type: "danger",
+            duration: 10000,
+          });
+        } else {
+          showMessage({
+            message: result,
+            type: "success",
+            duration: 10000,
+          });
+        }
+      });
+    }
+  };
   const handleInputChange = (text) => {
     setInputValue(text);
   };
@@ -48,7 +79,9 @@ export default function ModalCoupon(props) {
             style={styles.input}
             placeholder="Nhập mã giảm giá..."
             onChangeText={handleInputChange}
+            autoCapitalize="none"
           />
+          <FlashMessage position="top" style={{ marginTop: "16%" }} />
           <Pressable style={styles.Click_tvc} onPress={search}>
             <Text style={styles.text_tvc}>Áp dụng</Text>
           </Pressable>

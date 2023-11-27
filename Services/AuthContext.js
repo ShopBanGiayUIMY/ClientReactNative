@@ -34,7 +34,7 @@ const authReducer = (state, action) => {
         ...state,
         isLoggedIn: true,
         userInfo: action.payload,
-      };
+      };  
     case "INFOCART":
       return {
         ...state,

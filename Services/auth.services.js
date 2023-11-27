@@ -255,6 +255,23 @@ const useAuth = () => {
       console.log("Network error", error);
     }
   };
+  const search_voucher_and_add= async (voucher_code) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/vouchers/find-voucher`,
+        {voucher_code:voucher_code},
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Network error", error);
+    }
+  }
 
   return {
     loginUser,
@@ -271,6 +288,7 @@ const useAuth = () => {
     CheckFavoriteByProduct,
     getcountFavorites,
     GetSolidProductById,
+    search_voucher_and_add
   };
 };
 

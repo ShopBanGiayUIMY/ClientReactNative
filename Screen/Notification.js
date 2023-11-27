@@ -1,62 +1,51 @@
-import React, { useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
-import FlashMessage, { showMessage, renderMessage } from 'react-native-flash-message';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
 const Notification = () => {
-  const itemPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
-  const cartPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const progress = useRef(new Animated.Value(0)).current;
+  const [progressValue, setProgressValue] = useState(0);
+  const [usage_quantity] = useState(120);
 
-  const handleAddToCart = () => {
-    const itemPositionX = itemPosition.x._value;
-    const itemPositionY = itemPosition.y._value;
-    const cartPositionX = cartPosition.x._value;
-    const cartPositionY = cartPosition.y._value;
-
-    Animated.sequence([
-      Animated.timing(itemPosition, {
-        toValue: { x: cartPositionX, y: cartPositionY },
-        duration: 500,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-      Animated.timing(itemPosition, {
-        toValue: { x: 0, y: 0 },
-        duration: 1,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    // Hiển thị flash message với nút tùy chỉnh
-    showMessage({
-      message: 'Sản phẩm đã được thêm vào giỏ hàng!',
-      type: 'success',
-      duration: 2000,
-      renderCustomContent: () => (
-        <View style={styles.customMessageContainer}>
-          <TouchableOpacity onPress={() => alert("hfjdfhj")}>
-            <View style={styles.customButton}>
-              <Text style={styles.customButtonText}>Nút Tùy Chỉnh</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ),
+  useEffect(() => {
+    const progressListener = progress.addListener(({ value }) => {
+      setProgressValue(value);
     });
+
+    return () => {
+      progress.removeListener(progressListener);
+    };
+  }, [progress]);
+
+  const increaseValue = () => {
+    const newValue = Math.min(usage_quantity, progressValue + 10);
+    if (progressValue < usage_quantity) {
+      Animated.timing(progress, {
+        toValue: newValue,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }
   };
 
+  const width = progress.interpolate({
+    inputRange: [0, usage_quantity],
+    outputRange: ['0%', '100%'],
+  });
+
+  const progressPercentage = Math.max(0, Math.min(100, (progressValue / usage_quantity) * 100));
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.item, { transform: itemPosition.getTranslateTransform() }]}>
-        <Text style={styles.itemText}>Item</Text>
-      </Animated.View>
-      <TouchableOpacity onPressIn={handleAddToCart}>
-        <View style={styles.cartButton}>
-          <Text style={styles.buttonText}>Giỏ hàng</Text>
-        </View>
+      <View style={styles.progressBarBackground}>
+        <Animated.View style={[styles.progressBar, { width }]}>
+          <Text style={styles.progressTextInsideBar}>
+            {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})
+          </Text>
+        </Animated.View>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={increaseValue}>
+        <Text style={styles.buttonText}>Giảm giá trị</Text>
       </TouchableOpacity>
-
-      {/* Hiển thị component FlashMessage */}
-      <FlashMessage position="top" />
     </View>
   );
 };
@@ -65,45 +54,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    padding: 20,
   },
-  item: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'blue',
-    justifyContent: 'center',
-    alignItems: 'center',
+  progressTextInsideBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    color: '#fff',
   },
-  itemText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  cartButton: {
-    marginTop: 20,
-    backgroundColor: 'green',
-    padding: 15,
+  progressBarBackground: {
+    height: 20,
+    width: '100%',
+    backgroundColor: '#ccc',
     borderRadius: 10,
   },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#f00',
+    borderRadius: 10,
   },
-  customMessageContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
+  progressText: {
+    marginTop: 10,
+    textAlign: 'center',
   },
-  messageText: {
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  customButton: {
-    backgroundColor: 'orange',
+  button: {
+    marginTop: 20,
+    backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
   },
-  customButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
   },
 });
 
