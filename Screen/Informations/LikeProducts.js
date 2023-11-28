@@ -17,6 +17,7 @@ const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import Config from "../../Api/Config";
 import useAuth from "../../Services/auth.services";
+
 export default function LikeProducts({ navigation }) {
   const [data, setData] = useState(null);
   const [isloading, setIsLoading] = useState(true);
@@ -26,11 +27,13 @@ export default function LikeProducts({ navigation }) {
   const { GetFavorite, RemoveFavorite } = useAuth();
   const {state}=AuthStatus();
   const fetchData = async () => {
+    if(state.isLoggedIn){
     const responseData = await GetFavorite();
     const first10Items = responseData.slice(0, visibleItems);
     setData(first10Items);
     setIsLoading(false);
     setRefreshing(false);
+    }
   };
 
   useEffect(() => {

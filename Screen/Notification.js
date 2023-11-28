@@ -1,92 +1,191 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Animated, Easing, Dimensions ,Image} from "react-native";
+import { BarCodeScanner } from "expo-barcode-scanner";
+import { PermissionsAndroid, Platform } from "react-native";
+import * as Animatable from "react-native-animatable";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const Notification = () => {
-  const progress = useRef(new Animated.Value(0)).current;
-  const [progressValue, setProgressValue] = useState(0);
-  const [usage_quantity] = useState(120);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [animation] = useState(new Animated.Value(0));
 
-  useEffect(() => {
-    const progressListener = progress.addListener(({ value }) => {
-      setProgressValue(value);
-    });
-
-    return () => {
-      progress.removeListener(progressListener);
+  const makeSlideOutTranslation = (translationType, fromValue) => {
+    return {
+      from: {
+        [translationType]: SCREEN_WIDTH * -0.18,
+      },
+      to: {
+        [translationType]: fromValue,
+      },
     };
-  }, [progress]);
+  };
 
-  const increaseValue = () => {
-    const newValue = Math.min(usage_quantity, progressValue + 10);
-    if (progressValue < usage_quantity) {
-      Animated.timing(progress, {
-        toValue: newValue,
-        duration: 1000,
-        useNativeDriver: false,
-      }).start();
+  const requestCameraPermission = async () => {
+    try {
+      if (Platform.OS === "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("Camera permission granted");
+          setHasPermission(true);
+          startAnimation();
+        } else {
+          console.log("Camera permission denied");
+          setHasPermission(false);
+        }
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 
-  const width = progress.interpolate({
-    inputRange: [0, usage_quantity],
-    outputRange: ['0%', '100%'],
-  });
+  const startAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animation, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animation, {
+          toValue: 0,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  };
 
-  const progressPercentage = Math.max(0, Math.min(100, (progressValue / usage_quantity) * 100));
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+
+  const animatedStyle = {
+    transform: [
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 200], // Adjust this value based on your animation needs
+        }),
+      },
+    ],
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.progressBarBackground}>
-        <Animated.View style={[styles.progressBar, { width }]}>
-          <Text style={styles.progressTextInsideBar}>
-            {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})
-          </Text>
-        </Animated.View>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={increaseValue}>
-        <Text style={styles.buttonText}>Giảm giá trị</Text>
-      </TouchableOpacity>
+      {hasPermission === null ? (
+        <Text>Requesting Camera Permission...</Text>
+      ) : hasPermission === false ? (
+        <Text>No access to camera</Text>
+      ) : (
+        <>
+          <BarCodeScanner
+            onBarCodeScanned={(scanned) => {
+              console.log(scanned);
+              // Handle QR code scanning
+            }}
+            style={StyleSheet.absoluteFillObject}
+          />
+          <View style={styles.centerBox}>
+            <View style={styles.rectangleContainer}>
+              <View style={styles.topAndBottomOverlay} />
+              <View style={styles.middleContainer}>
+                <View style={styles.leftAndRightOverlay} />
+                <View style={styles.rectangle}>
+                  <Animatable.View
+                    style={styles.scanBar}
+                    direction="alternate-reverse"
+                    iterationCount="infinite"
+                    duration={1700}
+                    easing="linear"
+                    animation={makeSlideOutTranslation(
+                      "translateY",
+                      SCREEN_WIDTH * -0.54
+                    )}
+                  />
+                </View>
+                <View style={styles.leftAndRightOverlay} />
+              </View>
+              <View style={styles.topAndBottomOverlay} />
+            </View>
+          </View>
+        </>
+      )}
     </View>
   );
 };
 
+const overlayColor = "rgba(0,0,0,0.5)";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  progressTextInsideBar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    color: '#fff',
+  rectangleContainer: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "transparent",
   },
-  progressBarBackground: {
-    height: 20,
-    width: '100%',
-    backgroundColor: '#ccc',
-    borderRadius: 10,
+  rectangle: {
+    height: SCREEN_WIDTH * 0.5,
+    width: SCREEN_WIDTH * 0.5,
+    borderWidth: SCREEN_WIDTH * 0.005,
+    borderColor: "rgba(35, 35, 35, 0.8)",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    position: "relative",
+    
+    
   },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#f00',
-    borderRadius: 10,
+  topAndBottomOverlay: {
+    flex: 1,
+    height: SCREEN_WIDTH,
+    width: SCREEN_WIDTH,
+    backgroundColor: overlayColor,
   },
-  progressText: {
-    marginTop: 10,
-    textAlign: 'center',
+  leftAndRightOverlay: {
+    flex: 1,
+    width: SCREEN_WIDTH * 0.25,
+    backgroundColor: overlayColor,
   },
-  button: {
-    marginTop: 20,
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+  middleContainer: {
+    flexDirection: "row",
+    flex: 3,
   },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
+  scanBar: {
+    width: SCREEN_WIDTH * 0.46,
+    height: SCREEN_WIDTH * 0.005,
+    backgroundColor: "#22ff00",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: SCREEN_WIDTH * 0.6,
+    shadowColor: "rgba(0, 157, 255, 1)",
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 30,
+  
+  },
+  centerBox: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  horizontalBar: {
+    position: "absolute",
+    width: "100%",
+    height: 2,
+    top: 0,
+    backgroundColor: "red",
   },
 });
 

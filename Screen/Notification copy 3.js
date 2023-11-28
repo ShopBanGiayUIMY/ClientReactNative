@@ -1,36 +1,11 @@
-import React, { useRef, useState, useEffect, } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated,PermissionsAndroid, Platform } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
 const Notification = () => {
   const progress = useRef(new Animated.Value(0)).current;
   const [progressValue, setProgressValue] = useState(0);
   const [usage_quantity] = useState(120);
-  const requestCameraPermission = async () => {
-    try {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.CAMERA,
-          {
-            title: 'Camera Permission',
-            message: 'App needs access to your camera.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED ) {
-          console.log('Camera permission granted');
-        } else {
-          console.log('Camera permission denied');
-        }
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-  useEffect(() => {
-    requestCameraPermission();
-  }, []);  
+
   useEffect(() => {
     const progressListener = progress.addListener(({ value }) => {
       setProgressValue(value);
