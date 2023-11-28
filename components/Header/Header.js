@@ -18,25 +18,16 @@ import {
 const { width } = Dimensions.get("window");
 
 const Header = (props) => {
-  const { backgroundOpacity, navigation } = props;
+  const { navigation } = props;
   const handlePress = () => {
     navigation.navigate("Cart");
   };
-  const openqr=()=>{
+  const openqr = () => {
     navigation.navigate("Qrcode");
-  }
+  };
   return (
-    <SafeAreaView
-      style={[
-        styles.safeArea,
-        { backgroundColor: `rgba(236, 146, 118,  ${backgroundOpacity})` },
-      ]}
-    >
-      <StatusBar
-        backgroundColor={`rgba(236, 146, 118,  ${backgroundOpacity})`}
-        barStyle="dark-content"
-        
-      />
+    <SafeAreaView style={styles.safeArea}>
+      
       <View style={styles.container}>
         <TouchableOpacity style={styles.icon} onPress={openqr}>
           <FontAwesomeIcon icon={faQrcode} size={24} style={styles.iconitem} />
@@ -87,7 +78,7 @@ const Header = (props) => {
 
 const styles = {
   safeArea: {
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
     width: width,
     paddingHorizontal: 10,
   },

@@ -11,7 +11,13 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const Qrcode = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [animation] = useState(new Animated.Value(0));
-
+  const [scanned, setScanned] = useState(false);
+  const handleBarCodeScanned = ({ type, data }) => {
+    if (!scanned) {
+      setScanned(true);
+      alert(`Dữ liệu quét được ${data}`);
+    }
+  };
   const makeSlideOutTranslation = (translationType, fromValue) => {
     return {
       from: {
@@ -86,10 +92,9 @@ const Qrcode = () => {
       ) : (
         <>
           <BarCodeScanner
-            onBarCodeScanned={(scanned) => {
-             alert("Đã nhận diện được mã qr");
-              // Handle QR code scanning
-            }}
+            onBarCodeScanned={
+              handleBarCodeScanned
+            }
             focusable={true}
             barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
             cameraProps={{ autoFocus: "on" }}
