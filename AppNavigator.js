@@ -20,6 +20,7 @@ import LikeProducts from "./Screen/Informations/LikeProducts";
 import Search from "./Screen/Search/Search";
 import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
+import Qrcode from "./Screen/Qrcode/Qrcode";
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
   return (
@@ -86,6 +87,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Coupon" component={Coupon} />
         <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="DanhGiaProduct" component={DanhGiaProduct} />
+        <Stack.Screen name="Qrcode" component={Qrcode} />
         
       </Stack.Navigator>
     </NavigationContainer>

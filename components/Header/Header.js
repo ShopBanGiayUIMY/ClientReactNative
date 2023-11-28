@@ -22,6 +22,9 @@ const Header = (props) => {
   const handlePress = () => {
     navigation.navigate("Cart");
   };
+  const openqr=()=>{
+    navigation.navigate("Qrcode");
+  }
   return (
     <SafeAreaView
       style={[
@@ -35,7 +38,7 @@ const Header = (props) => {
         
       />
       <View style={styles.container}>
-        <TouchableOpacity style={styles.icon}>
+        <TouchableOpacity style={styles.icon} onPress={openqr}>
           <FontAwesomeIcon icon={faQrcode} size={24} style={styles.iconitem} />
         </TouchableOpacity>
         <TouchableWithoutFeedback>
