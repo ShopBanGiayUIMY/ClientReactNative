@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   StatusBar,
   TouchableWithoutFeedback,
+  Text,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
@@ -15,10 +16,27 @@ import {
   faShoppingCart,
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
+
 const { width } = Dimensions.get("window");
+import { AuthStatus } from "../../Services/AuthContext";
 
 const Header = (props) => {
   const { navigation } = props;
+  const { state } = AuthStatus();
+  const [totalCart, setTotalCart] = useState(0);
+  const fetchDataCart = async () => {
+    try {
+      await state.infoCart.map((item) => {
+        setTotalCart(item.total_cart_items);
+        console.log("item", item.total_cart_items);
+      });
+    } catch (error) {
+      console.log("Error cart:", error);
+    }
+  };
+  useEffect(() => {
+    fetchDataCart();
+  }, []);
   const handlePress = () => {
     navigation.navigate("Cart");
   };
@@ -27,7 +45,6 @@ const Header = (props) => {
   };
   return (
     <SafeAreaView style={styles.safeArea}>
-      
       <View style={styles.container}>
         <TouchableOpacity style={styles.icon} onPress={openqr}>
           <FontAwesomeIcon icon={faQrcode} size={24} style={styles.iconitem} />
@@ -55,20 +72,36 @@ const Header = (props) => {
           </TouchableOpacity>
         </TouchableWithoutFeedback>
         <View style={styles.right}>
+          <TouchableOpacity style={styles.icon}>
+            <View style={styles.count_notify}>
+              <Text style={styles.count_notify_total}>40</Text>
+            </View>
+
+            <FontAwesomeIcon
+              icon={faBell}
+              size={24}
+              style={styles.iconitem}
+              color="#363636"
+            />
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.icon}
             onPress={() => {
               handlePress();
             }}
           >
+            {totalCart > 0 ? (
+              <View style={styles.count_cart}>
+                <Text style={styles.count_cart_total}>{totalCart}</Text>
+              </View>
+            ) : null}
+
             <FontAwesomeIcon
               icon={faShoppingCart}
               size={24}
-              style={styles.iconitem}
+              color="#363636"
+              style={styles.iconitemcart}
             />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.icon}>
-            <FontAwesomeIcon icon={faBell} size={24} style={styles.iconitem} />
           </TouchableOpacity>
         </View>
       </View>
@@ -111,22 +144,58 @@ const styles = {
   right: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
+
     marginLeft: 10,
   },
   icon: {
     width: 30,
     height: 25,
     alignSelf: "center",
-    color: "black",
-    marginRight: 10,
+    color: "white",
   },
   iconitem: {
     width: 30,
     height: 30,
-    alignSelf: "center",
+
     color: "black",
   },
+  iconitemcart: {
+    width: 30,
+    height: 30,
+    alignSelf: "center",
+    color: "black",
+    position: "relative",
+    top: 1,
+  },
+  count_cart: {
+    position: "absolute",
+    borderRadius: 200,
+    zIndex: 999,
+    top: -13,
+    right: -5,
+    backgroundColor: "red",
+    width: "auto",
+    padding: 2,
+    height: 21,
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  count_notify: {
+    position: "absolute",
+    borderRadius: 200,
+    zIndex: 999,
+    top: -13,
+    right: -0,
+    backgroundColor: "red",
+    width: "auto",
+    padding: 2,
+
+    height: 21,
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  count_cart_total: { color: "#fff", fontSize: 10, fontWeight: "bold",paddingHorizontal:5 },
+  count_notify_total: { color: "#fff", fontSize: 10, fontWeight: "bold"},
 };
 
 export default Header;

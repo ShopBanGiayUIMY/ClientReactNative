@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ToastAndroid,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import Swipelist from "react-native-swipeable-list-view";
@@ -24,7 +25,7 @@ const HEIGHT = Dimensions.get("window").height;
 
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress } = props;
-  const { updateQuantity } = useAuth();
+  const { updateCartandCreate } = useAuth();
   const loadlai = () => {
     handlePress();
   };
@@ -44,7 +45,7 @@ const ProductInCart = (props) => {
   };
   const handleGiam = (quantity, product_detail_id) => {
     if (quantity > 1) {
-      updateQuantity(Cart_id, product_detail_id, quantity - 1).then(
+      updateCartandCreate(Cart_id, product_detail_id, quantity - 1).then(
         (result) => {
           console.log("result", result);
           loadlai();
@@ -52,9 +53,8 @@ const ProductInCart = (props) => {
       );
     }
   };
-
   const handleTang = (quantity, product_detail_id) => {
-    updateQuantity(Cart_id, product_detail_id, quantity + 1).then((result) => {
+    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then((result) => {
       console.log("result", result);
       loadlai();
     });
@@ -68,15 +68,30 @@ const ProductInCart = (props) => {
     const handleBlur = () => {
       handleInputChange(tempQuantity, index);
       setTimeout(() => {
-        console.log("Số lượng mới:", tempQuantity);
-        updateQuantity(
+        console.log("Số lượng mới:", parseInt(tempQuantity));
+        updateCartandCreate(
           Cart_id,
           item.ProductDetail.detail_id,
-          tempQuantity
+          parseInt(tempQuantity)
         ).then((result) => {
-          console.log("result", result);
-          loadlai();
-        });
+          if (result.status == -1) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            loadlai();
+          } else if (result.status == 1) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            loadlai();
+            console.log("result", result);
+            loadlai();
+          } else if (result.status == 0) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            loadlai();
+            console.log("result", result);
+            loadlai();
+          }
+        }).catch((error) => {
+          console.log("error", error);
+        }
+        );
       }, 1000);
     };
     return (
@@ -90,8 +105,12 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+    showsVerticalScrollIndicator={false}
+    removeClippedSubviews={true}
+    style={styles.container}>
       <Swipelist
+      
         data={data}
         renderRightItem={(item, index) => (
           <View style={styles.all} key={index}>
@@ -186,6 +205,7 @@ const ProductInCart = (props) => {
           </View>
         )}
         rightOpenValue={210}
+
         renderHiddenItem={(data, index) => (
           <View style={styles.hiddenItemContainer}>
             <Pressable
@@ -212,8 +232,7 @@ const ProductInCart = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10,
-    marginHorizontal: 10,
+    marginTop: 10, 
   },
   all: {
     flexDirection: "row",

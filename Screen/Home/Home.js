@@ -1,11 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet,StatusBar } from "react-native";
 import ListProduct from "../Products/ListProduct";
+
 export default function Home({ navigation }) {
   return (
     
     <View style={styles.container}>
-
+        <StatusBar
+        backgroundColor="#00BCD4"
+        barStyle="light-content"
+      />
       <ListProduct navigation={navigation} />
     </View>
   );

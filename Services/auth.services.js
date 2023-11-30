@@ -119,7 +119,7 @@ const useAuth = () => {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
   };
-  const updateQuantity = async (Cart_id, product_detail_id, quantity) => {
+  const updateCartandCreate = async (Cart_id, product_detail_id, quantity) => {
     const headers = await authHeader();
     try {
       const response = await axios.patch(
@@ -129,11 +129,13 @@ const useAuth = () => {
           headers: headers,
         }
       );
+  
       if (response.data) {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+      return error.response.data;
+
     }
   };
   const GetVoucher = async () => {
@@ -271,7 +273,23 @@ const useAuth = () => {
     } catch (error) {
       console.log("Network error", error);
     }
-  }
+  };
+  const getTotalCart = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/carts/total-cart`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
 
   return {
     loginUser,
@@ -280,7 +298,7 @@ const useAuth = () => {
     CheckOtp,
     CreatePasswordUser,
     GetCart,
-    updateQuantity,
+    updateCartandCreate,
     GetVoucher,
     GetFavorite,
     AddFavorite,
@@ -288,7 +306,8 @@ const useAuth = () => {
     CheckFavoriteByProduct,
     getcountFavorites,
     GetSolidProductById,
-    search_voucher_and_add
+    search_voucher_and_add,
+    getTotalCart,
   };
 };
 

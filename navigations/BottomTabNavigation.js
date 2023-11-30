@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Notification from "../Screen/Notification";
+import LikeProducts from "../Screen/Informations/LikeProducts";
 import Profile from "../Screen/Informations/Profile";
 
 import Home from "../Screen/Home/Home";
@@ -11,9 +12,10 @@ import Cart from "../Screen/Cart/Cart";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { View, TouchableWithoutFeedback, Text } from "react-native";
-
+import useAuth from "../Services/auth.services";
+import { AuthStatus } from "../Services/AuthContext";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
@@ -52,6 +54,21 @@ function TabButton({ onPress, accessibilityState, children }) {
 }
 const MemoizedCart = React.memo(Cart);
 const BottomTabNavigation = () => {
+  const { state} = AuthStatus();
+  const [totalCart, setTotalCart] = useState(0);
+  const fetchData = async () => {
+    try {
+      await state.infoCart.map((item) => {
+        setTotalCart(item.total_cart_items);
+        console.log("item", item.total_cart_items);
+      });
+    } catch (error) {
+      console.log("Error cart:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -100,30 +117,33 @@ const BottomTabNavigation = () => {
           title: "Cart",
           tabBarIcon: ({ color }) => (
             <View>
-              <View
-                style={{
-                  position: "absolute",
-                  bottom: 16,
-                  width: 10,
-                  height: 10,
-                  borderRadius: 8,
-                  top: -3,
-                  left: 12,
-                  backgroundColor: "#3C3C3C",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  zIndex: 999,
-                }}
-              >
-                <Text
+              {totalCart == 0 ? null : (
+                <View
                   style={{
-                    fontSize: 5,
-                    color: "#FFFFFF",
+                    position: "absolute",
+                    bottom: 16,
+                    width: 10,
+                    height: 10,
+                    borderRadius: 8,
+                    top: -3,
+                    left: 12,
+                    backgroundColor: "#3C3C3C",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 999,
                   }}
                 >
-                  8
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 5,
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {totalCart}
+                  </Text>
+                </View>
+              )}
+
               <MaterialCommunityIcons name="cart" color={color} size={20} />
             </View>
           ),
@@ -131,13 +151,13 @@ const BottomTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Notificationf"
-        component={Notification}
+        name="LikeProducts"
+        component={LikeProducts}
         options={{
           tabBarShowLabel: false,
-          title: "Thông báo",
+          title: "Sản phẩm yêu thích",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={20} />
+            <MaterialCommunityIcons name="heart" color={color} size={20} />
           ),
           tabBarButton: (props) => <TabButton {...props} />,
         }}

@@ -42,7 +42,6 @@ import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.product.detail";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
-
   let position = Animated.divide(scrollX, WIDTH);
 
   const [data, setData] = useState(null);
@@ -186,7 +185,10 @@ const CpnProductDetail = ({ product, navigation }) => {
           barStyle="dark-content"
         />
         <ScrollView showsVerticalScrollIndicator={false}>
-          <ModalBottom openDrawer={isModalVisible} closeDrawer={toggleModal} />
+        {isModalVisible && (
+          <ModalBottom openDrawer={isModalVisible} closeDrawer={toggleModal} dataprod={data} />
+        )}
+
           <View
             style={{
               width: "100%",
@@ -491,6 +493,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    position: "absolute",
+    bottom: 0,
   },
   addToCartButton: {
     flexDirection: "column",

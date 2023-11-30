@@ -21,6 +21,8 @@ import { FlatGrid } from "react-native-super-grid";
 import NetInfo from "@react-native-community/netinfo";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
+import { useFocusEffect } from '@react-navigation/native';
+
 import Config from "../../Api/Config";
 export default function ListProduct({ navigation }) {
   const [data, setData] = useState([]);
@@ -29,6 +31,14 @@ export default function ListProduct({ navigation }) {
   const [visibleItems, setVisibleItems] = useState(4);
   const [isConnected, setIsConnected] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true); 
+  const [key, setKey] = useState(0);
+  useFocusEffect(
+    React.useCallback(() => {
+      // This function is called every time the screen is focused
+      setKey(prevKey => prevKey + 1); // Increase key to force re-render
+    }, [])
+  );
+
   const checkInternetConnection = async () => {
     const netInfoState = await NetInfo.fetch();
     if (netInfoState.isConnected) {
@@ -40,7 +50,7 @@ export default function ListProduct({ navigation }) {
   const scrollY = new Animated.Value(0);
   const backgroundColor = scrollY.interpolate({
     inputRange: [0, 300],
-    outputRange: ["rgba(234, 235, 236, 0.72)", "rgba(255, 0, 0, 0.7)"],
+    outputRange: ["rgba(234, 235, 236, 0.72)", "#00BCD4"],
     extrapolate: "clamp",
   });
 
@@ -133,7 +143,7 @@ export default function ListProduct({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View  style={{ backgroundColor, ...styles.viewBanner }}>
-        <Header navigation={navigation} />
+        <Header navigation={navigation} key={key} />
       </Animated.View>
       {isloading ? (
         { isConnected } ? (
@@ -242,7 +252,7 @@ const styles = StyleSheet.create({
   },
   viewBanner: {
     width: WIDTH,
-    paddingTop: StatusBar.currentHeight,
+    
   },
   viewProductsContainer: {
     flexGrow: 1,
