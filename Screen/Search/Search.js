@@ -24,7 +24,7 @@ export default function Search({ navigation }) {
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
-            placeholder="Tìm kiếm..."
+            placeholder="Tìm kiếm...."
             placeholderTextColor="#999"
           />
           <TouchableOpacity
