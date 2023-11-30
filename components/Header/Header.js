@@ -19,16 +19,16 @@ import {
 
 const { width } = Dimensions.get("window");
 import { AuthStatus } from "../../Services/AuthContext";
-
+import  useAuth  from "../../Services/auth.services";
 const Header = (props) => {
   const { navigation } = props;
-  const { state } = AuthStatus();
   const [totalCart, setTotalCart] = useState(0);
+  const { getTotalCart } = useAuth();
   const fetchDataCart = async () => {
     try {
-      await state.infoCart.map((item) => {
+      const state = await getTotalCart();
+      await state.map((item) => {
         setTotalCart(item.total_cart_items);
-        console.log("item", item.total_cart_items);
       });
     } catch (error) {
       console.log("Error cart:", error);
