@@ -42,20 +42,26 @@ import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.product.detail";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
-
   let position = Animated.divide(scrollX, WIDTH);
 
   const [data, setData] = useState(null);
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
-  const { GetFavorite, AddFavorite, RemoveFavorite, CheckFavoriteByProduct } =
-    useAuth();
+  const [daban, setdaban] = useState(null);
+  const {
+    GetFavorite,
+    AddFavorite,
+    RemoveFavorite,
+    CheckFavoriteByProduct,
+    GetSolidProductById,
+  } = useAuth();
   const [favorites, setFavorites] = useState();
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getproductbyid();
-      if(state.isLoggedIn){
+      if (state.isLoggedIn) {
         GetFavoriteProduct();
+        GetSolidProductId();
       }
     });
 
@@ -76,6 +82,17 @@ const CpnProductDetail = ({ product, navigation }) => {
       console.error("Error fetching product details:", error);
     }
   };
+  const GetSolidProductId = async () => {
+    try {
+      const response = await GetSolidProductById(product.id);
+         setdaban(response.total_quantity_sold)
+        return;
+      
+      
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
 
   const CheckFavorite = async () => {
     try {
@@ -86,26 +103,26 @@ const CpnProductDetail = ({ product, navigation }) => {
           ToastAndroid.CENTER
         );
         return;
-      }else{
-      const response = await CheckFavoriteByProduct(product.id);
-      if (response.message == true) {
-        RemoveFavorite(product.id);
-        setFavorites(false);
-        ToastAndroid.showWithGravity(
-          "Đã loại bỏ sản phẩm khỏi mục yêu thích",
-          2,
-          ToastAndroid.CENTER
-        );
       } else {
-        AddFavorite(product.id);
-        setFavorites(true);
-        ToastAndroid.showWithGravity(
-          "Đã thêm sản phẩm vào mục yêu thích",
-          2,
-          ToastAndroid.CENTER
-        );
+        const response = await CheckFavoriteByProduct(product.id);
+        if (response.message == true) {
+          RemoveFavorite(product.id);
+          setFavorites(false);
+          ToastAndroid.showWithGravity(
+            "Đã loại bỏ sản phẩm khỏi mục yêu thích",
+            2,
+            ToastAndroid.CENTER
+          );
+        } else {
+          AddFavorite(product.id);
+          setFavorites(true);
+          ToastAndroid.showWithGravity(
+            "Đã thêm sản phẩm vào mục yêu thích",
+            2,
+            ToastAndroid.CENTER
+          );
+        }
       }
-    }
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
@@ -125,6 +142,7 @@ const CpnProductDetail = ({ product, navigation }) => {
   const hanldeAddToCart = async () => {
     // alert("Bạn đã thêm " + product.name + " vào giỏ hàng! ");
   };
+  console.log("product", product.price);
   const renderProduct = ({ item, index }) => {
     return (
       <View
@@ -144,7 +162,6 @@ const CpnProductDetail = ({ product, navigation }) => {
             resizeMode: "contain",
             borderRadius: 10,
           }}
-          
         />
       </View>
     );
@@ -154,7 +171,7 @@ const CpnProductDetail = ({ product, navigation }) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-  let totalQuantitySold = product.total_quantity_sold;
+  let totalQuantitySold = daban;
   if (totalQuantitySold === null) {
     totalQuantitySold = 0;
   } else {
@@ -168,7 +185,10 @@ const CpnProductDetail = ({ product, navigation }) => {
           barStyle="dark-content"
         />
         <ScrollView showsVerticalScrollIndicator={false}>
-          <ModalBottom openDrawer={isModalVisible} closeDrawer={toggleModal} />
+        {isModalVisible && (
+          <ModalBottom openDrawer={isModalVisible} closeDrawer={toggleModal} dataprod={data} />
+        )}
+
           <View
             style={{
               width: "100%",
@@ -473,21 +493,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    position: "absolute",
+    bottom: 0,
   },
   addToCartButton: {
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#26aa99", 
+    backgroundColor: "#26aa99",
     paddingVertical: 10,
     paddingHorizontal: 15,
     width: "50%",
-
   },
   buyNowButton: {
-    backgroundColor: "#ee4d2d", 
+    backgroundColor: "#ee4d2d",
     paddingVertical: 10,
     paddingHorizontal: 15,
-   
+
     width: "50%",
     paddingVertical: 16,
   },
@@ -498,7 +519,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 10,
     color: "white",
-   
   },
   buttonTextmua: {
     textAlign: "center",

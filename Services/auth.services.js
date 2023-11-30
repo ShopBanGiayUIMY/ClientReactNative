@@ -119,7 +119,7 @@ const useAuth = () => {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
   };
-  const updateQuantity = async (Cart_id, product_detail_id, quantity) => {
+  const updateCartandCreate = async (Cart_id, product_detail_id, quantity) => {
     const headers = await authHeader();
     try {
       const response = await axios.patch(
@@ -129,11 +129,13 @@ const useAuth = () => {
           headers: headers,
         }
       );
+  
       if (response.data) {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+      return error.response.data;
+
     }
   };
   const GetVoucher = async () => {
@@ -159,7 +161,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của GetFavorite",
+        ToastAndroid.SHORT
+      );
     }
   };
   const AddFavorite = async (product_id) => {
@@ -176,7 +181,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của GetFavorite",
+        ToastAndroid.SHORT
+      );
     }
   };
   const RemoveFavorite = async (product_id) => {
@@ -208,7 +216,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của GetFavorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của GetFavorite",
+        ToastAndroid.SHORT
+      );
     }
   };
   const getcountFavorites = async () => {
@@ -224,9 +235,62 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định của số lượng Favorite", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "Mã lỗi không xác định của số lượng Favorite",
+        ToastAndroid.SHORT
+      );
     }
   };
+  const GetSolidProductById = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/products/solidproduct?id=${product_id}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Network error", error);
+    }
+  };
+  const search_voucher_and_add= async (voucher_code) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/vouchers/find-voucher`,
+        {voucher_code:voucher_code},
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Network error", error);
+    }
+  };
+  const getTotalCart = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/carts/total-cart`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+
   return {
     loginUser,
     registerUser,
@@ -234,13 +298,16 @@ const useAuth = () => {
     CheckOtp,
     CreatePasswordUser,
     GetCart,
-    updateQuantity,
+    updateCartandCreate,
     GetVoucher,
     GetFavorite,
     AddFavorite,
     RemoveFavorite,
     CheckFavoriteByProduct,
     getcountFavorites,
+    GetSolidProductById,
+    search_voucher_and_add,
+    getTotalCart,
   };
 };
 

@@ -38,7 +38,7 @@ const MenuCategory = () => {
   return (
     <View>
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#56F3F9" />
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {data.map((item, index) => (

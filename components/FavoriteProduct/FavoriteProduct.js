@@ -14,7 +14,6 @@ export default function FavoriteProduct(props) {
   const fun_handlePress = () => {
     handlePress ? handlePress(dataProd) : null;
   };
-
   let tensp =
     dataProd.name.length > 10
       ? dataProd.name.slice(0, 25) + "..."

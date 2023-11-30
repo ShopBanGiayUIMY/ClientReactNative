@@ -1,16 +1,20 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import React, {
+  useEffect,
+  useState,
+  useLayoutEffect,
+  useCallback,
+} from "react";
+import { Text, View, StyleSheet, TouchableOpacity,ScrollView  } from "react-native";
 import ProductInCart from "../../components/Cart/ProductInCart";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import useAuth from "../../Services/auth.services";
 import Swipelist from "react-native-swipeable-list-view";
-import { useIsFocused } from "@react-navigation/native";
 import { AuthStatus } from "../../Services/AuthContext";
-export default function Cart({ navigation, props }) {
+
+export default function Cart({ navigation }) {
   const [data, setData] = useState([]);
   const { GetCart } = useAuth();
   const { state } = AuthStatus();
-  const isFocused = useIsFocused();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Giỏ hàng của tôi",
@@ -28,34 +32,41 @@ export default function Cart({ navigation, props }) {
         </TouchableOpacity>
       ),
     });
-  }, []);
-  const fetchData = () => {
+  }, [navigation]);
+
+  const fetchData = useCallback(async () => {
     try {
-      GetCart().then((result) => {
-        setData(result);
-      });
+      const result = await GetCart();
+      setData(result);
     } catch (error) {
       console.log("Error cart:", error);
     }
-  };
-  const handlePresDetailProduct = (item) => {
+  }, [GetCart]);
+
+  const handlePressDetailProduct = (item) => {
     fetchData();
   };
+  const fetchDataWithDelay = async () => {
+    try {
+      // Assuming fetchData is an asynchronous function
+      await fetchData();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
   useEffect(() => {
-    let time;
-
     if (state.isLoggedIn) {
-      time = setTimeout(() => {
-        fetchData();
-      }, 1500);
-    } else {
+      const focusListener = navigation.addListener('focus', () => {
+        const timeoutId = setTimeout(fetchDataWithDelay, 500);
+      
+        // Clear the timeout on component unmount
+        return () => clearTimeout(timeoutId);
+      });
+    } else if (!state.isLoggedIn) {
       navigation.replace("Login");
     }
-
-    return () => {
-      clearTimeout(time);
-    };
-  }, [navigation, isFocused, state.isLoggedIn]);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -67,7 +78,7 @@ export default function Cart({ navigation, props }) {
             dataCart={item.CartItems}
             Cart_id={item.cart_id}
             navigation={navigation}
-            handlePress={handlePresDetailProduct}
+            handlePress={handlePressDetailProduct}
           />
         ))}
     </View>
@@ -78,5 +89,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgba(234, 235, 236, 0.72)",
+    marginHorizontal: 10,
   },
 });

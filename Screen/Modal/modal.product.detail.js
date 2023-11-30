@@ -7,11 +7,15 @@ import {
   Modal,
   Dimensions,
   Image,
-  Pressable
+  Pressable,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import DropDownPicker from "react-native-dropdown-picker";
 import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
+import useAuth from "../../Services/auth.services";
+import { AuthStatus } from "../../Services/AuthContext";
+import DataLoadingCart from "../../components/loading/DataLoadingCart";
 const COLORS = {
   black: "#3C3C3C",
   gray: "#F5F5F5",
@@ -20,29 +24,60 @@ const COLORS = {
 };
 const { height, width } = Dimensions.get("window");
 export default function ModalBottom(props) {
-  const { closeDrawer, openDrawer } = props;
+  const { closeDrawer, openDrawer, dataprod } = props;
+  const [cartUpdate, setCartUpdate] = useState(0);
+  const { updateCartandCreate } = useAuth();
+  const { state } = AuthStatus();
+  const [formData, setFormData] = useState({
+    product_detail_id: null,
+    quantity: 1,
+  });
+  // dữ liệu là
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const addCart = async () => {
+    if (formData.product_detail_id === null) {
+      alert("Vui lòng chọn size");
+      return;
+    }
 
-  const handleSizeSelection = (size) => {
+    const data = await updateCartandCreate(
+      state.userInfo.cart_id,
+      formData.product_detail_id,
+      formData.quantity
+    );
+    console.log(data);
+    if (data) {
+      console.log("datacart", data);
+      alert("Thêm vào giỏ hàng thành công");
+      setCartUpdate(cartUpdate + 1);
+    }
+  };
+
+  const handleSizeSelection = (detail, size, color) => {
     setSelectedSize(size);
+    setFormData({ ...formData, product_detail_id: detail, quantity: quantity });
+    console.log(detail, size, color, quantity);
   };
   return (
     <View style={styles.container}>
+        <DataLoadingCart  key={cartUpdate} />
       <Modal
         animationType="slide"
         transparent={true}
         visible={openDrawer}
         onRequestClose={closeDrawer}
       >
-        <Pressable style={styles.modalContainer} onPress={closeDrawer} ></Pressable>
+        <Pressable
+          style={styles.modalContainer}
+          onPress={closeDrawer}
+        ></Pressable>
         <SafeAreaView
           style={{
             flex: 1,
           }}
         >
           <Pressable
-        
             style={{
               flex: 1,
               backgroundColor: "rgba(0, 0, 0, 0.2)",
@@ -51,8 +86,8 @@ export default function ModalBottom(props) {
             <View
               style={{
                 backgroundColor: COLORS.white,
-                borderTopRightRadius :36,
-                borderTopLeftRadius :36,
+                borderTopRightRadius: 36,
+                borderTopLeftRadius: 36,
                 paddingHorizontal: 22,
                 paddingVertical: 22,
                 position: "absolute",
@@ -61,7 +96,7 @@ export default function ModalBottom(props) {
               }}
             >
               <View style={{ marginVertical: 22 }}>
-                <Text style={styles.h4}>Select Size</Text>
+                <Text style={styles.h4}>Chọn Size:</Text>
 
                 <View
                   style={{
@@ -69,55 +104,37 @@ export default function ModalBottom(props) {
                     marginVertical: 18,
                   }}
                 >
-                  <TouchableOpacity
-                    style={[
-                      styles.checkboxContainer,
-                      selectedSize === "S" && styles.selectedCheckbox,
-                    ]}
-                    onPress={() => handleSizeSelection("S")}
-                  >
-                    <Text style={[selectedSize === "S" && styles.checkboxText]}>
-                      S
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[
-                      styles.checkboxContainer,
-                      selectedSize === "M" && styles.selectedCheckbox,
-                    ]}
-                    onPress={() => handleSizeSelection("M")}
-                  >
-                    <Text style={[selectedSize === "M" && styles.checkboxText]}>
-                      M
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[
-                      styles.checkboxContainer,
-                      selectedSize === "L" && styles.selectedCheckbox,
-                    ]}
-                    onPress={() => handleSizeSelection("L")}
-                  >
-                    <Text style={[selectedSize === "L" && styles.checkboxText]}>
-                      L
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[
-                      styles.checkboxContainer,
-                      selectedSize === "XL" && styles.selectedCheckbox,
-                    ]}
-                    onPress={() => handleSizeSelection("XL")}
-                  >
-                    <Text
-                      style={[selectedSize === "XL" && styles.checkboxText]}
+                  {dataprod.ProductDetails.map((detail, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.checkboxContainer,
+                        selectedSize === detail.size && styles.selectedCheckbox,
+                      ]}
+                      onPress={() =>
+                        handleSizeSelection(
+                          detail.detail_id,
+                          detail.size,
+                          detail.color
+                        )
+                      }
                     >
-                      XL
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={[
+                          selectedSize === detail.size && styles.checkboxText,
+                        ]}
+                      >
+                        {detail.size}
+                      </Text>
+                      <Text
+                        style={[
+                          selectedSize === detail.size && styles.checkboxText,
+                        ]}
+                      >
+                        {detail.color}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
               </View>
 
@@ -184,7 +201,12 @@ export default function ModalBottom(props) {
                 </View>
               </View>
 
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  addCart();
+                }}
+              >
                 <Feather name="shopping-bag" size={24} color={COLORS.white} />
 
                 <Text
@@ -214,8 +236,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 44,
-    width: 44,
-    borderRadius: 22,
+    width: 70,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.gray,
     backgroundColor: COLORS.gray,
@@ -227,6 +249,7 @@ const styles = StyleSheet.create({
   checkboxText: {
     color: COLORS.white,
     fontSize: 12,
+    fontWeight: "bold",
   },
   button: {
     marginTop: 12,

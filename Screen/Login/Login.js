@@ -1,4 +1,4 @@
-import React, { useState, Component, useLayoutEffect } from "react";
+import React, { useState, Component, useLayoutEffect ,useEffect} from "react";
 import {
   StyleSheet,
   View,
@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ToastAndroid,
+  BackHandler 
 } from "react-native";
 import eye from "../../images/eys.jpg";
 import face from "../../images/facebook.png";
@@ -19,16 +20,27 @@ import logo from "../../assets/images/logo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { AuthStatus } from "../../Services/AuthContext";
+
 export default function Login({ navigation }) {
   const [isloading, setIsLoading] = useState(false);
   const { state, dispatch } = AuthStatus();
   const { InfoAuth } = useAuth();
+  useEffect(() => {
+    const handleBackPress = () => {
+      navigation.navigate("BottomTabNavigation")
+      return true; 
+    };
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, []); 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Đăng nhập",
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("BottomTabNavigation")}
           style={{ marginLeft: 5, marginRight: 10 }}
         >
           <FontAwesome

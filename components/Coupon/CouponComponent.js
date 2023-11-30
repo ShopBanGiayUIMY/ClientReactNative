@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Pressable } from "react-native";
 import {
   Text,
@@ -9,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   ImageBackground,
+  Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 const { DateTime } = require("luxon");
@@ -18,6 +18,45 @@ export default function CouponComponent(props) {
   const { dataVouchers, handlePress } = props;
   const [icon, seticon] = useState(null);
   const [value, setvalue] = useState();
+  const progress = useRef(new Animated.Value(0)).current;
+  const [progressValue, setProgressValue] = useState(dataVouchers.usage_remaining);
+  const [usage_quantity] = useState(dataVouchers.usage_quantity);
+  useEffect(() => {
+    const progressListener = progress.addListener(({ value }) => {
+      setProgressValue(value);
+    });
+
+    return () => {
+      progress.removeListener(progressListener);
+    };
+  }, [progress]);
+  if (progressValue < usage_quantity) {
+    Animated.timing(progress, {
+      toValue:  dataVouchers.usage_quantity-dataVouchers.usage_remaining,
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  }
+  const increaseValue = () => {
+    // const newValue = Math.min(usage_quantity, progressValue + 10);
+    // if (progressValue < usage_quantity) {
+    //   Animated.timing(progress, {
+    //     toValue: dataVouchers.usage_remaining / dataVouchers.usage_quantity,
+    //     duration: 1000,
+    //     useNativeDriver: false,
+    //   }).start();
+    // }
+  };
+
+  const width = progress.interpolate({
+    inputRange: [0, usage_quantity],
+    outputRange: ["0%", "100%"],
+  });
+
+  const progressPercentage = Math.max(
+    0,
+    Math.min(100, (progressValue / usage_quantity) * 100)
+  );
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -130,7 +169,7 @@ export default function CouponComponent(props) {
               ]}
             />
             <Text style={styles.textvoucher_txt_page_left}>
-              {dataVouchers.voucher_name}
+              UIMY
             </Text>
           </View>
           <View style={styles.wallet_page_right}>
@@ -147,8 +186,17 @@ export default function CouponComponent(props) {
 
               <Text style={styles.value}>{value}</Text>
             </View>
+            <View style={styles.progress}>
+            <Animated.View style={[styles.progressBar, { width }]}>
+              <Text style={styles.progressTextInsideBar} ellipsizeMode="head" numberOfLines={1}>Đã dùng 
+              <Text> {Math.round(progressPercentage)}%</Text>
+              {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
+              </Text>
+            </Animated.View>
+            </View>
+         
           </View>
-          <Pressable style={styles.button_page_right}>
+          <Pressable style={styles.button_page_right} onPress={increaseValue}>
             <LinearGradient
               colors={["rgb(255, 147, 63)", "rgb(249, 55, 130)"]} // Màu với độ trong suốt
               start={{ x: 0.2, y: 0.5 }} // Vị trí bắt đầu (top left)
@@ -222,7 +270,7 @@ const styles = StyleSheet.create({
   value_txt_page_right: {
     position: "absolute",
     flexDirection: "row",
-    top: 110,
+    top: 90,
     marginVertical: 10,
     left: 72,
     marginHorizontal: 10,
@@ -247,6 +295,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     position: "absolute",
     top: 20,
+    left: 72,
   },
   button_page_right: {
     width: 100,
@@ -259,4 +308,30 @@ const styles = StyleSheet.create({
   imgvoucher_image_page_left: {
     marginTop: 20,
   },
+  progressTextInsideBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    color: "#fff",
+    fontSize: 10,
+    overflow: "hidden",
+  },
+  progressBar: {
+    width: 10,
+    backgroundColor: "rgba(53, 196, 236, 0.8)",
+    borderRadius: 10,
+    height: 16,
+  },
+  progress:{
+    width: "80%",
+    
+    position: "absolute",
+    top: "85%",
+    left: 80,
+    borderRadius: 10,
+    backgroundColor: "rgba(208, 226, 237, 0.8)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.2)",
+  }
 });

@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   StatusBar,
   ToastAndroid,
+  Animated,
 } from "react-native";
 
 import loading from "../../images/loading.gif";
@@ -20,14 +21,24 @@ import { FlatGrid } from "react-native-super-grid";
 import NetInfo from "@react-native-community/netinfo";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
+import { useFocusEffect } from '@react-navigation/native';
+
 import Config from "../../Api/Config";
 export default function ListProduct({ navigation }) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [isloading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [backgroundOpacity, setBackgroundOpacity] = useState(0);
   const [visibleItems, setVisibleItems] = useState(4);
   const [isConnected, setIsConnected] = useState(false);
+  const [hasMoreData, setHasMoreData] = useState(true); 
+  const [key, setKey] = useState(0);
+  useFocusEffect(
+    React.useCallback(() => {
+      // This function is called every time the screen is focused
+      setKey(prevKey => prevKey + 1); // Increase key to force re-render
+    }, [])
+  );
+
   const checkInternetConnection = async () => {
     const netInfoState = await NetInfo.fetch();
     if (netInfoState.isConnected) {
@@ -36,10 +47,16 @@ export default function ListProduct({ navigation }) {
       return false;
     }
   };
+  const scrollY = new Animated.Value(0);
+  const backgroundColor = scrollY.interpolate({
+    inputRange: [0, 300],
+    outputRange: ["rgba(234, 235, 236, 0.72)", "#00BCD4"],
+    extrapolate: "clamp",
+  });
+
   const fetchData = () => {
     // Define the API URL huy
     if (checkInternetConnection()) {
-      console.log("Internet is connected");
       const apiUrl = `${Config.API_BASE_URL}/products`;
       // Make the GET request using fetch
       fetch(apiUrl)
@@ -47,6 +64,11 @@ export default function ListProduct({ navigation }) {
         .then((responseData) => {
           // Handle the retrieved data by updating the state
           const first10Items = responseData.slice(0, visibleItems);
+          if (first10Items.length == responseData.length) {
+            setHasMoreData(false);
+          }else{
+            setHasMoreData(true);
+          }
           setData(first10Items);
           setIsLoading(false);
           setRefreshing(false);
@@ -57,7 +79,7 @@ export default function ListProduct({ navigation }) {
           setTimeout(() => {
             setIsConnected(false);
             setIsLoading(false);
-            
+
             ToastAndroid.show("Không có kết nối internet", ToastAndroid.SHORT);
           }, 5000);
         });
@@ -75,20 +97,25 @@ export default function ListProduct({ navigation }) {
       setTimeout(() => {
         setRefreshing(true);
         fetchData();
-      }, 1200);
+      }, 1000);
   }, [visibleItems]);
-  const handleScroll = (event) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    const height = event.nativeEvent.layoutMeasurement.height;
-    if (offsetY + height >= contentHeight - 20) {
-      setVisibleItems(visibleItems + 4);
+
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: false,
+      listener: (event) => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        const contentHeight = event.nativeEvent.contentSize.height;
+        const height = event.nativeEvent.layoutMeasurement.height;
+        
+          if (offsetY + height >= contentHeight - 20&& hasMoreData) {
+            setVisibleItems(visibleItems + 4);
+        
+        }
+      },
     }
-
-    const newOpacity = Math.min(offsetY / 100, 1);
-    setBackgroundOpacity(newOpacity);
-  };
-
+  );
   const handlePressDetailProduct = (item) => {
     navigation.navigate("ProductDetail", { product: item });
   };
@@ -115,19 +142,9 @@ export default function ListProduct({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor="rgba(234, 235, 236, 0.72)"
-        barStyle="dark-content"
-      />
-      <View
-        style={{
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Header backgroundOpacity={backgroundOpacity} navigation={navigation} />
-      </View>
+      <Animated.View  style={{ backgroundColor, ...styles.viewBanner }}>
+        <Header navigation={navigation} key={key} />
+      </Animated.View>
       {isloading ? (
         { isConnected } ? (
           <ScrollView
@@ -167,10 +184,10 @@ export default function ListProduct({ navigation }) {
           style={{ flex: 0 }}
         >
           {/* banner */}
-          <View style={styles.viewBanner}>
-            <HeaderBanner />
-            <MenuCategory />
-          </View>
+
+          <HeaderBanner />
+          <MenuCategory />
+
           <View style={styles.productList}>
             <FlatGrid
               itemDimension={WIDTH / 3}
@@ -235,6 +252,7 @@ const styles = StyleSheet.create({
   },
   viewBanner: {
     width: WIDTH,
+    
   },
   viewProductsContainer: {
     flexGrow: 1,

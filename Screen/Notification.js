@@ -1,568 +1,160 @@
-import React, {useState, useEffect} from 'react';
+import React from "react";
 import {
-  View,
-  Text,
-  ScrollView,
   TouchableOpacity,
+  SafeAreaView,
+  ImageBackground,
+  StyleSheet,
+  View,
+  Dimensions,
+  ScrollView,
   Image,
-  ToastAndroid,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-const COLOURS = {
-  white: '#ffffff',
-  black: '#000000',
-  green: '#00AC76',
-  red: '#C04345',
-  blue: '#0043F9',
-  backgroundLight: '#F0F0F3',
-  backgroundMedium: '#B9B9B9',
-  backgroundDark: '#777777',
-};
-const Notification = ({navigation}) => {
-  const [product, setProduct] = useState();
-  const [total, setTotal] = useState(null);
+  Text,
+  FlatList,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+const DeviceWidth = Dimensions.get("window").width;
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      getDataFromDB();
-    });
+const data = [
+  {
+    id: "a",
+    value: "Sport Shoes",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/120/120/k0463rk0/shoe/g/e/j/787-10-tying-blue-original-imafdk8v9zunhj5u.jpeg?q=80",
+  },
+  {
+    id: "b",
+    value: "Wrist Watchs",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/120/120/jsc3ssw0/watch/z/f/y/1170-bl-br-fogg-original-imafdv97yfsrn9wt.jpeg?q=80",
+  },
+  {
+    id: "c",
+    value: "Womens Sarees",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/120/120/k12go7k0/sari/p/h/c/free-bd030-bollydoll-designer-original-imafgjen5kwbudbm.jpeg?q=80",
+  },
+  {
+    id: "d",
+    value: "Headphons",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/120/120/kj0bp8w0-0/headphone/l/j/0/bassheads-103-black-boat-original-imafyz3wqtqfzzwd.jpeg?q=80",
+  },
+  {
+    id: "e",
+    value: "Explore Now",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/240/240/jrf8o7k0/hand-messenger-bag/a/h/3/fashion-shoulder-bag-pg-10-shoulder-bag-urban-trend-original-imaexs9wmanzw6hh.jpeg?q=60",
+  },
+  {
+    id: "f",
+    value: "Big Saving",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/120/120/khxqt8w0-0/pendrive/type-a-to-type-c/c/g/g/sdddc2-064g-i35-sandisk-original-imafxubtqtxahat2.jpeg?q=80",
+  },
+  {
+    id: "g",
+    value: "Baby Care",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/240/242/jgy0fbk0/bath-towel/p/6/3/ultra-soft-hooded-classic-and-designer-baby-bath-towel-bath-original-imaeqx28bykqqscx.jpeg?q=60",
+  },
+  {
+    id: "h",
+    value: "Routers",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/240/240/jhjg13k0/router/g/n/n/tp-link-archer-c20-ac-wireless-dual-band-original-imaf5j9whw9bbetb.jpeg?q=60",
+  },
+  {
+    id: "i",
+    value: "Computers",
+    offer: "Shop summer sytles & Trands, Tokyo Talkies Sassafras, AND & More",
+    pic: "https://rukminim1.flixcart.com/image/120/120/jn4x47k0/microphone-accessory/d/p/p/mobspy-3-5mm-clip-microphone-for-youtube-collar-mic-for-voice-original-imaf9vucqafs6gdm.jpeg?q=80",
+  },
+];
+const numColumns = 1;
+const size = Dimensions.get("window").width / numColumns;
 
-    return unsubscribe;
-  }, [navigation]);
-
-  //get data from local DB by ID
-  const getDataFromDB = async () => {
-    let items = await AsyncStorage.getItem('cartItems');
-    items = JSON.parse(items);
-    let productData = [];
-    if (items) {
-      Items.forEach(data => {
-        if (items.includes(data.id)) {
-          productData.push(data);
-          return;
-        }
-      });
-      setProduct(productData);
-      getTotal(productData);
-    } else {
-      setProduct(false);
-      getTotal(false);
-    }
-  };
-
-  //get total price of all items in the cart
-  const getTotal = productData => {
-    let total = 0;
-    for (let index = 0; index < productData.length; index++) {
-      let productPrice = productData[index].productPrice;
-      total = total + productPrice;
-    }
-    setTotal(total);
-  };
-
-  //remove data from Cart
-
-  const removeItemFromCart = async id => {
-    let itemArray = await AsyncStorage.getItem('cartItems');
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      for (let index = 0; index < array.length; index++) {
-        if (array[index] == id) {
-          array.splice(index, 1);
-        }
-
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        getDataFromDB();
-      }
-    }
-  };
-
-  //checkout
-
-  const checkOut = async () => {
-    try {
-      await AsyncStorage.removeItem('cartItems');
-    } catch (error) {
-      return error;
-    }
-
-    ToastAndroid.show('Items will be Deliverd SOON!', ToastAndroid.SHORT);
-
-    navigation.navigate('Home');
-  };
-
-  const renderProducts = (data, index) => {
-    return (
-      <TouchableOpacity
-        key={data.key}
-        onPress={() => navigation.navigate('ProductInfo', {productID: data.id})}
-        style={{
-          width: '100%',
-          height: 100,
-          marginVertical: 6,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            width: '30%',
-            height: 100,
-            padding: 14,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: COLOURS.backgroundLight,
-            borderRadius: 10,
-            marginRight: 22,
-          }}>
-          <Image
-            source={data.productImage}
-            style={{
-              width: '100%',
-              height: '100%',
-              resizeMode: 'contain',
-            }}
-          />
-        </View>
-        <View
-          style={{
-            flex: 1,
-            height: '100%',
-            justifyContent: 'space-around',
-          }}>
-          <View style={{}}>
-            <Text
-              style={{
-                fontSize: 14,
-                maxWidth: '100%',
-                color: COLOURS.black,
-                fontWeight: '600',
-                letterSpacing: 1,
-              }}>
-              {data.productName}
-            </Text>
-            <View
-              style={{
-                marginTop: 4,
-                flexDirection: 'row',
-                alignItems: 'center',
-                opacity: 0.6,
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: '400',
-                  maxWidth: '85%',
-                  marginRight: 4,
-                }}>
-                &#8377;{data.productPrice}
-              </Text>
-              <Text>
-                (~&#8377;
-                {data.productPrice + data.productPrice / 20})
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  borderRadius: 100,
-                  marginRight: 20,
-                  padding: 4,
-                  borderWidth: 1,
-                  borderColor: COLOURS.backgroundMedium,
-                  opacity: 0.5,
-                }}>
-                <MaterialCommunityIcons
-                  name="minus"
-                  style={{
-                    fontSize: 16,
-                    color: COLOURS.backgroundDark,
-                  }}
-                />
-              </View>
-              <Text>1</Text>
-              <View
-                style={{
-                  borderRadius: 100,
-                  marginLeft: 20,
-                  padding: 4,
-                  borderWidth: 1,
-                  borderColor: COLOURS.backgroundMedium,
-                  opacity: 0.5,
-                }}>
-                <MaterialCommunityIcons
-                  name="plus"
-                  style={{
-                    fontSize: 16,
-                    color: COLOURS.backgroundDark,
-                  }}
-                />
-              </View>
-            </View>
-            <TouchableOpacity onPress={() => removeItemFromCart(data.id)}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                style={{
-                  fontSize: 16,
-                  color: COLOURS.backgroundDark,
-                  backgroundColor: COLOURS.backgroundLight,
-                  padding: 8,
-                  borderRadius: 100,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+const Notification = ({ navigation, route }) => {
+  console.disableYellowBox = true;
 
   return (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: COLOURS.white,
-        position: 'relative',
-      }}>
-      <ScrollView>
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            paddingTop: 16,
-            paddingHorizontal: 16,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons
-              name="chevron-left"
-              style={{
-                fontSize: 18,
-                color: COLOURS.backgroundDark,
-                padding: 12,
-                backgroundColor: COLOURS.backgroundLight,
-                borderRadius: 12,
-              }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 14,
-              color: COLOURS.black,
-              fontWeight: '400',
-            }}>
-            Order Details
-          </Text>
-          <View></View>
-        </View>
-        <Text
-          style={{
-            fontSize: 20,
-            color: COLOURS.black,
-            fontWeight: '500',
-            letterSpacing: 1,
-            paddingTop: 20,
-            paddingLeft: 16,
-            marginBottom: 10,
-          }}>
-          My Cart
-        </Text>
-        <View style={{paddingHorizontal: 16}}>
-          {product ? product.map(renderProducts) : null}
-        </View>
-        <View>
-          <View
-            style={{
-              paddingHorizontal: 16,
-              marginVertical: 10,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLOURS.black,
-                fontWeight: '500',
-                letterSpacing: 1,
-                marginBottom: 20,
-              }}>
-              Delivery Location
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '80%',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    color: COLOURS.blue,
-                    backgroundColor: COLOURS.backgroundLight,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: 12,
-                    borderRadius: 10,
-                    marginRight: 18,
-                  }}>
-                  <MaterialCommunityIcons
-                    name="truck-delivery-outline"
-                    style={{
-                      fontSize: 18,
-                      color: COLOURS.blue,
+    <ScrollView>
+      <View>
+        <FlatList
+          scrollEnabled={false}
+          style={{ width: "100%", backgroundColor: "#fff" }}
+          data={data}
+          renderItem={({ item }) => (
+            <View style={styles.notification_list_outer}>
+              <TouchableOpacity style={[styles.notification_list]}>
+                <View style={styles.notification_img}>
+                  <Image
+                    source={{
+                      uri: "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/logo_lite-cbb357.png",
                     }}
+                    style={styles.notification_img_inner}
                   />
                 </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: COLOURS.black,
-                      fontWeight: '500',
-                    }}>
-                    2 Petre Melikishvili St.
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: COLOURS.black,
-                      fontWeight: '400',
-                      lineHeight: 20,
-                      opacity: 0.5,
-                    }}>
-                    0162, Tbilisi
-                  </Text>
-                </View>
-              </View>
-              <MaterialCommunityIcons
-                name="chevron-right"
-                style={{fontSize: 22, color: COLOURS.black}}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              paddingHorizontal: 16,
-              marginVertical: 10,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLOURS.black,
-                fontWeight: '500',
-                letterSpacing: 1,
-                marginBottom: 20,
-              }}>
-              Payment Method
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '80%',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    color: COLOURS.blue,
-                    backgroundColor: COLOURS.backgroundLight,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: 12,
-                    borderRadius: 10,
-                    marginRight: 18,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontWeight: '900',
-                      color: COLOURS.blue,
-                      letterSpacing: 1,
-                    }}>
-                    VISA
-                  </Text>
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: COLOURS.black,
-                      fontWeight: '500',
-                    }}>
-                    Visa Classic
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: COLOURS.black,
-                      fontWeight: '400',
-                      lineHeight: 20,
-                      opacity: 0.5,
-                    }}>
-                    ****-9092
-                  </Text>
-                </View>
-              </View>
-              <MaterialCommunityIcons
-                name="chevron-right"
-                style={{fontSize: 22, color: COLOURS.black}}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              paddingHorizontal: 16,
-              marginTop: 40,
-              marginBottom: 80,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLOURS.black,
-                fontWeight: '500',
-                letterSpacing: 1,
-                marginBottom: 20,
-              }}>
-              Order Info
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 8,
-              }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  maxWidth: '80%',
-                  color: COLOURS.black,
-                  opacity: 0.5,
-                }}>
-                Subtotal
-              </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  color: COLOURS.black,
-                  opacity: 0.8,
-                }}>
-                &#8377;{total}.00
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 22,
-              }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  maxWidth: '80%',
-                  color: COLOURS.black,
-                  opacity: 0.5,
-                }}>
-                Shipping Tax
-              </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  color: COLOURS.black,
-                  opacity: 0.8,
-                }}>
-                &#8377;{total / 20}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  maxWidth: '80%',
-                  color: COLOURS.black,
-                  opacity: 0.5,
-                }}>
-                Total
-              </Text>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: '500',
-                  color: COLOURS.black,
-                }}>
-                &#8377;{total + total / 20}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          height: '8%',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <TouchableOpacity
-          onPress={() => (total != 0 ? checkOut() : null)}
-          style={{
-            width: '86%',
-            height: '90%',
-            backgroundColor: COLOURS.blue,
-            borderRadius: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '500',
-              letterSpacing: 1,
-              color: COLOURS.white,
-              textTransform: 'uppercase',
-            }}>
-            CHECKOUT (&#8377;{total + total / 20} )
-          </Text>
-        </TouchableOpacity>
+                <View>
+                  <View style={styles.notification_cont}>
+                    <Text style={styles.notification_list_inner_title}>
+                      {item.value}{" "}
+                    </Text>
+                    <Text style={styles.notification_list_inner_title_new}>
+                      {item.offer}
+                    </Text>
+                  </View>
+
+                  <View style={{ alignItems: "flex-end", width: "75%" }}>
+                    <Text style={{ flexDirection: "row", fontSize: 12 }}>
+                      2 days ago
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+        />
       </View>
-    </View>
+    </ScrollView>
   );
 };
+const styles = StyleSheet.create({
+  notification_list_outer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%",
+    padding: 8,
+    alignItems: "flex-start",
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: "#ccc",
+    justifyContent: "flex-start",
+  },
+  notification_list: { width: "100%", flexDirection: "row" },
+  notification_img: { width: "22%" },
+  notification_cont: {
+    width: "100%",
+    paddingRight: 32,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+  },
+  notification_list_inner_title: { fontSize: 16, fontWeight: "600" },
+  notification_img_inner: {
+    height: 52,
+    width: 52,
+    resizeMode: "contain",
+    margin: 8,
+    padding: 20,
+    marginBottom: 0,
+  },
+  notification_list_inner_title_new: {
+    color: "#acacb2",
+    paddingTop: 0,
+    fontSize: 13,
+    lineHeight: 19,
+  },
+});
 
 export default Notification;

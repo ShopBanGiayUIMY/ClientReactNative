@@ -12,11 +12,15 @@ const App = () => {
 };
 
 const MainApp = () => {
-  const { InfoAuth } = useAuth();
+  const { InfoAuth ,getTotalCart} = useAuth();
   const { dispatch } = AuthStatus();
   const fetchData = async () => {
     try {
       const data = await InfoAuth();
+      const result = await getTotalCart();
+      if(result){
+        dispatch({ type: "INFOCART", payload: result });
+      }
       if (data) {
         dispatch({ type: 'USERINFO', payload: data });
       }

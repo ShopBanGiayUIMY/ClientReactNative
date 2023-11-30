@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ToastAndroid,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import Swipelist from "react-native-swipeable-list-view";
@@ -24,21 +25,18 @@ const HEIGHT = Dimensions.get("window").height;
 
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress } = props;
-  const { updateQuantity } = useAuth()
+  const { updateCartandCreate } = useAuth();
   const loadlai = () => {
     handlePress();
   };
   const [data, setData] = useState(dataCart);
-  
+
   const [quantity, setQuantity] = useState([]);
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
   }, [dataCart]);
   useEffect(() => {
-   const time= setTimeout(() => {
     setData(dataCart);
-    }, 1000);
-   clearTimeout(time)
   }, [dataCart]);
   const handleInputChange = (text, index) => {
     const newData = [...data];
@@ -46,14 +44,17 @@ const ProductInCart = (props) => {
     setData(newData);
   };
   const handleGiam = (quantity, product_detail_id) => {
-    updateQuantity(Cart_id, product_detail_id, quantity - 1).then((result) => {
-      console.log("result", result);
-      loadlai();
-    });
+    if (quantity > 1) {
+      updateCartandCreate(Cart_id, product_detail_id, quantity - 1).then(
+        (result) => {
+          console.log("result", result);
+          loadlai();
+        }
+      );
+    }
   };
-
   const handleTang = (quantity, product_detail_id) => {
-    updateQuantity(Cart_id, product_detail_id, quantity + 1).then((result) => {
+    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then((result) => {
       console.log("result", result);
       loadlai();
     });
@@ -67,7 +68,30 @@ const ProductInCart = (props) => {
     const handleBlur = () => {
       handleInputChange(tempQuantity, index);
       setTimeout(() => {
-        console.log("New state:", tempQuantity);
+        console.log("Số lượng mới:", parseInt(tempQuantity));
+        updateCartandCreate(
+          Cart_id,
+          item.ProductDetail.detail_id,
+          parseInt(tempQuantity)
+        ).then((result) => {
+          if (result.status == -1) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            loadlai();
+          } else if (result.status == 1) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            loadlai();
+            console.log("result", result);
+            loadlai();
+          } else if (result.status == 0) {
+            ToastAndroid.show(result.message, ToastAndroid.SHORT);
+            loadlai();
+            console.log("result", result);
+            loadlai();
+          }
+        }).catch((error) => {
+          console.log("error", error);
+        }
+        );
       }, 1000);
     };
     return (
@@ -81,8 +105,12 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+    showsVerticalScrollIndicator={false}
+    removeClippedSubviews={true}
+    style={styles.container}>
       <Swipelist
+      
         data={data}
         renderRightItem={(item, index) => (
           <View style={styles.all} key={index}>
@@ -120,8 +148,12 @@ const ProductInCart = (props) => {
                 <View style={styles.vSizeandColor}>
                   <Text style={styles.itemphanloai}>Phân loại</Text>
                   <View style={styles.phanloai}>
-                    <Text style={styles.txtSizeandColor}>Size: {item.ProductDetail.size}</Text>
-                    <Text style={styles.txtSizeandColor}>Màu: {item.ProductDetail.color}</Text>
+                    <Text style={styles.txtSizeandColor}>
+                      Size: {item.ProductDetail.size}
+                    </Text>
+                    <Text style={styles.txtSizeandColor}>
+                      Màu: {item.ProductDetail.color}
+                    </Text>
                   </View>
                 </View>
 
@@ -172,54 +204,23 @@ const ProductInCart = (props) => {
             </View>
           </View>
         )}
-        rightOpenValue={200}
+        rightOpenValue={210}
+
         renderHiddenItem={(data, index) => (
-          <View style={{ flexDirection: "row" }}>
+          <View style={styles.hiddenItemContainer}>
             <Pressable
-              style={{
-                width: 100,
-                height: 100,
-                backgroundColor: "green",
-                borderRadius: 35,
-                borderWidth: 0.5,
-                borderColor: "white",
-              }}
+              style={styles.editButton}
               onPress={() => console.log("pressed")}
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 35,
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                xoá
-              </Text>
+              <Text style={styles.buttonTextedit}>Chỉnh sửa</Text>
             </Pressable>
             <Pressable
-              style={{
-                width: 100,
-                height: 100,
-                backgroundColor: "green",
-                borderRadius: 35,
-                borderWidth: 0.5,
-                borderColor: "white",
-              }}
-              onPress={() => handleSua()}
+              style={styles.deleteButton}
+              onPress={() =>
+                alert(`Xoá sản phẩm ${data.ProductDetail.detail_id}`)
+              }
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 35,
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                edit
-              </Text>
+              <Text style={styles.buttonTextdelete}>Xoá</Text>
             </Pressable>
           </View>
         )}
@@ -231,8 +232,7 @@ const ProductInCart = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10,
-    marginHorizontal: 10,
+    marginTop: 10, 
   },
   all: {
     flexDirection: "row",
@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 4,
     justifyContent: "center",
+    marginHorizontal: 5,
   },
   txtCount: {
     textAlign: "center",
@@ -330,25 +331,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "gray",
   },
-  vThanhToan: {},
+
   hiddenItemContainer: {
     flexDirection: "row",
-  },
-  hiddenButton: {
-    width: 100,
-    height: 100,
-    backgroundColor: "green",
-    borderRadius: 35,
-    borderWidth: 0.5,
-    borderColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
     marginHorizontal: 5,
+    alignItems: "center",
   },
-  hiddenButtonText: {
+  editButton: {
+    width: 100,
+    height: 160,
+    backgroundColor: "orange",
+    alignContent: "center",
+    borderRadius: 10,
+  },
+  deleteButton: {
+    width: 100,
+    height: 160,
+    backgroundColor: "rgba(245, 65, 2, 0.8)",
+    borderColor: "white",
+    borderRadius: 10,
+  },
+  buttonTextdelete: {
     textAlign: "center",
+    marginTop: 35,
     fontSize: 20,
-    fontWeight: "bold",
+    color: "white",
+  },
+  buttonTextedit: {
+    textAlign: "center",
+    marginTop: 35,
+    fontSize: 20,
     color: "white",
   },
 });
