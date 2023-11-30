@@ -32,10 +32,11 @@ export default function ListProduct({ navigation }) {
   const [isConnected, setIsConnected] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true); 
   const [key, setKey] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
+
   useFocusEffect(
     React.useCallback(() => {
-      // This function is called every time the screen is focused
-      setKey(prevKey => prevKey + 1); // Increase key to force re-render
+      setKey(prevKey => prevKey + 1);
     }, [])
   );
 
