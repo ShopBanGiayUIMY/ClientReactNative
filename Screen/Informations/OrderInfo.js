@@ -7,6 +7,9 @@ import mess from "../../images/4.png";
 import pay from "../../images/5.png";
 
 export default OrderInfo = ({ navigation }) => {
+  const hanldChoThanhToan=()=>{
+    navigation.navigate('OrderDetail')
+  }
   return (
     <View style={styles.iconsContainer}>
     <View>
@@ -18,7 +21,7 @@ export default OrderInfo = ({ navigation }) => {
     </View>
    </View>
    <View  style={styles.Containerinfo}>
-      <TouchableOpacity style={styles.iconItem}>
+      <TouchableOpacity style={styles.iconItem} onPress={()=> {hanldChoThanhToan()}}>
         <Image style={styles.iconImage} source={wait} />
         <Text style={styles.iconText}>Chờ Thanh Toán</Text>
       </TouchableOpacity>
