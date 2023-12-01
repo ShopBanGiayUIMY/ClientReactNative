@@ -12,7 +12,9 @@ import Coupon from "./Screen/Coupons/Coupon";
 import CpnProductDetail from "./components/Product/CpnProductDetail";
 import Address from "./Screen/Informations/Address";
 import Category from "./components/MenuCategory/Category"
-
+import OrderDetail from "./Screen/Order/OrderDetail";
+import Payment from "./Screen/Payment/Payment";
+import PaymentMethod from "./Screen/Payment/PaymentMethod";
 const Stack = createNativeStackNavigator();
 import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
@@ -88,7 +90,10 @@ export default function AppNavigator() {
         <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="DanhGiaProduct" component={DanhGiaProduct} />
         <Stack.Screen name="Qrcode" component={Qrcode} />
-        
+        <Stack.Screen name="OrderDetail" component={OrderDetail}  options={{headerShown:false}} />
+        <Stack.Screen name="Payment" component={Payment}  options={{headerShown:false}} />
+        <Stack.Screen name="PaymentMethod" component={PaymentMethod}  options={{headerShown:false}} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

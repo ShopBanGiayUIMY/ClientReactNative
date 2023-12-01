@@ -43,7 +43,6 @@ import ModalBottom from "../../Screen/Modal/modal.product.detail";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
   let position = Animated.divide(scrollX, WIDTH);
-
   const [data, setData] = useState(null);
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
@@ -85,10 +84,8 @@ const CpnProductDetail = ({ product, navigation }) => {
   const GetSolidProductId = async () => {
     try {
       const response = await GetSolidProductById(product.id);
-         setdaban(response.total_quantity_sold)
-        return;
-      
-      
+      setdaban(response.total_quantity_sold);
+      return;
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
@@ -177,6 +174,11 @@ const CpnProductDetail = ({ product, navigation }) => {
   } else {
     totalQuantitySold = parseInt(totalQuantitySold);
   }
+
+  const hanldThanhToan = () => {
+    toggleModal();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.vImage}>
@@ -185,9 +187,13 @@ const CpnProductDetail = ({ product, navigation }) => {
           barStyle="dark-content"
         />
         <ScrollView showsVerticalScrollIndicator={false}>
-        {isModalVisible && (
-          <ModalBottom openDrawer={isModalVisible} closeDrawer={toggleModal} dataprod={data} />
-        )}
+          {isModalVisible && (
+            <ModalBottom
+              openDrawer={isModalVisible}
+              closeDrawer={toggleModal}
+              dataprod={data}
+            />
+          )}
 
           <View
             style={{
@@ -432,7 +438,12 @@ const CpnProductDetail = ({ product, navigation }) => {
             />
             <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
           </Pressable>
-          <Pressable style={styles.buyNowButton} onPress={toggleModal}>
+          <Pressable
+            style={styles.buyNowButton}
+            onPress={() => {
+              hanldThanhToan();
+            }}
+          >
             <Text style={styles.buttonTextmua}>Mua ngay</Text>
           </Pressable>
         </View>

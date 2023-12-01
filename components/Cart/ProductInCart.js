@@ -54,10 +54,12 @@ const ProductInCart = (props) => {
     }
   };
   const handleTang = (quantity, product_detail_id) => {
-    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then((result) => {
-      console.log("result", result);
-      loadlai();
-    });
+    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then(
+      (result) => {
+        console.log("result", result);
+        loadlai();
+      }
+    );
   };
   const handleQuantityChange = (text, item) => {
     console.log(`Changing quantity for item with id ${item.item_id}`);
@@ -73,25 +75,26 @@ const ProductInCart = (props) => {
           Cart_id,
           item.ProductDetail.detail_id,
           parseInt(tempQuantity)
-        ).then((result) => {
-          if (result.status == -1) {
-            ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            loadlai();
-          } else if (result.status == 1) {
-            ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            loadlai();
-            console.log("result", result);
-            loadlai();
-          } else if (result.status == 0) {
-            ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            loadlai();
-            console.log("result", result);
-            loadlai();
-          }
-        }).catch((error) => {
-          console.log("error", error);
-        }
-        );
+        )
+          .then((result) => {
+            if (result.status == -1) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              loadlai();
+            } else if (result.status == 1) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              loadlai();
+              console.log("result", result);
+              loadlai();
+            } else if (result.status == 0) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              loadlai();
+              console.log("result", result);
+              loadlai();
+            }
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
       }, 1000);
     };
     return (
@@ -105,12 +108,12 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <ScrollView 
-    showsVerticalScrollIndicator={false}
-    removeClippedSubviews={true}
-    style={styles.container}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      removeClippedSubviews={true}
+      style={styles.container}
+    >
       <Swipelist
-      
         data={data}
         renderRightItem={(item, index) => (
           <View style={styles.all} key={index}>
@@ -205,7 +208,6 @@ const ProductInCart = (props) => {
           </View>
         )}
         rightOpenValue={210}
-
         renderHiddenItem={(data, index) => (
           <View style={styles.hiddenItemContainer}>
             <Pressable
@@ -232,7 +234,7 @@ const ProductInCart = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10, 
+    marginTop: 10,
   },
   all: {
     flexDirection: "row",
