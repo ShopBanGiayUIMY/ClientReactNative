@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect,useCallback } from "react";
 import {
   Text,
   View,
@@ -19,7 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "../../Services/auth.services";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
+import { Checkbox } from "react-native-paper";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -31,6 +31,43 @@ const ProductInCart = (props) => {
   };
   const [data, setData] = useState(dataCart);
 
+  const [selectedItems, setSelectedItems] = useState([]);
+  const toggleItemSelection = useCallback(
+    (itemId) => {
+      if (selectedItems.includes(itemId)) {
+        setSelectedItems(selectedItems.filter((id) => id !== itemId));
+      } else {
+        setSelectedItems([...selectedItems, itemId]);
+      }
+    },
+    [selectedItems]
+  );
+  
+  const handlePayment = () => {
+    const selectedProducts = data.filter(
+      (item) => selectedItems.includes(item.ProductDetail.detail_id)
+    );
+    handlePlaceOrder(selectedProducts);
+  };
+  
+  const handlePlaceOrder = (selectedProducts) => {
+  //   // Chuẩn bị dữ liệu đơn hàng để gửi lên server
+  //   const orderData = {
+  //     shipping_address_id: 2,
+  //     payment_method_id: 1,
+  //     delivered_address:"Tah",
+  //     cart_id: Cart_id,
+  //     cart_items: selectedProducts.map(item => item.item_id),
+   
+  //   };
+  
+  //  console.log("orderData",orderData);
+  //  console.log("selectedProducts",dataCart);
+  };
+
+
+
+  
   const [quantity, setQuantity] = useState([]);
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
@@ -54,10 +91,12 @@ const ProductInCart = (props) => {
     }
   };
   const handleTang = (quantity, product_detail_id) => {
-    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then((result) => {
-      console.log("result", result);
-      loadlai();
-    });
+    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then(
+      (result) => {
+        console.log("result", result);
+        loadlai();
+      }
+    );
   };
   const handleQuantityChange = (text, item) => {
     console.log(`Changing quantity for item with id ${item.item_id}`);
@@ -73,25 +112,26 @@ const ProductInCart = (props) => {
           Cart_id,
           item.ProductDetail.detail_id,
           parseInt(tempQuantity)
-        ).then((result) => {
-          if (result.status == -1) {
-            ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            loadlai();
-          } else if (result.status == 1) {
-            ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            loadlai();
-            console.log("result", result);
-            loadlai();
-          } else if (result.status == 0) {
-            ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            loadlai();
-            console.log("result", result);
-            loadlai();
-          }
-        }).catch((error) => {
-          console.log("error", error);
-        }
-        );
+        )
+          .then((result) => {
+            if (result.status == -1) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              loadlai();
+            } else if (result.status == 1) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              loadlai();
+              console.log("result", result);
+              loadlai();
+            } else if (result.status == 0) {
+              ToastAndroid.show(result.message, ToastAndroid.SHORT);
+              loadlai();
+              console.log("result", result);
+              loadlai();
+            }
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
       }, 1000);
     };
     return (
@@ -105,15 +145,24 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <ScrollView 
-    showsVerticalScrollIndicator={false}
-    removeClippedSubviews={true}
-    style={styles.container}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      removeClippedSubviews={true}
+      style={styles.container}
+    >
       <Swipelist
-      
         data={data}
         renderRightItem={(item, index) => (
           <View style={styles.all} key={index}>
+            <Checkbox
+              status={
+                selectedItems.includes(item.ProductDetail.detail_id)
+                  ? "checked"
+                  : "unchecked"
+              }
+              onPress={() => toggleItemSelection(item.ProductDetail.detail_id)}
+              color="#3399ff"
+            />
             <View style={styles.vImage}>
               <Image
                 style={styles.imagee}
@@ -205,7 +254,6 @@ const ProductInCart = (props) => {
           </View>
         )}
         rightOpenValue={210}
-
         renderHiddenItem={(data, index) => (
           <View style={styles.hiddenItemContainer}>
             <Pressable
@@ -232,7 +280,7 @@ const ProductInCart = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10, 
+    marginTop: 10,
   },
   all: {
     flexDirection: "row",
