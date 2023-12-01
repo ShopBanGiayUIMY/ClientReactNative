@@ -61,7 +61,7 @@ export default function ModalBottom(props) {
   };
   return (
     <View style={styles.container}>
-        <DataLoadingCart  key={cartUpdate} />
+      <DataLoadingCart key={cartUpdate} />
       <Modal
         animationType="slide"
         transparent={true}
@@ -97,7 +97,6 @@ export default function ModalBottom(props) {
             >
               <View style={{ marginVertical: 22 }}>
                 <Text style={styles.h4}>Chọn Size:</Text>
-
                 <View
                   style={{
                     flexDirection: "row",
