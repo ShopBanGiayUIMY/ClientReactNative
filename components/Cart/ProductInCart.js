@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect,useCallback } from "react";
 import {
   Text,
   View,
@@ -19,7 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "../../Services/auth.services";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
+import { Checkbox } from "react-native-paper";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -31,6 +31,43 @@ const ProductInCart = (props) => {
   };
   const [data, setData] = useState(dataCart);
 
+  const [selectedItems, setSelectedItems] = useState([]);
+  const toggleItemSelection = useCallback(
+    (itemId) => {
+      if (selectedItems.includes(itemId)) {
+        setSelectedItems(selectedItems.filter((id) => id !== itemId));
+      } else {
+        setSelectedItems([...selectedItems, itemId]);
+      }
+    },
+    [selectedItems]
+  );
+  
+  const handlePayment = () => {
+    const selectedProducts = data.filter(
+      (item) => selectedItems.includes(item.ProductDetail.detail_id)
+    );
+    handlePlaceOrder(selectedProducts);
+  };
+  
+  const handlePlaceOrder = (selectedProducts) => {
+  //   // Chuẩn bị dữ liệu đơn hàng để gửi lên server
+  //   const orderData = {
+  //     shipping_address_id: 2,
+  //     payment_method_id: 1,
+  //     delivered_address:"Tah",
+  //     cart_id: Cart_id,
+  //     cart_items: selectedProducts.map(item => item.item_id),
+   
+  //   };
+  
+  //  console.log("orderData",orderData);
+  //  console.log("selectedProducts",dataCart);
+  };
+
+
+
+  
   const [quantity, setQuantity] = useState([]);
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
@@ -117,6 +154,15 @@ const ProductInCart = (props) => {
         data={data}
         renderRightItem={(item, index) => (
           <View style={styles.all} key={index}>
+            <Checkbox
+              status={
+                selectedItems.includes(item.ProductDetail.detail_id)
+                  ? "checked"
+                  : "unchecked"
+              }
+              onPress={() => toggleItemSelection(item.ProductDetail.detail_id)}
+              color="#3399ff"
+            />
             <View style={styles.vImage}>
               <Image
                 style={styles.imagee}

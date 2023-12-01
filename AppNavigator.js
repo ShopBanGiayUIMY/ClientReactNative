@@ -23,6 +23,7 @@ import Search from "./Screen/Search/Search";
 import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
 import Qrcode from "./Screen/Qrcode/Qrcode";
+import ConfirmationOrder from "./Screen/ConfirmationOrder/ConfirmationOrder";
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
   return (
@@ -90,10 +91,10 @@ export default function AppNavigator() {
         <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="DanhGiaProduct" component={DanhGiaProduct} />
         <Stack.Screen name="Qrcode" component={Qrcode} />
+        <Stack.Screen name="ConfirmationOrder" component={ConfirmationOrder} />
         <Stack.Screen name="OrderDetail" component={OrderDetail}  options={{headerShown:false}} />
         <Stack.Screen name="Payment" component={Payment}  options={{headerShown:false}} />
         <Stack.Screen name="PaymentMethod" component={PaymentMethod}  options={{headerShown:false}} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
