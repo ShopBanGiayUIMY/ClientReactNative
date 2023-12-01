@@ -3,6 +3,7 @@ import React from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { TouchableOpacity } from "react-native";
+import CpnPayment from "../../components/Payment/CpnPayment";
 const Payment = ({navigation}) => {
   return (
     <View style={styles.container}>
@@ -21,7 +22,7 @@ const Payment = ({navigation}) => {
       </TouchableOpacity>
     </View>
     <ScrollView style={styles.vScroll}>
-      {/* <CpnOrder navigation={navigation}/> */}
+      <CpnPayment navigation={navigation}/>
     </ScrollView>
   </View>
   )

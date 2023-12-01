@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -6,95 +6,48 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Addres from "../../Screen/addresstest";
-import * as Location from "expo-location";
-
 const Address = ({ navigation }) => {
-  const googlePlacesRef = React.createRef();
-  const phoneRef = React.createRef();
-  const addressRef = React.createRef();
-
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const googlePlacesRef = useRef();
+  const phoneRef = useRef();
+  const addressRef = useRef();
   const [name, setName] = useState("");
   const [sodienthoai, setSoDienThoai] = useState("");
   const [diachi, setDiaChi] = useState("");
   const [diaChiCuThe, setDiaChiCuThe] = useState("");
-  const [mapRegion, setMapRegion] = useState({
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
-
-  const userLocation = async () => {
-    try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-
-      if (status !== "granted") {
-        console.error("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({
-        enableHighAccuracy: true,
-      });
-
-      setMapRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    } catch (error) {
-      console.error("Error getting location:", error);
-    }
-  };
-
-  useEffect(() => {
-    userLocation();
-  }, []);
-
+  const [isAddressSelected, setIsAddressSelected] = useState(false);
   const validatePhoneNumber = (phoneNumber) => {
     const phoneRegex = /^[0-9]{10}$/;
     return phoneRegex.test(phoneNumber);
   };
-
   const handlePhoneInputChange = (text) => {
     setSoDienThoai(text);
   };
-
-  const handleGooglePlacesSelect = (data, details = null) => {
-    const selectedAddress = details?.formatted_address || "";
-    setDiaChi(selectedAddress);
-  };
-
+  // const handleAddressSelection = () => {
+  //   setIsAddressSelected(true);
+  // };
   const xacNhanDiaChi = () => {
     if (!validatePhoneNumber(sodienthoai)) {
-      alert("Số điện thoại không hợp lệ");
+      Alert.alert("Lỗi", "Số điện thoại không hợp lệ");
       return;
     }
-
-    if (!diachi) {
-      alert("Vui lòng chọn địa chỉ");
-      return;
-    }
-
+    // if (!isAddressSelected) {
+    //   Alert.alert("Lỗi", "Hãy chọn địa chỉ nhận hàng");
+    //   return;
+    // }
     console.log("Họ và tên:", name);
     console.log("Số điện thoại:", sodienthoai);
-    console.log("Địa chỉ:", diachi);
     console.log("Địa chỉ cụ thể:", diaChiCuThe);
-
-    navigation.replace("Home");
+    navigation.goBack("Home");
   };
-
   return (
     <View style={styles.container}>
-      <View style={styles.vheader}>
-        <View style={styles.vItemheader}>
+      <View style={styles.header}>
+        <View style={styles.headerItem}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FontAwesomeIcon
               style={styles.icon}
@@ -103,14 +56,14 @@ const Address = ({ navigation }) => {
               color="white"
             />
           </TouchableOpacity>
-          <Text style={styles.txtTitle}>Thêm địa chỉ nhận hàng</Text>
+          <Text style={styles.title}>Thêm địa chỉ nhận hàng</Text>
         </View>
       </View>
-      <View style={styles.vNoidung}>
+      <View style={styles.content}>
         <TextInput
           value={name}
           onChangeText={(text) => setName(text)}
-          style={styles.txtTen}
+          style={styles.input}
           placeholder="Họ và tên"
           returnKeyType="next"
           onSubmitEditing={() => {
@@ -120,7 +73,7 @@ const Address = ({ navigation }) => {
         <TextInput
           multiline={true}
           dataDetectorTypes="phoneNumber"
-          style={styles.txtTen}
+          style={styles.input}
           placeholder="Số điện thoại"
           value={sodienthoai}
           onChangeText={handlePhoneInputChange}
@@ -134,40 +87,38 @@ const Address = ({ navigation }) => {
           onChangeText={(text) => {
             setDiaChiCuThe(text);
           }}
-          style={styles.txtTen}
+          style={styles.input}
           placeholder="Địa chỉ cụ thể"
           ref={addressRef}
         />
         <View style={styles.addressContainer}>
-          <Addres />
+          <Addres/>
         </View>
       </View>
       <Pressable
         onPress={() => {
           xacNhanDiaChi();
         }}
-        style={styles.vXacNhanDiaChi}
+        style={styles.confirmButton}
       >
-        <Text style={styles.txtXacNhan}>Xác nhận</Text>
+        <Text style={styles.confirmButtonText}>Xác nhận</Text>
       </Pressable>
     </View>
   );
 };
-
 export default Address;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: 380,
-    height: 1000,
     backgroundColor: "#E0E0E0",
   },
-  vheader: {
+  header: {
     width: "100%",
     height: 100,
   },
-  vItemheader: {
+  headerItem: {
     flexDirection: "row",
     justifyContent: "flex-start",
     backgroundColor: "#F9F9F9",
@@ -183,7 +134,7 @@ const styles = StyleSheet.create({
     marginStart: 25,
     marginTop: 40,
   },
-  txtTitle: {
+  title: {
     textAlign: "center",
     width: 250,
     height: 45,
@@ -192,13 +143,12 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     marginTop: 35,
   },
-  vNoidung: {
+  content: {
     width: 345,
-    height: "auto",
     alignSelf: "center",
     paddingTop: 15,
   },
-  txtTen: {
+  input: {
     width: 343,
     height: 64,
     color: "#9B9B9B",
@@ -212,23 +162,33 @@ const styles = StyleSheet.create({
   },
   addressContainer: {
     width: "100%",
-    height: 200,
-    backgroundColor: "red",
-    marginBottom: 10,
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginBottom: 50,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    height:250
   },
-  vXacNhanDiaChi: {
+  confirmButton: {
     width: 343,
     height: 48,
     backgroundColor: "#DB3022",
     alignSelf: "center",
     borderRadius: 25,
-    marginTop: 10,
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  txtXacNhan: {
-    textAlign: "center",
-    paddingTop: 15,
+  confirmButtonText: {
     color: "#fff",
-    height: "100%",
     fontSize: 18,
   },
+  
 });

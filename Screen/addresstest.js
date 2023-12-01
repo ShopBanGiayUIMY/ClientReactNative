@@ -1,14 +1,17 @@
 import { SelectList } from "react-native-dropdown-select-list";
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import axios from "axios";
 
 const Notification = React.memo(() => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWards, setSelectedWards] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
   const [filteredDistricts, setFilteredDistricts] = useState([]);
+  const [filteredWards, setFilteredWards] = useState([]);
 
   useEffect(() => {
     // Gọi API để lấy danh sách tỉnh/thành phố
@@ -37,6 +40,19 @@ const Notification = React.memo(() => {
   }, []);
 
   useEffect(() => {
+    // Gọi API để lấy danh sách phường/xã
+    axios
+      .get("https://provinces.open-api.vn/api/w/")
+      .then((response) => {
+        // Cập nhật state với dữ liệu từ API
+        setWards(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching ward data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
     // Lọc danh sách quận/huyện theo tỉnh được chọn
     const filtered = districts.filter(
       (district) => district.province_code === selectedProvince
@@ -49,6 +65,19 @@ const Notification = React.memo(() => {
     setSelectedDistrict("");
   }, [selectedProvince]);
 
+  // Lọc danh sách phường/xã theo quận/huyện được chọn
+  useEffect(() => {
+    const filtered = wards.filter(
+      (ward) => ward.district_code === selectedDistrict
+    );
+    setFilteredWards(filtered);
+  }, [selectedDistrict, wards]);
+
+  // Reset phường/xã khi chọn quận/huyện khác
+  useEffect(() => {
+    setSelectedWards("");
+  }, [selectedDistrict]);
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff", padding: 20 }}>
       <SelectList
@@ -57,8 +86,8 @@ const Notification = React.memo(() => {
           borderWidth: 1,
           borderColor: "gray",
           borderRadius: 5,
-          zIndex: 2, 
-          position: "relative", 
+          zIndex: 2,
+          position: "relative",
         }}
         setSelected={(val) => setSelectedProvince(val)}
         data={provinces.map((province) => ({
@@ -68,7 +97,7 @@ const Notification = React.memo(() => {
         save="key"
       />
       <SelectList
-        boxStyles={{ width: "100%", height: 60, position: "relative", zIndex: 1 }}
+        boxStyles={{ width: "100%", height: 60, position: "relative", zIndex: 1, marginBottom:5 }}
         setSelected={(val) => setSelectedDistrict(val)}
         data={filteredDistricts.map((district) => ({
           key: district.code,
@@ -76,9 +105,17 @@ const Notification = React.memo(() => {
         }))}
         save="key"
       />
+      <SelectList
+        boxStyles={{ width: "100%", height: 60, position: "relative", zIndex: 1 }}
+        setSelected={(val) => setSelectedWards(val)}
+        data={filteredWards.map((ward) => ({
+          key: ward.code,
+          value: ward.codename,
+        }))}
+        save="key"
+      />
     </View>
   );
-  
 });
 
 export default Notification;
