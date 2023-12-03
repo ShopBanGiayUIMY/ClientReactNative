@@ -24,6 +24,7 @@ import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
 import Qrcode from "./Screen/Qrcode/Qrcode";
 import ConfirmationOrder from "./Screen/ConfirmationOrder/ConfirmationOrder";
+import Contact from "./Screen/Contact/Contact";
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
   return (
@@ -95,6 +96,8 @@ export default function AppNavigator() {
         <Stack.Screen name="OrderDetail" component={OrderDetail}  options={{headerShown:false}} />
         <Stack.Screen name="Payment" component={Payment}  options={{headerShown:false}} />
         <Stack.Screen name="PaymentMethod" component={PaymentMethod}  options={{headerShown:false}} />
+        <Stack.Screen name="Contact" component={Contact} options={{}} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
