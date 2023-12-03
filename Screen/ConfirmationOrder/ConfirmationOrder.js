@@ -11,9 +11,10 @@ import axios from "axios";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import RazorpayCheckout from "react-native-razorpay";
+import useAuth from "../../Services/auth.services";
 
 const ConfirmationOrder = () => {
+  const { getAddress, CreateAddress } = useAuth();
   const steps = [
     { title: "Address", content: "Address Form" },
     { title: "Delivery", content: "Delivery Options" },
@@ -27,6 +28,23 @@ const ConfirmationOrder = () => {
   const [selectedAddress, setSelectedAdress] = useState("");
   const [option, setOption] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+  const fetchAddresses = async () => {
+    try {
+      const data = await getAddress();
+      if (data.success == true) {
+        setAddresses(data.data);
+        console.log("address", data.data);
+      } else {
+        console.log("error fetching address", response);
+      }
+    } catch (error) {
+      console.log("errror", error);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     try {
       const orderData = {
@@ -52,7 +70,7 @@ const ConfirmationOrder = () => {
     }
   };
   return (
-    <ScrollView style={{ marginTop: 55 }}>
+    <ScrollView style={styles.container}>
       <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 40 }}>
         <View
           style={{
@@ -107,115 +125,135 @@ const ConfirmationOrder = () => {
         </View>
       </View>
 
-      <View style={{ marginHorizontal: 20 }}>
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-          Select Delivery Address
-        </Text>
+      {currentStep == 0 && (
+        <View style={{ marginHorizontal: 20 }}>
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            Select Delivery Address
+          </Text>
 
-        <Pressable>
-          <Pressable
-            style={{
-              borderWidth: 1,
-              borderColor: "#D0D0D0",
-              padding: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              paddingBottom: 17,
-              marginVertical: 7,
-              borderRadius: 6,
-            }}
-          >
-            <Entypo
-              onPress={() => setSelectedAdress(item)}
-              name="circle"
-              size={20}
-              color="gray"
-            />
-
-            <View style={{ marginLeft: 6 }}>
-              <View
+          <Pressable>
+            {addresses?.map((item, index) => (
+              <Pressable
                 style={{
+                  borderWidth: 1,
+                  borderColor: "#D0D0D0",
+                  padding: 10,
                   flexDirection: "row",
                   alignItems: "center",
-                  gap: 3,
+                  gap: 5,
+                  paddingBottom: 17,
+                  marginVertical: 7,
+                  borderRadius: 6,
                 }}
               >
-                <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                  dsdsdsd
-                </Text>
-                <Entypo name="location-pin" size={24} color="red" />
-              </View>
+                {selectedAddress && selectedAddress.id === item?.id ? (
+                  <FontAwesome5 name="dot-circle" size={20} color="#008397" />
+                ) : (
+                  <Entypo
+                    onPress={() => setSelectedAdress(item)}
+                    name="circle"
+                    size={20}
+                    color="gray"
+                  />
+                )}
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                  marginTop: 7,
-                }}
-              >
-                <Pressable
-                  style={{
-                    backgroundColor: "#F5F5F5",
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 5,
-                    borderWidth: 0.9,
-                    borderColor: "#D0D0D0",
-                  }}
-                >
-                  <Text>Edit</Text>
-                </Pressable>
-
-                <Pressable
-                  style={{
-                    backgroundColor: "#F5F5F5",
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 5,
-                    borderWidth: 0.9,
-                    borderColor: "#D0D0D0",
-                  }}
-                >
-                  <Text>Remove</Text>
-                </Pressable>
-
-                <Pressable
-                  style={{
-                    backgroundColor: "#F5F5F5",
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 5,
-                    borderWidth: 0.9,
-                    borderColor: "#D0D0D0",
-                  }}
-                >
-                  <Text>Set as Default</Text>
-                </Pressable>
-              </View>
-
-              <View>
-                <Pressable
-                  onPress={() => setCurrentStep(1)}
-                  style={{
-                    backgroundColor: "#008397",
-                    padding: 10,
-                    borderRadius: 20,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 10,
-                  }}
-                >
-                  <Text style={{ textAlign: "center", color: "white" }}>
-                    Deliver to this Address
+                <View style={{ marginLeft: 6 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 3,
+                    }}
+                  >
+                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                      {item?.recipient_name}
+                    </Text>
+                    <Entypo name="location-pin" size={24} color="red" />
+                  </View>
+                  <Text style={{ fontSize: 15, color: "#181818" }}>
+                    {item?.street_address}, {item?.city}
                   </Text>
-                </Pressable>
-              </View>
-            </View>
+                  <Text style={{ fontSize: 15, color: "#181818" }}>
+                    {item?.state}
+                  </Text>
+
+                  <Text style={{ fontSize: 15, color: "#181818" }}>
+                    pin code : {item?.postal_code}
+                  </Text>
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                      marginTop: 7,
+                    }}
+                  >
+                    <Pressable
+                      style={{
+                        backgroundColor: "#F5F5F5",
+                        paddingHorizontal: 10,
+                        paddingVertical: 6,
+                        borderRadius: 5,
+                        borderWidth: 0.9,
+                        borderColor: "#D0D0D0",
+                      }}
+                    >
+                      <Text>Edit</Text>
+                    </Pressable>
+
+                    <Pressable
+                      style={{
+                        backgroundColor: "#F5F5F5",
+                        paddingHorizontal: 10,
+                        paddingVertical: 6,
+                        borderRadius: 5,
+                        borderWidth: 0.9,
+                        borderColor: "#D0D0D0",
+                      }}
+                    >
+                      <Text>Remove</Text>
+                    </Pressable>
+
+                    <Pressable
+                      style={{
+                        backgroundColor: "#F5F5F5",
+                        paddingHorizontal: 10,
+                        paddingVertical: 6,
+                        borderRadius: 5,
+                        borderWidth: 0.9,
+                        borderColor: "#D0D0D0",
+                      }}
+                    >
+                      <Text>Set as Default</Text>
+                    </Pressable>
+                  </View>
+
+                  <View>
+                    {selectedAddress && selectedAddress.id === item?.id && (
+                      <Pressable
+                        onPress={() => setCurrentStep(1)}
+                        style={{
+                          backgroundColor: "#008397",
+                          padding: 10,
+                          borderRadius: 20,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 10,
+                        }}
+                      >
+                        <Text style={{ textAlign: "center", color: "white" }}>
+                          Deliver to this Address
+                        </Text>
+                      </Pressable>
+                    )}
+                  </View>
+                </View>
+              </Pressable>
+            ))}
           </Pressable>
-        </Pressable>
-      </View>
+        </View>
+      )}
 
       <View style={{ marginHorizontal: 20 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>
@@ -484,4 +522,9 @@ const ConfirmationOrder = () => {
 
 export default ConfirmationOrder;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+});

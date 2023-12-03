@@ -26,29 +26,29 @@ const { height, width } = Dimensions.get("window");
 export default function ModalBottom(props) {
   const { closeDrawer, openDrawer, dataprod } = props;
   const [cartUpdate, setCartUpdate] = useState(0);
-  const { updateCartandCreate } = useAuth();
+  const { UpdateCreateCart } = useAuth();
   const { state } = AuthStatus();
-  const [formData, setFormData] = useState({
-    product_detail_id: null,
-    quantity: 1,
-  });
+
   // dữ liệu là
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [formData, setFormData] = useState({
+    product_detail_id: null,
+    quantity: quantity,
+  });
   const addCart = async () => {
     if (formData.product_detail_id === null) {
       alert("Vui lòng chọn size");
       return;
     }
-
-    const data = await updateCartandCreate(
+    console.log("formdata", formData.quantity);
+    const data = await UpdateCreateCart(
       state.userInfo.cart_id,
       formData.product_detail_id,
-      formData.quantity
+      quantity
     );
     console.log(data);
     if (data) {
-      console.log("datacart", data);
       alert("Thêm vào giỏ hàng thành công");
       setCartUpdate(cartUpdate + 1);
     }
@@ -56,7 +56,7 @@ export default function ModalBottom(props) {
 
   const handleSizeSelection = (detail, size, color) => {
     setSelectedSize(size);
-    setFormData({ ...formData, product_detail_id: detail, quantity: quantity });
+    setFormData({ ...formData, product_detail_id: detail});
     console.log(detail, size, color, quantity);
   };
   return (
@@ -179,7 +179,7 @@ export default function ModalBottom(props) {
 
                   <TouchableOpacity
                     onPress={() => {
-                      setQuantity(quantity + 1);
+                      setQuantity((prevQuantity) => prevQuantity + 1);
                     }}
                     style={{
                       height: 32,

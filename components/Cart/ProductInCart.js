@@ -25,7 +25,7 @@ const HEIGHT = Dimensions.get("window").height;
 
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress } = props;
-  const { updateCartandCreate } = useAuth();
+  const { UpdateCreateCart } = useAuth();
   const loadlai = () => {
     handlePress();
   };
@@ -82,7 +82,7 @@ const ProductInCart = (props) => {
   };
   const handleGiam = (quantity, product_detail_id) => {
     if (quantity > 1) {
-      updateCartandCreate(Cart_id, product_detail_id, quantity - 1).then(
+      UpdateCreateCart(Cart_id, product_detail_id, quantity - 1).then(
         (result) => {
           console.log("result", result);
           loadlai();
@@ -91,7 +91,7 @@ const ProductInCart = (props) => {
     }
   };
   const handleTang = (quantity, product_detail_id) => {
-    updateCartandCreate(Cart_id, product_detail_id, quantity + 1).then(
+    UpdateCreateCart(Cart_id, product_detail_id, quantity + 1).then(
       (result) => {
         console.log("result", result);
         loadlai();
@@ -108,7 +108,7 @@ const ProductInCart = (props) => {
       handleInputChange(tempQuantity, index);
       setTimeout(() => {
         console.log("Số lượng mới:", parseInt(tempQuantity));
-        updateCartandCreate(
+        UpdateCreateCart(
           Cart_id,
           item.ProductDetail.detail_id,
           parseInt(tempQuantity)
