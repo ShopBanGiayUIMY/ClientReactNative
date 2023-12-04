@@ -27,7 +27,7 @@ const Address = ({ navigation }) => {
       headerTitle: "Thông tin địa chỉ",
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => navigation.navigate("BottomTabNavigation")}
+          onPress={() => navigation.goBack()}
           style={{ marginLeft: 5, marginRight: 10 }}
         >
           <FontAwesome

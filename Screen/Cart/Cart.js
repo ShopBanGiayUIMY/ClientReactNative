@@ -60,6 +60,9 @@ export default function Cart({ navigation }) {
       console.error("Error fetching data:", error);
     }
   };
+  const handlePressOrder = (item) => {
+   console.log("item",item);
+  };
 
   useEffect(() => {
     if (state.isLoggedIn) {
@@ -85,28 +88,9 @@ export default function Cart({ navigation }) {
             Cart_id={item.cart_id}
             navigation={navigation}
             handlePress={handlePressDetailProduct}
+            handleOrder={handlePressOrder}
           />
         ))}
-      <View style={styles.bottomContainer}>
-        <View style={[styles.totalTextContainer, { flex: 1 }]}>
-          <Text style={styles.totalText}>
-            Tổng thanh toán: <Text style={styles.tongtien}>22000</Text>
-            <Text style={styles.kihieutongtien}>đ</Text>
-          </Text>
-          <Text style={styles.totalText}>
-            Số lượng sản phẩm: <Text style={styles.tongtien}>0</Text>
-           
-          </Text>
-        </View>
-        <View style={{ justifyContent: "center" }}>
-          <TouchableOpacity
-            onPress={() => navigation.push("ConfirmationOrder")}
-            style={styles.paymentButton}
-          >
-            <Text style={styles.paymentButtonText}>Thanh toán</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   );
 }
@@ -116,33 +100,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(234, 235, 236, 0.72)",
     marginHorizontal: 10,
-  },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    height: 55,
-    backgroundColor: "#FFE45D",
-    borderRadius: 5,
-    marginBottom: "20%",
-  },
-  paymentButton: {
-    height: 40,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "red",
-  },
-  paymentButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  totalTextContainer: {
-    marginLeft: 10,
-    justifyContent: "center",
   },
 });

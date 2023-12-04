@@ -133,7 +133,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
+      return error.response.data;
     }
   };
   const GetVoucher = async () => {
@@ -301,6 +301,19 @@ const useAuth = () => {
       return error.response.data; 
     }
   };
+  const getDefaultAddress = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(`${Config.API_BASE_URL}/address/default`, {
+        headers: headers,
+      });
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data; 
+    }
+  };
   const CreateAddress = async (address) => {
     const headers = await authHeader();
     try {
@@ -369,6 +382,7 @@ const useAuth = () => {
     search_voucher_and_add,
     getTotalCart,
     getAddress,
+    getDefaultAddress,
     CreateAddress,
     updateAddress,
     DeleteAddress,

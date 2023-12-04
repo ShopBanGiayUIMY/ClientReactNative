@@ -26,6 +26,7 @@ import Qrcode from "./Screen/Qrcode/Qrcode";
 import ConfirmationOrder from "./Screen/ConfirmationOrder/ConfirmationOrder";
 import EditAddress from "./Screen/Address/EditAddress";
 import AddAddress from "./Screen/Address/AddAddress";
+import CouponOrder from "./Screen/CouponsOrder/CouponOrder";
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
   return (
@@ -99,6 +100,7 @@ export default function AppNavigator() {
         <Stack.Screen name="PaymentMethod" component={PaymentMethod}  options={{headerShown:false}} />
         <Stack.Screen name="EditAddress" component={EditAddress}   />
         <Stack.Screen name="AddAddress" component={AddAddress}   />
+        <Stack.Screen name="CouponOrder" component={CouponOrder}   />
       </Stack.Navigator>
     </NavigationContainer>
   );
