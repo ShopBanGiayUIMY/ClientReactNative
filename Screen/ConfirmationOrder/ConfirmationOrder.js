@@ -16,10 +16,11 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
+import WebView from "react-native-webview";
 const ConfirmationOrder = (props) => {
   const { getDefaultAddress, CreateAddress } = useAuth();
   const { Orderdata } = props.route.params;
-
+  const [webViewUrl, setWebViewUrl] = useState()
   const { state, dispatch } = AuthStatus();
   console.log("state", state.UseVoucher);
 
@@ -38,6 +39,7 @@ const ConfirmationOrder = (props) => {
   const [selectedOption, setSelectedOption] = useState("cash");
   const [phivanchuyen, setPhivanchuyen] = useState(10000);
   useEffect(() => {
+    console.log(webViewUrl)
     const onFocus = () => {
       fetchAddresses();
     };
@@ -48,7 +50,7 @@ const ConfirmationOrder = (props) => {
     return () => {
       unsubscribeFocus();
     };
-  }, [fetchAddresses, navigation]);
+  }, [webViewUrl, fetchAddresses, navigation]);
   const fetchAddresses = async () => {
     try {
       const data = await getDefaultAddress();
@@ -472,7 +474,15 @@ const ConfirmationOrder = (props) => {
                     },
                     {
                       text: "OK",
-                      onPress: () => pay(),
+                      onPress: async () => {
+                        const response = await axios.post(
+                          "http://192.168.0.107:8888/order/create_payment_url",
+                          {"amount":"10000000","bankCode":"VNBANK","language":"vn"}
+                        )
+                        console.log('response: ',response.data)
+                        // console.log('url', response.re)
+                        setWebViewUrl(response.data)
+                      }
                     },
                   ]);
                 }}
@@ -483,6 +493,7 @@ const ConfirmationOrder = (props) => {
             )}
 
             <Text>UPI / Credit or debit card</Text>
+            
           </View>
           <Pressable
             onPress={() => setCurrentStep(3)}
@@ -497,6 +508,8 @@ const ConfirmationOrder = (props) => {
           >
             <Text>Tiếp tục</Text>
           </Pressable>
+          
+          <WebView source={{ uri: webViewUrl}} style={{width: 300, height: 200}}/>
         </View>
       )}
 
