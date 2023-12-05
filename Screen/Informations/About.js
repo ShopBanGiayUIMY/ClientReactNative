@@ -5,8 +5,11 @@ const About = ({ navigation }) => {
   const handleNavigation = (screenName) => {
     navigation.navigate(screenName);
   };
+  const hanldPressContact =()=>{
+    navigation.navigate('Contact')
+  }
   return (
-    <ScrollView style={{ marginBottom: "14%" }}>
+    <ScrollView style={{ marginBottom: "25%" }}>
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -194,13 +197,14 @@ const About = ({ navigation }) => {
           alignItems: "center",
           justifyContent: "space-between",
         }}
+        onPress={()=>{hanldPressContact()}}
       >
         <Image
           style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
           source={{ uri: "https://iili.io/JdjS2Fp.png" }}
         />
-        <Text style={{ fontSize: 20, position: "absolute", left: 45 }}>
-          Thiết lập tài khoản{" "}
+        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:150 }}>
+          Giới thiệu và liên hệ
         </Text>
         <Image
           style={{

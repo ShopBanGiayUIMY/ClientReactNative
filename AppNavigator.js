@@ -27,6 +27,7 @@ import ConfirmationOrder from "./Screen/ConfirmationOrder/ConfirmationOrder";
 import EditAddress from "./Screen/Address/EditAddress";
 import AddAddress from "./Screen/Address/AddAddress";
 import CouponOrder from "./Screen/CouponsOrder/CouponOrder";
+import Contact from "./Screen/Contact/Contact";
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
   return (
@@ -101,6 +102,8 @@ export default function AppNavigator() {
         <Stack.Screen name="EditAddress" component={EditAddress}   />
         <Stack.Screen name="AddAddress" component={AddAddress}   />
         <Stack.Screen name="CouponOrder" component={CouponOrder}   />
+        <Stack.Screen name="Contact" component={Contact} options={{}} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
