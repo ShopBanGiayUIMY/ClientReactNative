@@ -560,7 +560,10 @@ const ConfirmationOrder = (props) => {
                         Giảm phí vận chuyển
                       </Text>
 
-                      <TinhGiamPhiVanChuyen index={index} item={voucher.toLocaleString("vi-VN")} />
+                      <TinhGiamPhiVanChuyen
+                        index={index}
+                        item={voucher.toLocaleString("vi-VN")}
+                      />
                     </View>
                   ) : null}
                   {voucher?.reward_type === 1 ? (
@@ -650,7 +653,6 @@ const ConfirmationOrder = (props) => {
               marginTop: 10,
               position: "relative",
               top: -5,
-              
             }}
           >
             <Text>Xác nhận đặt hàng</Text>
