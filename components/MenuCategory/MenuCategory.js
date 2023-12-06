@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet, Image, Text, Pressable, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import config from '../../Api/Config'
 const MenuCategory = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -9,7 +9,8 @@ const MenuCategory = () => {
 
   const getCategories = async () => {
     try {
-      const response = await fetch("http://192.168.0.100:3000/api/v1/categories/");
+      console.log(config.API_BASE_URL);
+      const response = await fetch(config.API_BASE_URL+'/categories');
       const json = await response.json();
       setData(json);
     } catch (error) {
@@ -25,7 +26,7 @@ const MenuCategory = () => {
 
   const getProducts = async (id) => {
     try {
-      const response = await fetch(`http://192.168.0.100:3000/api/v1/categories/${id}`);
+      const response = await fetch(`${config.API_BASE_URL}+'/categories'/${id}`);
       const json = await response.json();
       // Choose the first object from the array as an example
       const product = json;
