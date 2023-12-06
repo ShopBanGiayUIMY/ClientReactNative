@@ -17,6 +17,10 @@ import { useNavigation } from "@react-navigation/native";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
 import WebView from "react-native-webview";
+import Config from "../../Api/Config";
+import { err } from "react-native-svg";
+import authHeader from "../../Services/auth.header";
+import { Header } from "react-native/Libraries/NewAppScreen";
 const ConfirmationOrder = (props) => {
   const { getDefaultAddress, CreateAddress } = useAuth();
   const { Orderdata } = props.route.params;
@@ -76,17 +80,22 @@ const ConfirmationOrder = (props) => {
   const handlePlaceOrder = async () => {
     try {
       const orderData = {
-        userId: userId,
-        cartItems: cart,
-        totalPrice: total,
-        shippingAddress: selectedAddress,
-        paymentMethod: selectedOption,
+        userId: 4,
+        cartItems: [3],
+        cartId: 5,
+        totalPrice: 80000,
+        shippingAddressId: 1,
+        paymentMethodId: 1,
       };
-
+      const jwtHeader = await authHeader()
+      console.log(orderData)
+      console.log(jwtHeader)
       const response = await axios.post(
-        "http://192.168.19.63:3000/orders",
-        orderData
+        `${Config.API_BASE_URL}/orders`,
+        orderData,
+        {headers: jwtHeader},
       );
+      console.log(jwtHeader)
       if (response.status === 200) {
         navigation.navigate("Order");
         console.log("order created successfully", response.data);
@@ -476,12 +485,12 @@ const ConfirmationOrder = (props) => {
                       text: "OK",
                       onPress: async () => {
                         const response = await axios.post(
-                          "http://192.168.0.107:8888/order/create_payment_url",
+                          "http://192.168.0.107:3000/api/v1/payment/vnpay/create_payment_url",
                           {"amount":"10000000","bankCode":"VNBANK","language":"vn"}
                         )
                         console.log('response: ',response.data)
                         // console.log('url', response.re)
-                        setWebViewUrl(response.data)
+                        setWebViewUrl(response.data.url)
                       }
                     },
                   ]);
