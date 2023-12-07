@@ -16,6 +16,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { View, TouchableWithoutFeedback, Text } from "react-native";
 import useAuth from "../Services/auth.services";
 import { AuthStatus } from "../Services/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
@@ -54,13 +55,14 @@ function TabButton({ onPress, accessibilityState, children }) {
 }
 const MemoizedCart = React.memo(Cart);
 const BottomTabNavigation = () => {
-  const { state} = AuthStatus();
+  const { state } = AuthStatus();
   const [totalCart, setTotalCart] = useState(0);
+  const info = useSelector((state) => state.Reducers.total);
   const fetchData = async () => {
     try {
       await state.infoCart.map((item) => {
-        setTotalCart(item.total_cart_items);
-        console.log("item", item.total_cart_items);
+        setTotalCart(info[0].total_cart_items);
+        console.log("item3e", info[0].total_cart_items);
       });
     } catch (error) {
       console.log("Error cart:", error);

@@ -28,8 +28,10 @@ import EditAddress from "./Screen/Address/EditAddress";
 import AddAddress from "./Screen/Address/AddAddress";
 import CouponOrder from "./Screen/CouponsOrder/CouponOrder";
 import Contact from "./Screen/Contact/Contact";
+
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashStore">
