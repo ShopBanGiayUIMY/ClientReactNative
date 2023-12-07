@@ -12,14 +12,17 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 const { DateTime } = require("luxon");
+
 const width = Dimensions.get("screen").width;
 
-export default function CouponComponent(props) {
-  const { dataVouchers, handlePress } = props;
+export default function CouponComponentOrder(props) {
+  const { dataVouchers, handlePress, navigation, checkvoucher } = props;
   const [icon, seticon] = useState(null);
   const [value, setvalue] = useState();
   const progress = useRef(new Animated.Value(0)).current;
-  const [progressValue, setProgressValue] = useState(dataVouchers.usage_remaining);
+  const [progressValue, setProgressValue] = useState(
+    dataVouchers.usage_remaining
+  );
   const [usage_quantity] = useState(dataVouchers.usage_quantity);
   useEffect(() => {
     const progressListener = progress.addListener(({ value }) => {
@@ -30,22 +33,16 @@ export default function CouponComponent(props) {
       progress.removeListener(progressListener);
     };
   }, [progress]);
+
   if (progressValue < usage_quantity) {
     Animated.timing(progress, {
-      toValue:  dataVouchers.usage_quantity-dataVouchers.usage_remaining,
+      toValue: dataVouchers.usage_quantity - dataVouchers.usage_remaining,
       duration: 100,
       useNativeDriver: false,
     }).start();
   }
-  const increaseValue = () => {
-    // const newValue = Math.min(usage_quantity, progressValue + 10);
-    // if (progressValue < usage_quantity) {
-    //   Animated.timing(progress, {
-    //     toValue: dataVouchers.usage_remaining / dataVouchers.usage_quantity,
-    //     duration: 1000,
-    //     useNativeDriver: false,
-    //   }).start();
-    // }
+  const UsePaymentVoucher = () => {
+    handlePress ? handlePress(dataVouchers) : null;
   };
 
   const width = progress.interpolate({
@@ -150,6 +147,7 @@ export default function CouponComponent(props) {
       ? (discount_amount = "Giảm " + discount_amount)
       : null;
   }
+ 
 
   return (
     <TouchableWithoutFeedback onPress={fun_handlePress}>
@@ -168,9 +166,7 @@ export default function CouponComponent(props) {
                 { width: widthvoucher, height: heightvoucher },
               ]}
             />
-            <Text style={styles.textvoucher_txt_page_left}>
-              UIMY
-            </Text>
+            <Text style={styles.textvoucher_txt_page_left}>UIMY</Text>
           </View>
           <View style={styles.wallet_page_right}>
             <Text style={styles.namevoucher_txt_page_right}>
@@ -187,16 +183,23 @@ export default function CouponComponent(props) {
               <Text style={styles.value}>{value}</Text>
             </View>
             <View style={styles.progress}>
-            <Animated.View style={[styles.progressBar, { width }]}>
-              <Text style={styles.progressTextInsideBar} ellipsizeMode="head" numberOfLines={1}>Đã dùng 
-              <Text> {Math.round(progressPercentage)}%</Text>
-              {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
-              </Text>
-            </Animated.View>
+              <Animated.View style={[styles.progressBar, { width }]}>
+                <Text
+                  style={styles.progressTextInsideBar}
+                  ellipsizeMode="head"
+                  numberOfLines={1}
+                >
+                  Đã dùng
+                  <Text> {Math.round(progressPercentage)}%</Text>
+                  {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
+                </Text>
+              </Animated.View>
             </View>
-         
           </View>
-          {/* <Pressable style={styles.button_page_right} onPress={increaseValue}>
+          <Pressable
+            style={styles.button_page_right}
+            onPress={UsePaymentVoucher}
+          >
             <LinearGradient
               colors={["rgb(255, 147, 63)", "rgb(249, 55, 130)"]} // Màu với độ trong suốt
               start={{ x: 0.2, y: 0.5 }} // Vị trí bắt đầu (top left)
@@ -209,13 +212,22 @@ export default function CouponComponent(props) {
                 borderRadius: 15,
               }}
             >
-              <Text
-                style={{ color: "white", fontSize: 10, fontWeight: "bold" }}
-              >
-                Thu thập ngay
-              </Text>
+              {checkvoucher ? (
+                <Text
+                  style={{ color: "black", fontSize: 10, fontWeight: "bold" }}
+                >
+                  Đang dùng
+                </Text>
+              ) : (
+                <Text
+                  style={{ color: "white", fontSize: 10, fontWeight: "bold" }}
+                >
+                  Dùng ngay
+                </Text>
+              )}
+              
             </LinearGradient>
-          </Pressable> */}
+          </Pressable>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -323,9 +335,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 16,
   },
-  progress:{
+  progress: {
     width: "80%",
-    
+
     position: "absolute",
     top: "85%",
     left: 80,
@@ -333,5 +345,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(208, 226, 237, 0.8)",
     borderWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.2)",
-  }
+  },
 });

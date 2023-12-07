@@ -19,17 +19,20 @@ import {
 
 const { width } = Dimensions.get("window");
 import { AuthStatus } from "../../Services/AuthContext";
-import  useAuth  from "../../Services/auth.services";
+import useAuth from "../../Services/auth.services";
 const Header = (props) => {
   const { navigation } = props;
   const [totalCart, setTotalCart] = useState(0);
   const { getTotalCart } = useAuth();
+  const { state } = AuthStatus();
   const fetchDataCart = async () => {
     try {
-      const state = await getTotalCart();
-      await state.map((item) => {
-        setTotalCart(item.total_cart_items);
-      });
+      if (state.isLoggedIn) {
+        const data = await getTotalCart();
+        await data.map((item) => {
+          setTotalCart(item.total_cart_items);
+        });
+      }
     } catch (error) {
       console.log("Error cart:", error);
     }
@@ -194,8 +197,13 @@ const styles = {
     borderWidth: 1,
     borderColor: "#fff",
   },
-  count_cart_total: { color: "#fff", fontSize: 10, fontWeight: "bold",paddingHorizontal:5 },
-  count_notify_total: { color: "#fff", fontSize: 10, fontWeight: "bold"},
+  count_cart_total: {
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "bold",
+    paddingHorizontal: 5,
+  },
+  count_notify_total: { color: "#fff", fontSize: 10, fontWeight: "bold" },
 };
 
 export default Header;

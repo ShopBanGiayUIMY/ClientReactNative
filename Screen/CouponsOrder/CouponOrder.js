@@ -8,12 +8,11 @@ import {
   Pressable,
   Image,
   Dimensions,
-
 } from "react-native";
 const windowWidth = Dimensions.get("window").width;
-import ModalCoupon from "./modal.coupon";
+import ModalCouponOrder from "./modal.coupon.order";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import CouponComponent from "../../components/Coupon/CouponComponent";
+import CouponComponentOrder from "../../components/Coupon/CouponComponentOrder";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
 import FlashMessage, {
@@ -21,31 +20,31 @@ import FlashMessage, {
   renderMessage,
 } from "react-native-flash-message";
 
-export default function Coupon({ navigation }) {
+export default function CouponOrder({ navigation }) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isclick, setIsClick] = useState(false);
   const { GetVoucher, search_voucher_and_add } = useAuth();
   const { state, dispatch } = AuthStatus();
 
-  const fetchdata=()=>{
+  const fetchdata = () => {
     state.isLoggedIn
-    ? GetVoucher()
-        .then((result) => {
-          setData(result);
-        })
-        .catch((error) => {
-          console.error(error);
-        })
-    : null;
-  }
+      ? GetVoucher()
+          .then((result) => {
+            setData(result);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+      : null;
+  };
   useEffect(() => {
     fetchdata();
   }, [refreshing]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "Mã giảm giá",
+      headerTitle: "Lựa chọn mã giảm giá",
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -64,18 +63,49 @@ export default function Coupon({ navigation }) {
   const fun_handlePress = (item) => {
     setIsClick(!isclick);
   };
- 
+
   const handlePresSearch = () => {
-   const time= setTimeout(() => {
+    const time = setTimeout(() => {
       fetchdata();
     }, 1000);
-   
+  };
+  useEffect(() => {
+    if (state.UseVoucher && state.UseVoucher.length > 0) {
+      setSelectedItems(state.UseVoucher);
+    } else {
+      setSelectedItems([]);
+    }
+  }, [state.UseVoucher]);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handlePresDetailProduct = (item) => {
+    let newSelectedItems = [...selectedItems];
+    const existingItem = newSelectedItems.find(
+      (selectedItem) => selectedItem.reward_type === item.reward_type
+    );
+
+    if (existingItem) {
+      if (existingItem.voucher_id !== item.voucher_id) {
+        newSelectedItems = newSelectedItems.map((selectedItem) =>
+          selectedItem.reward_type === item.reward_type ? item : selectedItem
+        );
+      } else {
+        newSelectedItems = newSelectedItems.filter(
+          (selectedItem) => selectedItem.voucher_id !== item.voucher_id
+        );
+        console.log("selectedItems after removal", newSelectedItems);
+      }
+    } else {
+      newSelectedItems.push(item);
+    }
+
+    setSelectedItems(newSelectedItems);
+    dispatch({ type: "USE_VOUCHER", payload: newSelectedItems });
   };
   return state.isLoggedIn ? (
     <ScrollView style={styles.container}>
-     
       <View style={styles.modal}>
-        <ModalCoupon
+        <ModalCouponOrder
           check={isclick}
           handlePress={() => setIsClick(false)}
           fun_search={handlePresSearch}
@@ -83,7 +113,6 @@ export default function Coupon({ navigation }) {
       </View>
 
       <View style={styles.header}>
-      
         <Pressable style={styles.textHeader} onPress={fun_handlePress}>
           <Image
             source={{ uri: "https://iili.io/JqAuyDN.png" }}
@@ -92,14 +121,19 @@ export default function Coupon({ navigation }) {
           <Text style={styles.text}>Nhập mã voucher</Text>
         </Pressable>
       </View>
-  
+
       <View>
         {data &&
           data.map((item, index) => (
-            <CouponComponent
+            <CouponComponentOrder
               key={index}
               dataVouchers={item}
-              fun_={() => handlePresDetailProduct(item)}
+              handlePress={() => handlePresDetailProduct(item)}
+              checkvoucher={selectedItems.some(
+                (selectedItem) =>
+                  selectedItem.voucher_id === item.voucher_id &&
+                  selectedItem.reward_type === item.reward_type
+              )}
             />
           ))}
       </View>
@@ -117,7 +151,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  
   },
   container: {
     backgroundColor: "rgba(216, 234, 245, 0.8)",

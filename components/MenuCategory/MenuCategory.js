@@ -9,7 +9,7 @@ const MenuCategory = () => {
 
   const getCategories = async () => {
     try {
-      const response = await fetch("http://103.77.172.199:3000/api/v1/categories/");
+      const response = await fetch("http://192.168.0.100:3000/api/v1/categories/");
       const json = await response.json();
       setData(json);
     } catch (error) {
@@ -25,7 +25,7 @@ const MenuCategory = () => {
 
   const getProducts = async (id) => {
     try {
-      const response = await fetch(`http://103.77.172.199:3000/api/v1/categories/${id}`);
+      const response = await fetch(`http://192.168.0.100:3000/api/v1/categories/${id}`);
       const json = await response.json();
       // Choose the first object from the array as an example
       const product = json;

@@ -119,7 +119,7 @@ const useAuth = () => {
       ToastAndroid.show("Mã lỗi không xác định", ToastAndroid.SHORT);
     }
   };
-  const updateCartandCreate = async (Cart_id, product_detail_id, quantity) => {
+  const UpdateCreateCart = async (Cart_id, product_detail_id, quantity) => {
     const headers = await authHeader();
     try {
       const response = await axios.patch(
@@ -129,13 +129,11 @@ const useAuth = () => {
           headers: headers,
         }
       );
-  
       if (response.data) {
         return response.data;
       }
     } catch (error) {
       return error.response.data;
-
     }
   };
   const GetVoucher = async () => {
@@ -257,12 +255,12 @@ const useAuth = () => {
       console.log("Network error", error);
     }
   };
-  const search_voucher_and_add= async (voucher_code) => {
+  const search_voucher_and_add = async (voucher_code) => {
     const headers = await authHeader();
     try {
       const response = await axios.post(
         `${Config.API_BASE_URL}/vouchers/find-voucher`,
-        {voucher_code:voucher_code},
+        { voucher_code: voucher_code },
         {
           headers: headers,
         }
@@ -290,7 +288,82 @@ const useAuth = () => {
       return error.response.data;
     }
   };
-
+  const getAddress = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(`${Config.API_BASE_URL}/address/info`, {
+        headers: headers,
+      });
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data; 
+    }
+  };
+  const getDefaultAddress = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(`${Config.API_BASE_URL}/address/default`, {
+        headers: headers,
+      });
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data; 
+    }
+  };
+  const CreateAddress = async (address) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/address/create`,
+        address,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+  const updateAddress = async (addressForm) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.put(
+        `${Config.API_BASE_URL}/address/update`,
+        addressForm,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+  const DeleteAddress = async (address_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.delete(
+        `${Config.API_BASE_URL}/address/delete/${address_id}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
   return {
     loginUser,
     registerUser,
@@ -298,7 +371,7 @@ const useAuth = () => {
     CheckOtp,
     CreatePasswordUser,
     GetCart,
-    updateCartandCreate,
+    UpdateCreateCart,
     GetVoucher,
     GetFavorite,
     AddFavorite,
@@ -308,6 +381,11 @@ const useAuth = () => {
     GetSolidProductById,
     search_voucher_and_add,
     getTotalCart,
+    getAddress,
+    getDefaultAddress,
+    CreateAddress,
+    updateAddress,
+    DeleteAddress,
   };
 };
 
