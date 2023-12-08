@@ -15,7 +15,8 @@ import {
   TextInput,
   ScrollView,
   ToastAndroid,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Alert,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import Swipelist from "react-native-swipeable-list-view";
@@ -28,48 +29,44 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Checkbox } from "react-native-paper";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-
+import { useDispatch, useSelector } from "react-redux";
+import { soluonggiohang } from "../../Services/Redux/action/Actions";
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress, handleOrder, navigation } = props;
-  const { UpdateCreateCart } = useAuth();
+  const { UpdateCreateCart, getTotalCart } = useAuth();
   const [soluongchon, setsoluongchon] = useState(0);
   const [data, setData] = useState(dataCart);
   const [selectedItems, setSelectedItems] = useState([]);
   const [quantity, setQuantity] = useState([]);
+  const dispatchRedux = useDispatch();
   const loadlai = () => {
     handlePress();
   };
   const calculateTotal = () => {
     return selectedItems.reduce((total, selectedItem) => {
-      const product_price = parseFloat(
-        selectedItem.product_price
-      );
+      const product_price = parseFloat(selectedItem.product_price);
       const { quantity } = selectedItem;
       return total + product_price * quantity;
     }, 0);
   };
-  let Orderdata={
-    Cart_id:Cart_id,
-    total:calculateTotal(),
-    item_id:selectedItems.map((item)=>item.item_id),
-  }
+  let Orderdata = {
+    Cart_id: Cart_id,
+    total: calculateTotal(),
+    item_id: selectedItems.map((item) => item.item_id),
+  };
   const toggleItemSelection = (item_id, product_price, quantity) => {
     setSelectedItems((prevSelectedItems) => {
       const isItemSelected = prevSelectedItems.some(
         (selectedItem) => selectedItem.item_id === item_id
       );
-  
       const newSelectedItems = isItemSelected
         ? prevSelectedItems.filter(
             (selectedItem) => selectedItem.item_id !== item_id
           )
-        : [
-            ...prevSelectedItems,
-            { item_id, product_price, quantity },
-          ];
-  
+        : [...prevSelectedItems, { item_id, product_price, quantity }];
+
       console.log("newSelectedItems", newSelectedItems);
-  
+
       return newSelectedItems;
     });
   };
@@ -81,12 +78,12 @@ const ProductInCart = (props) => {
           const updatedQuantity = !isNaN(Number(newQuantity))
             ? Number(newQuantity)
             : 0;
-  
+
           return { ...selectedItem, quantity: updatedQuantity };
         }
         return selectedItem;
       });
-  
+
       return updatedItems;
     });
   };
@@ -97,13 +94,16 @@ const ProductInCart = (props) => {
 
   useEffect(() => {
     setData(dataCart);
+    getTotalCart().then((result) => {
+      dispatchRedux(soluonggiohang(result[0].total_cart_items));
+    });
   }, [dataCart]);
   const handleInputChange = (text, index) => {
     const newData = [...data];
     newData[index] = { ...newData[index], quantity: text };
     setData(newData);
   };
-  const handleGiam = (quantity, product_detail_id,item_id) => {
+  const handleGiam = (quantity, product_detail_id, item_id) => {
     if (quantity > 1) {
       UpdateCreateCart(Cart_id, product_detail_id, quantity - 1).then(
         (result) => {
@@ -124,7 +124,7 @@ const ProductInCart = (props) => {
       );
     }
   };
-  const handleTang = (quantity, product_detail_id,item_id) => {
+  const handleTang = (quantity, product_detail_id, item_id) => {
     UpdateCreateCart(Cart_id, product_detail_id, quantity + 1).then(
       (result) => {
         if (result.status == 1) {
@@ -141,6 +141,40 @@ const ProductInCart = (props) => {
           loadlai();
         }
       }
+    );
+  };
+  const DeleteCart = (quantity, product_detail_id, item_id) => {
+    Alert.alert(
+      "Xác nhận",
+      "Bạn có chắc chắn muốn tiếp tục không?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("huỷ xoá sản phẩm trong giỏ hàng"),
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            UpdateCreateCart(Cart_id, product_detail_id, 0).then((result) => {
+              if (result.status == 1) {
+                console.log("result", result);
+                updateQuantityByItemId(item_id, quantity - 1);
+                loadlai();
+              }
+              if (result.status == -1) {
+                ToastAndroid.show(result.message, ToastAndroid.SHORT);
+                loadlai();
+              }
+              if (result.status == 0) {
+                ToastAndroid.show(result.message, ToastAndroid.SHORT);
+                loadlai();
+              }
+            });
+          },
+        },
+      ],
+      { cancelable: false }
     );
   };
   function ItemInput({ item, index, handleInputChange }) {
@@ -164,7 +198,7 @@ const ProductInCart = (props) => {
                 loadlai();
               } else if (result.status == 1) {
                 ToastAndroid.show(result.message, ToastAndroid.SHORT);
-                updateQuantityByItemId(item.item_id, parseInt(tempQuantity))
+                updateQuantityByItemId(item.item_id, parseInt(tempQuantity));
                 loadlai();
                 console.log("result", result);
               } else if (result.status == 0) {
@@ -194,7 +228,7 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <View style={{ flex: 1,marginBottom:"18%" }}>
+    <View style={{ flex: 1, marginBottom: "18%" }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
@@ -205,125 +239,127 @@ const ProductInCart = (props) => {
         <Swipelist
           data={data}
           renderRightItem={(item, index) => (
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} >
-            <View style={styles.all} key={index}>
-              <Checkbox
-                status={
-                  selectedItems.some(
-                    (selectedItem) =>
-                      selectedItem.item_id ===
-                      item.item_id
-                  )
-                    ? "checked"
-                    : "unchecked"
-                }
-                onPress={() =>
-                  toggleItemSelection(
-                    item.item_id,
-                    item.ProductDetail.Product.product_price,
-                    item.quantity
-                  )
-                }
-                color="#3399ff"
-              />
-
-              <View style={styles.vImage}>
-                <Image
-                  style={styles.imagee}
-                  resizeMode="contain"
-                  source={{
-                    uri: item.ProductDetail.Product.thumbnail,
-                  }}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <View style={styles.all} key={index}>
+                <Checkbox
+                  status={
+                    selectedItems.some(
+                      (selectedItem) => selectedItem.item_id === item.item_id
+                    )
+                      ? "checked"
+                      : "unchecked"
+                  }
+                  onPress={() =>
+                    toggleItemSelection(
+                      item.item_id,
+                      item.ProductDetail.Product.product_price,
+                      item.quantity
+                    )
+                  }
+                  color="#3399ff"
                 />
-                <View style={styles.vInforProduct}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      marginTop: 5,
+
+                <View style={styles.vImage}>
+                  <Image
+                    style={styles.imagee}
+                    resizeMode="contain"
+                    source={{
+                      uri: item.ProductDetail.Product.thumbnail,
                     }}
-                  >
-                    <Text style={styles.txtName}>
-                      {item.ProductDetail.Product.product_name.length > 15
-                        ? item.ProductDetail.Product.product_name.slice(0, 15) +
-                          "..."
-                        : item.ProductDetail.Product.product_name}
-                    </Text>
-
-                    <TouchableOpacity>
-                      <FontAwesomeIcon
-                        icon={faEllipsisVertical}
-                        size={20}
-                        color="gray"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.vSizeandColor}>
-                    <Text style={styles.itemphanloai}>Phân loại</Text>
-                    <View style={styles.phanloai}>
-                      <Text style={styles.txtSizeandColor}>
-                        Size: {item.ProductDetail.size}
+                  />
+                  <View style={styles.vInforProduct}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginTop: 5,
+                      }}
+                    >
+                      <Text style={styles.txtName}>
+                        {item.ProductDetail.Product.product_name.length > 15
+                          ? item.ProductDetail.Product.product_name.slice(
+                              0,
+                              15
+                            ) + "..."
+                          : item.ProductDetail.Product.product_name}
                       </Text>
-                      <Text style={styles.txtSizeandColor}>
-                        Màu: {item.ProductDetail.color}
-                      </Text>
-                    </View>
-                  </View>
 
-                  <View style={styles.vContainer}>
-                    <View style={styles.vThanhToan}>
-                      <Text
-                        style={{
-                          color: "#F60000",
-                          fontStyle: "normal",
-                          fontWeight: "600",
-
-                          fontSize: 15,
-                        }}
-                      >
-                        {parseFloat(
-                          item.ProductDetail.Product.product_price
-                        ).toLocaleString("vi-VN")}
-                        <Text>đ</Text>
-                      </Text>
-                    </View>
-                    <View style={styles.vChildContainer}>
-                      <TouchableOpacity
-                        style={styles.pressTru}
-                        onPress={() => {
-                          handleGiam(
-                            item.quantity,
-                            item.ProductDetail.detail_id,
-                            item.item_id
-                          );
-                        }}
-                      >
-                        <Text style={styles.txtTru}>-</Text>
-                      </TouchableOpacity>
-                      <View style={styles.vCount}>
-                        <ItemInput
-                          item={item}
-                          index={index}
-                          handleInputChange={handleInputChange}
+                      <TouchableOpacity>
+                        <FontAwesomeIcon
+                          icon={faEllipsisVertical}
+                          size={20}
+                          color="gray"
                         />
-                      </View>
-                      <TouchableOpacity
-                        style={styles.pressCong}
-                        onPress={() => {
-                          handleTang(
-                            item.quantity,
-                            item.ProductDetail.detail_id,
-                            item.item_id
-                          );
-                        }}
-                      >
-                        <Text style={styles.txtCong}>+</Text>
                       </TouchableOpacity>
+                    </View>
+                    <View style={styles.vSizeandColor}>
+                      <Text style={styles.itemphanloai}>Phân loại</Text>
+                      <View style={styles.phanloai}>
+                        <Text style={styles.txtSizeandColor}>
+                          Size: {item.ProductDetail.size}
+                        </Text>
+                        <Text style={styles.txtSizeandColor}>
+                          Màu: {item.ProductDetail.color}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.vContainer}>
+                      <View style={styles.vThanhToan}>
+                        <Text
+                          style={{
+                            color: "#F60000",
+                            fontStyle: "normal",
+                            fontWeight: "600",
+
+                            fontSize: 15,
+                          }}
+                        >
+                          {parseFloat(
+                            item.ProductDetail.Product.product_price
+                          ).toLocaleString("vi-VN")}
+                          <Text>đ</Text>
+                        </Text>
+                      </View>
+                      <View style={styles.vChildContainer}>
+                        <TouchableOpacity
+                          style={styles.pressTru}
+                          onPress={() => {
+                            handleGiam(
+                              item.quantity,
+                              item.ProductDetail.detail_id,
+                              item.item_id
+                            );
+                          }}
+                        >
+                          <Text style={styles.txtTru}>-</Text>
+                        </TouchableOpacity>
+                        <View style={styles.vCount}>
+                          <ItemInput
+                            item={item}
+                            index={index}
+                            handleInputChange={handleInputChange}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          style={styles.pressCong}
+                          onPress={() => {
+                            handleTang(
+                              item.quantity,
+                              item.ProductDetail.detail_id,
+                              item.item_id
+                            );
+                          }}
+                        >
+                          <Text style={styles.txtCong}>+</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
               </View>
-            </View>
             </KeyboardAvoidingView>
           )}
           rightOpenValue={110}
@@ -332,7 +368,11 @@ const ProductInCart = (props) => {
               <Pressable
                 style={styles.deleteButton}
                 onPress={() =>
-                  alert(`Xoá sản phẩm ${data.ProductDetail.detail_id}`)
+                  DeleteCart(
+                    data.quantity,
+                    data.ProductDetail.detail_id,
+                    data.item_id
+                  )
                 }
               >
                 <Text style={styles.buttonTextdelete}>Xoá</Text>
@@ -356,7 +396,9 @@ const ProductInCart = (props) => {
         </View>
         <View style={{ justifyContent: "center" }}>
           <TouchableOpacity
-            onPress={() => navigation.navigate("ConfirmationOrder", { Orderdata })}
+            onPress={() =>
+              navigation.navigate("ConfirmationOrder", { Orderdata })
+            }
             style={styles.paymentButton}
           >
             <Text style={styles.paymentButtonText}>Thanh toán</Text>
@@ -543,7 +585,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   kihieutongtien: {
-  textDecorationLine: "underline",
+    textDecorationLine: "underline",
   },
 });
 

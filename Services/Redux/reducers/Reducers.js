@@ -1,6 +1,6 @@
 import { SOLUONG_GIOHANG , INFOCART , USERINFO , LOGIN } from "../ActionTypes";
 const initState = {
-  total: 0,
+  total: null,
   isLoggedIn: false,
   user: null,
   userInfo: null,
@@ -12,7 +12,7 @@ export const Reducers = (state = initState, action) => {
     case SOLUONG_GIOHANG:
       return {
         ...state,
-        total: action.payload,
+        total: action.payload
       };
     case LOGIN:
       return {

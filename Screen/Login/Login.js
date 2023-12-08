@@ -20,11 +20,12 @@ import logo from "../../assets/images/logo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { AuthStatus } from "../../Services/AuthContext";
-
+import {soluonggiohang} from "../../Services/Redux/action/Actions";
+import { useDispatch, useSelector } from "react-redux";
 export default function Login({ navigation }) {
   const [isloading, setIsLoading] = useState(false);
   const { state, dispatch } = AuthStatus();
-  const { InfoAuth } = useAuth();
+  const { InfoAuth,getTotalCart } = useAuth();
   useEffect(() => {
     const handleBackPress = () => {
       navigation.navigate("BottomTabNavigation")
@@ -72,6 +73,7 @@ export default function Login({ navigation }) {
       console.log("Không có kết nối internet");
     }
   };
+  const dispatchRedux=useDispatch();
   const checkinput = (text) => {
     if (checkemail.test(text)) {
       setFormData({ ...formData, email: text, username: "" });
@@ -120,6 +122,12 @@ export default function Login({ navigation }) {
                       dispatch({ type: "USERINFO", payload: data });
                     }
                   });
+                  getTotalCart(result).then((data) => {
+                    if (data) {
+                      dispatchRedux(soluonggiohang(data[0].total_cart_items));
+                    }
+                  });
+
 
                   setIsLoading(true);
                   ToastAndroid.show(result.message, ToastAndroid.SHORT);
@@ -150,7 +158,7 @@ export default function Login({ navigation }) {
       <LoadingScreen isVisible={isloading} navigation={navigation} />
       <Image source={logo} style={styles.logo} resizeMode="contain" />
       <Text style={styles.nameapp}>
-        Snake Nike <Text style={styles.shop}> Shop</Text>
+        Nike Sneaker<Text style={styles.shop}> Shop</Text>
       </Text>
 
       <View style={styles.view}>

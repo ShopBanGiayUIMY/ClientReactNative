@@ -28,13 +28,14 @@ const Header = (props) => {
   const fetchDataCart = async () => {
     try {
       if (state.isLoggedIn) {
+        
         const data = await getTotalCart();
-        await data.map((item) => {
-          setTotalCart(item.total_cart_items);
-        });
+        if (data) {
+          setTotalCart(data[0].total_cart_items);
+        }
       }
     } catch (error) {
-      console.log("Error cart:", error);
+      console.log("Error cart2:", error);
     }
   };
   useEffect(() => {

@@ -57,7 +57,7 @@ export default function PasswordNew({ navigation, route }) {
           , 1000);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data4:", error);
     }
   };
   const handleSavePassword = () => {

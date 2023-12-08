@@ -22,11 +22,12 @@ import { err } from "react-native-svg";
 import authHeader from "../../Services/auth.header";
 import { Header } from "react-native/Libraries/NewAppScreen";
 const ConfirmationOrder = (props) => {
-  const { getDefaultAddress, CreateAddress } = useAuth();
+  const { getDefaultAddress, CreateAddress, Orders } = useAuth();
   const { Orderdata } = props.route.params;
-  const [webViewUrl, setWebViewUrl] = useState()
+  const [webViewUrl, setWebViewUrl] = useState();
   const { state, dispatch } = AuthStatus();
   console.log("state", state.UseVoucher);
+  console.log("Orderdata", Orderdata);
 
   const steps = [
     { title: "Address", content: "Address Form" },
@@ -43,7 +44,7 @@ const ConfirmationOrder = (props) => {
   const [selectedOption, setSelectedOption] = useState("cash");
   const [phivanchuyen, setPhivanchuyen] = useState(10000);
   useEffect(() => {
-    console.log(webViewUrl)
+    console.log(webViewUrl);
     const onFocus = () => {
       fetchAddresses();
     };
@@ -79,28 +80,22 @@ const ConfirmationOrder = (props) => {
 
   const handlePlaceOrder = async () => {
     try {
+      let paymentmethod = 1;
+      if (selectedOption === "card") {
+        paymentmethod = 2;
+      }
+
       const orderData = {
-        userId: 4,
-        cartItems: [3],
-        cartId: 5,
-        totalPrice: 80000,
-        shippingAddressId: 1,
-        paymentMethodId: 1,
+        cartItems: Orderdata.item_id,
+        cartId: Orderdata.Cart_id,
+        totalPrice: calculateTotalPayment(),
+        shippingAddressId: addresses[0]?.id,
+        paymentMethodId: paymentmethod,
+        voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
       };
-      const jwtHeader = await authHeader()
-      console.log(orderData)
-      console.log(jwtHeader)
-      const response = await axios.post(
-        `${Config.API_BASE_URL}/orders`,
-        orderData,
-        {headers: jwtHeader},
-      );
-      console.log(jwtHeader)
-      if (response.status === 200) {
-        navigation.navigate("Order");
-        console.log("order created successfully", response.data);
-      } else {
-        console.log("error creating order", response.data);
+      const data = await Orders(orderData);
+      if (data === "ok") {
+        ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
       }
     } catch (error) {
       console.log("errror", error);
@@ -120,11 +115,9 @@ const ConfirmationOrder = (props) => {
 
   const TinhGiamPhiVanChuyen = ({ index, item }) => {
     let total = 0;
-
-    const discountAmount = Number(item?.discount_amount);
-
-    total = discountAmount;
-
+    if (item?.reward_type === 3) {
+      total = 10000;
+    }
     return (
       <Text style={{ fontSize: 15, color: "gray" }}>
         {"-"}
@@ -149,29 +142,26 @@ const ConfirmationOrder = (props) => {
     );
   };
   const calculateTotalPayment = () => {
-    // Initial total is the total price of the items in the cart
     let totalPayment = Orderdata.total;
 
-    // Add the shipping fee
     totalPayment += phivanchuyen;
 
-    // Iterate through applied vouchers and apply discounts
     state.UseVoucher.forEach((voucher) => {
       if (voucher?.reward_type === 1) {
-        // Apply percentage discount
         const discountAmount =
           (Orderdata.total * voucher?.discount_amount) / 100;
         totalPayment -= discountAmount;
       } else if (voucher?.reward_type === 2) {
-        // Apply fixed amount discount
         totalPayment -= voucher?.discount_amount;
+      }
+
+      if (voucher?.reward_type === 3) {
+        totalPayment -= 10000;
       }
     });
 
     return totalPayment;
   };
-
-  console.log("totalPayment", calculateTotalPayment());
 
   return (
     <ScrollView style={styles.container}>
@@ -485,13 +475,18 @@ const ConfirmationOrder = (props) => {
                       text: "OK",
                       onPress: async () => {
                         const response = await axios.post(
-                          "http://192.168.0.107:3000/api/v1/payment/vnpay/create_payment_url",
-                          {"amount":"10000000","bankCode":"VNBANK","language":"vn"}
-                        )
-                        console.log('response: ',response.data)
+                          "http://192.168.0.104:3000/api/v1/payment/vnpay/create_payment_url",
+                          {
+                            orderId: 1,
+                            amount: "70000",
+                            bankCode: "VNBANK",
+                            language: "vn",
+                          }
+                        );
+                        console.log("response: ", response.data);
                         // console.log('url', response.re)
-                        setWebViewUrl(response.data.url)
-                      }
+                        setWebViewUrl(response.data.url);
+                      },
                     },
                   ]);
                 }}
@@ -502,7 +497,6 @@ const ConfirmationOrder = (props) => {
             )}
 
             <Text>UPI / Credit or debit card</Text>
-            
           </View>
           <Pressable
             onPress={() => setCurrentStep(3)}
@@ -515,172 +509,191 @@ const ConfirmationOrder = (props) => {
               marginTop: 15,
             }}
           >
-            <Text>Tiếp tục</Text>
+            <Text>Tiếp tụcw</Text>
           </Pressable>
-          
-          <WebView source={{ uri: webViewUrl}} style={{width: 300, height: 200}}/>
+
+          <WebView
+            source={{ uri: webViewUrl }}
+            style={{ width: 300, height: 900 }}
+            onNavigationStateChange={(event) => {
+              console.log("event1", event.url);
+              if (event.url) {
+                console.log("event2", event.url);
+                const url = event.url;
+                axios.get(url).then((response) => {
+                  console.log("logfgfg", response);
+                  if (response.data.RspCode === "00") {
+                    ToastAndroid.show(
+                      "Thanh toán thành công",
+                      ToastAndroid.SHORT
+                    );
+                  }
+                });
+              }
+            }}
+          />
         </View>
       )}
 
-      {currentStep === 3 && selectedOption === "cash" && (
-        <View style={{ marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Order Now</Text>
-
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 8,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-            }}
-          >
-            <Text>Chi tiết thanh toán {selectedAddress?.name}</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: 3,
-              }}
-            >
-              <Text style={{ fontSize: 15, color: "gray" }}>
-                Tổng tiền hàng
-              </Text>
-
-              <Text style={{ color: "gray", fontSize: 16 }}>
-                {Orderdata.total.toLocaleString("vi-VN")}đ
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: 3,
-              }}
-            >
-              <Text style={{ fontSize: 15, color: "gray" }}>
-                Phí vận chuyển
-              </Text>
-
-              <Text style={{ color: "gray", fontSize: 16 }}>10.000đ</Text>
-            </View>
-            {state.UseVoucher.length > 0 &&
-              state.UseVoucher.map((voucher, index) => (
-                <View key={index}>
-                  {voucher?.reward_type === 3 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginTop: 3,
-                      }}
-                    >
-                      <Text style={{ fontSize: 15, color: "gray" }}>
-                        Giảm phí vận chuyển
-                      </Text>
-
-                      <TinhGiamPhiVanChuyen
-                        index={index}
-                        item={voucher.toLocaleString("vi-VN")}
-                      />
-                    </View>
-                  ) : null}
-                  {voucher?.reward_type === 1 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginTop: 3,
-                      }}
-                    >
-                      <Text style={{ fontSize: 15, color: "gray" }}>
-                        Voucher Giảm giá
-                      </Text>
-
-                      {<Tinhgiamgia index={index} item={voucher} />}
-                    </View>
-                  ) : null}
-                  {voucher?.reward_type === 2 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginTop: 3,
-                      }}
-                    >
-                      <Text style={{ fontSize: 15, color: "gray" }}>
-                        Tổng tiền hàng
-                      </Text>
-
-                      <Text style={{ color: "gray", fontSize: 16 }}>₹</Text>
-                    </View>
-                  ) : null}
-                </View>
-              ))}
+      {currentStep === 3 &&
+        (selectedOption === "cash" || selectedOption === "card") && (
+          <View style={{ marginHorizontal: 20 }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Order Now</Text>
 
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: 3,
+                backgroundColor: "white",
+                padding: 8,
+                borderColor: "#D0D0D0",
+                borderWidth: 1,
+                marginTop: 10,
               }}
             >
-              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                Tổng Thanh Toán
-              </Text>
-
-              <Text
-                style={{ color: "#C60C30", fontSize: 17, fontWeight: "bold" }}
+              <Text>Chi tiết thanh toán {selectedAddress?.name}</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 3,
+                }}
               >
-                {calculateTotalPayment() < 0
-                  ? 0
-                  : calculateTotalPayment().toLocaleString("vi-VN")}
-                đ
+                <Text style={{ fontSize: 15, color: "gray" }}>
+                  Tổng tiền hàng
+                </Text>
+
+                <Text style={{ color: "gray", fontSize: 16 }}>
+                  {Orderdata.total.toLocaleString("vi-VN")}đ
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 3,
+                }}
+              >
+                <Text style={{ fontSize: 15, color: "gray" }}>
+                  Phí vận chuyển
+                </Text>
+
+                <Text style={{ color: "gray", fontSize: 16 }}>10.000đ</Text>
+              </View>
+              {state.UseVoucher.length > 0 &&
+                state.UseVoucher.map((voucher, index) => (
+                  <View key={index}>
+                    {voucher?.reward_type === 3 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginTop: 3,
+                        }}
+                      >
+                        <Text style={{ fontSize: 15, color: "gray" }}>
+                          Giảm phí vận chuyển
+                        </Text>
+
+                        <TinhGiamPhiVanChuyen index={index} item={voucher} />
+                      </View>
+                    ) : null}
+                    {voucher?.reward_type === 1 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginTop: 3,
+                        }}
+                      >
+                        <Text style={{ fontSize: 15, color: "gray" }}>
+                          Voucher Giảm giá
+                        </Text>
+
+                        {<Tinhgiamgia index={index} item={voucher} />}
+                      </View>
+                    ) : null}
+                    {voucher?.reward_type === 2 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginTop: 3,
+                        }}
+                      >
+                        <Text style={{ fontSize: 15, color: "gray" }}>
+                          Voucher Giảm giá
+                        </Text>
+
+                        {<Tinhgiamgia index={index} item={voucher} />}
+                      </View>
+                    ) : null}
+                  </View>
+                ))}
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 3,
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  Tổng Thanh Toán
+                </Text>
+
+                <Text
+                  style={{ color: "#C60C30", fontSize: 17, fontWeight: "bold" }}
+                >
+                  {calculateTotalPayment() < 0
+                    ? 0
+                    : calculateTotalPayment().toLocaleString("vi-VN")}
+                  đ
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 8,
+                borderColor: "#D0D0D0",
+                borderWidth: 1,
+                marginTop: 10,
+              }}
+            >
+              <Text style={{ fontSize: 16, color: "gray" }}>
+                Kiểu thanh toán
+              </Text>
+
+              <Text style={{ fontSize: 16, fontWeight: "600", marginTop: 7 }}>
+                {selectedOption == "cash"
+                  ? "Thanh toán khi nhận hàng"
+                  : "UPI/Debit card"}
               </Text>
             </View>
+
+            <Pressable
+              onPress={handlePlaceOrder}
+              style={{
+                backgroundColor: "#FFC72C",
+                padding: 10,
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 10,
+                position: "relative",
+                top: -5,
+              }}
+            >
+              <Text>Xác nhận đặt hàng</Text>
+            </Pressable>
           </View>
-
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 8,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16, color: "gray" }}>Kiểu thanh toán</Text>
-
-            <Text style={{ fontSize: 16, fontWeight: "600", marginTop: 7 }}>
-              {selectedOption == "cash"
-                ? "Thanh toán khi nhận hàng"
-                : "UPI/Debit card"}
-            </Text>
-          </View>
-
-          <Pressable
-            onPress={handlePlaceOrder}
-            style={{
-              backgroundColor: "#FFC72C",
-              padding: 10,
-              borderRadius: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 10,
-              position: "relative",
-              top: -5,
-            }}
-          >
-            <Text>Xác nhận đặt hàng</Text>
-          </Pressable>
-        </View>
-      )}
+        )}
     </ScrollView>
   );
 };

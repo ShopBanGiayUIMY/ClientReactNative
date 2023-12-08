@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 const { width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const images = [
   "https://1sneaker.vn/wp-content/uploads/2021/06/giay-Nike-Dep-14.jpg",
@@ -128,17 +129,18 @@ const Slideshow = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.05,
     marginHorizontal: 10,
+    width: width,
+  
   },
   scrollViewContent: {
     paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView\
   },
   imageContainer: {
     width: width,
-    height: 150,
-   
-  
+    height: 180,
+    position: "relative",
   },
   image: {
     width: "95%",
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   pagination: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 10,
+    top: 150,
     alignSelf: "center",
   },
   paginationDot: {

@@ -1,5 +1,4 @@
-import { SOLUONG_GIOHANG, INFOCART, USERINFO, LOGIN } from "../ActionTypes";
-
+import { SOLUONG_GIOHANG, INFOCART, USERINFO, LOGIN } from "../ActionTypes"
 export const soluonggiohang = (data) => ({
   type: SOLUONG_GIOHANG,
   payload: data,

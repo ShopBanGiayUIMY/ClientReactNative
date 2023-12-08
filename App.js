@@ -36,7 +36,7 @@ const MainApp = () => {
         dispatch({ type: "USERINFO", payload: data });
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data1:", error);
     }
   };
   useEffect(() => {
