@@ -60,7 +60,7 @@ export default function Cart({ navigation }) {
         dispatchRedux(soluonggiohang(-1));
       }
     } catch (error) {
-      console.log("Error cart3:", error);
+      console.log("Error cart:", error);
     }
   }, [GetCart]);
 
