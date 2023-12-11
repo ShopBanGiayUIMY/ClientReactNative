@@ -80,23 +80,24 @@ const ConfirmationOrder = (props) => {
 
   const handlePlaceOrder = async () => {
     try {
-      let paymentmethod = 1;
-      if (selectedOption === "card") {
-        paymentmethod = 2;
-      }
+      // let paymentmethod = 1;
+      // if (selectedOption === "card") {
+      //   paymentmethod = 2;
+      // }
 
-      const orderData = {
-        cartItems: Orderdata.item_id,
-        cartId: Orderdata.Cart_id,
-        totalPrice: calculateTotalPayment(),
-        shippingAddressId: addresses[0]?.id,
-        paymentMethodId: paymentmethod,
-        voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
-      };
-      const data = await Orders(orderData);
-      if (data === "ok") {
-        ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
-      }
+      // const orderData = {
+      //   cartItems: Orderdata.item_id,
+      //   cartId: Orderdata.Cart_id,
+      //   totalPrice: calculateTotalPayment(),
+      //   shippingAddressId: addresses[0]?.id,
+      //   paymentMethodId: paymentmethod,
+      //   voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
+      // };
+      // const data = await Orders(orderData);
+      // if (data === "ok") {
+      //   ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
+      // }
+      navigation.navigate("MainTabPurchase");
     } catch (error) {
       console.log("errror", error);
     }
@@ -175,7 +176,10 @@ const ConfirmationOrder = (props) => {
           }}
         >
           {steps?.map((step, index) => (
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <View
+              key={index}
+              style={{ justifyContent: "center", alignItems: "center" }}
+            >
               {index > 0 && (
                 <View
                   style={[
