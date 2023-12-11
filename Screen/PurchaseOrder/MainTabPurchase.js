@@ -1,34 +1,13 @@
 import React, { useState } from "react";
-import { useWindowDimensions } from "react-native";
+import { useWindowDimensions, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import ChoXacNhan from "./ChoXacNhan";
 import DangXuLy from "./DangXuLy";
 import ChoGiaoHang from "./ChoGiaoHang";
 import DaGiaoHang from "./DaGiaoHang";
 import DaHuy from "./DaHuy";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-
-const renderScene = SceneMap({
-  choXacNhan: ChoXacNhan,
-  dangXuLy: DangXuLy,
-  choGiaoHang: ChoGiaoHang,
-  daGiaoHangGiao: DaGiaoHang,
-  daHuy: DaHuy,
-});
-
-const renderTabBar = (props) => (
-  <TabBar
-    {...props}
-    indicatorStyle={{ backgroundColor: "red" }}
-    style={{ backgroundColor: "white", elevation: 0 }}
-    labelStyle={{ color: "black", fontSize: 12 }}
-    tabStyle={{ width: "auto" }}
-    scrollEnabled={true}
-    activeColor="red"
-    inactiveColor="grey"
-  />
-);
 
 const MainTabPurchase = ({ navigation }) => {
   const layout = useWindowDimensions();
@@ -40,6 +19,53 @@ const MainTabPurchase = ({ navigation }) => {
     { key: "daGiaoHangGiao", title: "Đã giao hàng" },
     { key: "daHuy", title: "Đã hủy" },
   ]);
+  const [tabKeys, setTabKeys] = useState(routes.reduce((keys, route) => {
+    keys[route.key] = 0;
+    return keys;
+  }, {}));
+
+  const updateTabKey = (tabKey) => {
+    setTabKeys(prevKeys => ({
+      ...prevKeys,
+      [tabKey]: prevKeys[tabKey] + 1
+    }));
+  };
+
+  const onIndexChange = (newIndex) => {
+    const selectedRouteKey = routes[newIndex].key;
+    updateTabKey(selectedRouteKey);
+    setIndex(newIndex);
+  };
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'choXacNhan':
+        return <ChoXacNhan key={tabKeys['choXacNhan']} />;
+      case 'dangXuLy':
+        return <DangXuLy key={tabKeys['dangXuLy']} />;
+      case 'choGiaoHang':
+        return <ChoGiaoHang key={tabKeys['choGiaoHang']} />;
+      case 'daGiaoHangGiao':
+        return <DaGiaoHang key={tabKeys['daGiaoHangGiao']} />;
+      case 'daHuy':
+        return <DaHuy key={tabKeys['daHuy']} />;
+      default:
+        return null;
+    }
+  };
+
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: "red" }}
+      style={{ backgroundColor: "white", elevation: 0 }}
+      labelStyle={{ color: "black", fontSize: 12 }}
+      tabStyle={{ width: "auto" }}
+      scrollEnabled={true}
+      activeColor="red"
+      inactiveColor="grey"
+    />
+  );
 
   return (
     <View style={styles.container}>
@@ -58,7 +84,7 @@ const MainTabPurchase = ({ navigation }) => {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
-        onIndexChange={setIndex}
+        onIndexChange={onIndexChange}
         initialLayout={{ width: layout.width }}
       />
     </View>
@@ -71,7 +97,6 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-   
     alignItems: "center",
     padding: 16,
     backgroundColor: "white",
