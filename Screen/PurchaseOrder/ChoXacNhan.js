@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf: "flex-end",
     paddingHorizontal: 10,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "rgba(219, 220, 221, 0.8)",
     width: 150,
     height: 50,
     justifyContent: "center",

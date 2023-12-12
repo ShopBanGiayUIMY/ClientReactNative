@@ -9,7 +9,7 @@ const DangXuLy = () => {
   const fetchOrders = async () => {
     const resDangXuLy = await CheckStatusOrder("PROCESSING");
     setOrdersDangXuLy(resDangXuLy); // Assuming 'res' is the array of orders
-
+    console.log("resDangXuLy", resDangXuLy);
   };
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf: "flex-end",
     paddingHorizontal: 10,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#ee4d2d",
     width: 150,
     height: 50,
     justifyContent: "center",

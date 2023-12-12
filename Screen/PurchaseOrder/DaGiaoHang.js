@@ -8,8 +8,7 @@ const DaGiaoHang = () => {
 
   const fetchOrders = async () => {
     const res = await CheckStatusOrder("DELIVERED");
-    setOrders(res); 
- 
+    setOrders(res);
   };
 
   useEffect(() => {
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf: "flex-end",
     paddingHorizontal: 10,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#ee4d2d",
     width: 150,
     height: 50,
     justifyContent: "center",

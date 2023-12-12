@@ -31,6 +31,7 @@ import Contact from "./Screen/Contact/Contact";
 import VerifyVnPayPayMent from "./Screen/ConfirmationOrder/Verifyvnpaypayment";
 import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
 import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
+import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
 const MemoizedBottomTab = React.memo(BottomTabNavigation);
 export default function AppNavigator() {
   return (
@@ -126,6 +127,11 @@ export default function AppNavigator() {
         <Stack.Screen
           name="MainTabPurchase"
           component={MainTabPurchase}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="StatusOrder"
+          component={StatusOrder}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
