@@ -1,4 +1,4 @@
-import React, { useState, Component, useLayoutEffect ,useEffect} from "react";
+import React, { useState, Component, useLayoutEffect, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ToastAndroid,
-  BackHandler 
+  BackHandler,
 } from "react-native";
 import eye from "../../images/eys.jpg";
 import face from "../../images/facebook.png";
@@ -20,22 +20,22 @@ import logo from "../../assets/images/logo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { AuthStatus } from "../../Services/AuthContext";
-import {soluonggiohang} from "../../Services/Redux/action/Actions";
+import { soluonggiohang } from "../../Services/Redux/action/Actions";
 import { useDispatch, useSelector } from "react-redux";
 export default function Login({ navigation }) {
   const [isloading, setIsLoading] = useState(false);
   const { state, dispatch } = AuthStatus();
-  const { InfoAuth,getTotalCart } = useAuth();
+  const { InfoAuth, getTotalCart } = useAuth();
   useEffect(() => {
     const handleBackPress = () => {
-      navigation.navigate("BottomTabNavigation")
-      return true; 
+      navigation.navigate("BottomTabNavigation");
+      return true;
     };
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     };
-  }, []); 
+  }, []);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Đăng nhập",
@@ -73,7 +73,7 @@ export default function Login({ navigation }) {
       console.log("Không có kết nối internet");
     }
   };
-  const dispatchRedux=useDispatch();
+  const dispatchRedux = useDispatch();
   const checkinput = (text) => {
     if (checkemail.test(text)) {
       setFormData({ ...formData, email: text, username: "" });
@@ -127,7 +127,6 @@ export default function Login({ navigation }) {
                       dispatchRedux(soluonggiohang(data[0].total_cart_items));
                     }
                   });
-
 
                   setIsLoading(true);
                   ToastAndroid.show(result.message, ToastAndroid.SHORT);
@@ -212,25 +211,28 @@ export default function Login({ navigation }) {
         <Text>Or With</Text>
       </View>
 
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonInnerContainer}>
           <Image source={face} style={styles.imagess} />
           <Text style={styles.buttonText}>Signup with Facebook</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <View style={styles.buttonContainer1}>
+      {/* <View style={styles.buttonContainer1}>
         <TouchableOpacity style={styles.buttonInnerContainer1}>
           <Image source={google} style={styles.imagess} />
           <Text style={styles.buttonText1}>Signup with Google</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={styles.createaccount}>
-        <Text style={styles.texttt}>
-          Don't have an account?{" "}
-          <Text style={styles.texttt1}>Create an account</Text>
-        </Text>
+        <Text style={styles.texttt}>Bạn chưa có tài khoản? </Text>
+        <TouchableOpacity
+          style={styles.createaccount1}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.texttt1}>Đăng ký ngay</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -302,11 +304,13 @@ const styles = StyleSheet.create({
     width: 300,
     height: 45,
     borderColor: "white",
+    justifyContent: "center",
   },
   touchablecity: {
     color: "white",
     textAlign: "center",
-    marginTop: 12,
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: 15,
     width: "100%",
   },
@@ -361,10 +365,11 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   createaccount: {
-    marginTop: 30,
     width: "100%",
-    flexDirection: "row",
-    paddingStart: 85,
+    alignItems: "center",
+  },
+  texttt: {
+    textAlign: "center",
   },
   texttt1: {
     textAlign: "center",
@@ -375,5 +380,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#7DDDFF",
     marginTop: 3,
+  },
+  createaccount1: {
+    width: "100%",
+    alignItems: "center",
+    paddingTop: 10,
   },
 });

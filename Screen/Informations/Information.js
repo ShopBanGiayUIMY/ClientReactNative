@@ -112,7 +112,12 @@ export default function Information({ navigation }) {
               <FontAwesomeIcon icon={faCog} size={24} style={styles.cogIcon} />
             </TouchableOpacity>
             <View style={styles.userInfoContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("UploadImage")}
+              >
+
               <Image style={styles.avatar} source={avatar} />
+              </TouchableOpacity>
               <View style={styles.textContainer}>
                 <Text style={styles.userName}>{state.userInfo.username}</Text>
                 <Text style={styles.likeproducts}>
