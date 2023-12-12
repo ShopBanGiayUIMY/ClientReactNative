@@ -79,7 +79,7 @@ const ConfirmationOrder = (props) => {
 
   const handlePlaceOrder = async () => {
     try {
-      let paymentmethod = 1;
+      let paymentmethod = 0;
       if (selectedOption === "card") {
         paymentmethod = 2;
         navigation.navigate("VerifyVnPayPayMent", {
@@ -91,18 +91,20 @@ const ConfirmationOrder = (props) => {
           voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
         });
       }
-
-      const orderData = {
-        cartItems: Orderdata.item_id,
-        cartId: Orderdata.Cart_id,
-        totalPrice: calculateTotalPayment(),
-        shippingAddressId: addresses[0]?.id,
-        paymentMethodId: paymentmethod,
-        voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
-      };
-      const data = await Orders(orderData);
-      if (data === "ok") {
-        navigation.navigate("StatusOrder");
+      if (selectedOption === "cash") {
+        paymentmethod = 1;
+        const orderData = {
+          cartItems: Orderdata.item_id,
+          cartId: Orderdata.Cart_id,
+          totalPrice: calculateTotalPayment(),
+          shippingAddressId: addresses[0]?.id,
+          paymentMethodId: paymentmethod,
+          voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
+        };
+        const data = await Orders(orderData);
+        if (data === "ok") {
+          navigation.navigate("StatusOrder");
+        }
       }
     } catch (error) {
       console.log("errror", error);

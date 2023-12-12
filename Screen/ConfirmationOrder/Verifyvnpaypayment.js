@@ -52,7 +52,7 @@ const VerifyVnPayPayment = () => {
     if (response.RspCode === "00") {
       ToastAndroid.show("Thanh toán thành công", ToastAndroid.SHORT);
       navigation.navigate("Home");
-    } else if (response.RspCode === "24") {
+    } else if (response.RspCode === "-01") {
       ToastAndroid.show("Thanh toán đã bị hủy", ToastAndroid.SHORT);
       navigation.goBack();
     } else {
@@ -64,7 +64,7 @@ const VerifyVnPayPayment = () => {
   };
 
   const handleNavigationChange = async (event) => {
-    if (event.url.includes("your_payment_success_or_cancel_url")) {
+    if (event.url.includes("api/v1/payment/vnpay/vnpay_ipn")) {
       try {
         const response = await axios.get(event.url);
         console.log("Payment status response: ", response.data);

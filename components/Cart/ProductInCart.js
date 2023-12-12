@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress, handleOrder, navigation } = props;
+  const [isAnyProductSelected, setIsAnyProductSelected] = useState(false);
   const { UpdateCreateCart, getTotalCart } = useAuth();
   const [soluongchon, setsoluongchon] = useState(0);
   const [data, setData] = useState(dataCart);
@@ -66,7 +67,7 @@ const ProductInCart = (props) => {
         : [...prevSelectedItems, { item_id, product_price, quantity }];
 
       console.log("newSelectedItems", newSelectedItems);
-
+      setIsAnyProductSelected(newSelectedItems.length > 0);
       return newSelectedItems;
     });
   };
@@ -403,7 +404,15 @@ const ProductInCart = (props) => {
             onPress={() =>
               navigation.navigate("ConfirmationOrder", { Orderdata })
             }
-            style={styles.paymentButton}
+            style={[
+              styles.paymentButton,
+              {
+                backgroundColor: isAnyProductSelected
+                  ? "rgba(254, 7, 7, 0.8)"
+                  : "rgba(205, 206, 206, 0.8)",
+              },
+            ]}
+            disabled={!isAnyProductSelected}
           >
             <Text style={styles.paymentButtonText}>Thanh toán</Text>
           </TouchableOpacity>
