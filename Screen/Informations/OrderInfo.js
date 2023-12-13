@@ -7,16 +7,49 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import change from "../../images/ReChange.png";
-import wait from "../../images/2.png";
-import ship from "../../images/3.png";
-import mess from "../../images/4.png";
-import pay from "../../images/5.png";
+import PENDING from "../../images/1.png";
+import PROCESSING from "../../images/2.png";
+import SHIPPING from "../../images/3.png";
+import SHIPPED from "../../images/4.png";
+import DELIVERED from "../../images/5.png";
+import CANCELED from "../../images/6.png";
 
-export default OrderInfo = ({ navigation }) => {
-  const hanldChoThanhToan = () => {
-    navigation.navigate('MainTabPurchase', { initialTabIndex: 2 });
-   
+import useAuth from "../../Services/auth.services";
+import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
+export default OrderInfo = () => {
+  const { totalOrderStatus } = useAuth();
+  const [totalOrderStatusItem, setTotalOrderStatusItem] = useState([]);
+  const navigation = useNavigation();
+  const hanldChoThanhToan = (key) => {
+    navigation.navigate("MainTabPurchase", { initialTabIndex: key });
+  };
+  useEffect(() => {
+    totalOrderStatus().then((res) => {
+      setTotalOrderStatusItem(res.data);
+    });
+  }, [navigation]);
+  totalOrderStatus().then((res) => {
+    console.log("res", res);
+  });
+  const getIconByStatusId = (statusId) => {
+    switch (statusId) {
+      case 1:
+        return PROCESSING;
+      case 2:
+        return PENDING;
+      case 3:
+        return SHIPPING;
+      case 4:
+        return SHIPPED;
+      case 5:
+        return DELIVERED;
+      case 6:
+        return CANCELED;
+      default:
+        return null; // Trả về hình ảnh mặc định hoặc null nếu không tìm thấy
+    }
   };
   return (
     <View style={styles.iconsContainer}>
@@ -33,46 +66,24 @@ export default OrderInfo = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.Containerinfo}>
-        <TouchableOpacity
-          style={styles.iconItem}
-          onPress={() => {
-            hanldChoThanhToan();
-          }}
-        >
-          <Image style={styles.iconImage} source={wait} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>29</Text>
-          </View>
-          <Text style={styles.iconText}>Chờ Thanh Toán</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconItem}>
-          <Image style={styles.iconImage} source={ship} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>29</Text>
-          </View>
-          <Text style={styles.iconText}>Chờ Vận Chuyển</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconItem}>
-          <Image style={styles.iconImage} source={mess} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>29</Text>
-          </View>
-          <Text style={styles.iconText}>Chờ Giao Hàng</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconItem}>
-          <Image style={styles.iconImage} source={pay} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>29</Text>
-          </View>
-          <Text style={styles.iconText}>Đơn đã đổi trả & hủy đơn</Text>
-        </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.iconItem}>
-          <Image style={styles.iconImage} source={change} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>29</Text>
-          </View>
-          <Text style={styles.iconText}>Phản hồi Về Sản Phẩm</Text>
-        </TouchableOpacity> */}
+        {totalOrderStatusItem.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.iconItem}
+            onPress={() => {
+              hanldChoThanhToan(item.status_id - 1);
+            }}
+          >
+            <Image
+              style={styles.iconImage}
+              source={getIconByStatusId(item.status_id)}
+            />
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{item.total_orders}</Text>
+            </View>
+            <Text style={styles.iconText}>{item.status_name}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
@@ -89,7 +100,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 5,
     paddingHorizontal: 10,
-    height: 90,
+    height: 80,
   },
 
   iconsContainer: {
@@ -101,7 +112,7 @@ const styles = StyleSheet.create({
   iconItem: {
     alignItems: "center",
     marginBottom: 20,
-    width: "20%", // Adjusted width to fit three items in a row
+    width: "15%",
   },
   iconImage: {
     width: 30,
@@ -136,7 +147,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: "absolute",
-    right: 12,
+    right: 7,
     top: -5,
     backgroundColor: "red",
     borderRadius: 9,

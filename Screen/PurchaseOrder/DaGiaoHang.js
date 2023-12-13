@@ -16,8 +16,11 @@ const DaGiaoHang = () => {
 
   const fetchOrders = async () => {
     const res = await CheckStatusOrder("SHIPPED");
-    setOrders(res);
-    ToastAndroid.show("Vui lòng ấn để xác nhận đơn hàng!", ToastAndroid.SHORT);
+    if (res){
+      setOrders(res);
+    }
+    
+    
   };
 
   useEffect(() => {
