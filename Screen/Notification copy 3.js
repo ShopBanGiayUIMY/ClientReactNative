@@ -1,93 +1,125 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Image,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  FlatList
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import config from "../../Api/Config";
 
-const Notification = () => {
-  const progress = useRef(new Animated.Value(0)).current;
-  const [progressValue, setProgressValue] = useState(0);
-  const [usage_quantity] = useState(120);
+const MenuCategory = () => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    const progressListener = progress.addListener(({ value }) => {
-      setProgressValue(value);
-    });
-
-    return () => {
-      progress.removeListener(progressListener);
-    };
-  }, [progress]);
-
-  const increaseValue = () => {
-    const newValue = Math.min(usage_quantity, progressValue + 10);
-    if (progressValue < usage_quantity) {
-      Animated.timing(progress, {
-        toValue: newValue,
-        duration: 1000,
-        useNativeDriver: false,
-      }).start();
+  const getCategories = async () => {
+    try {
+      console.log(config.API_BASE_URL);
+      const response = await fetch(config.API_BASE_URL + "/categories");
+      const json = await response.json();
+      setData(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const width = progress.interpolate({
-    inputRange: [0, usage_quantity],
-    outputRange: ['0%', '100%'],
-  });
+  useEffect(() => {
+    getCategories();
+  }, []);
 
-  const progressPercentage = Math.max(0, Math.min(100, (progressValue / usage_quantity) * 100));
+  const getProducts = async (id) => {
+    try {
+      const response = await fetch(
+        `${config.API_BASE_URL}+'/categories'/${id}`
+      );
+      const json = await response.json();
+      // Choose the first object from the array as an example
+      const product = json;
+      navigation.navigate("Category", { categoryData: product });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const chunkArray = (array, chunkSize) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.progressBarBackground}>
-        <Animated.View style={[styles.progressBar, { width }]}>
-          <Text style={styles.progressTextInsideBar}>
-            {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})
-          </Text>
-        </Animated.View>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={increaseValue}>
-        <Text style={styles.buttonText}>Giảm giá trị</Text>
-      </TouchableOpacity>
+    <View contentContainerStyle={styles.container}>
+      {chunkArray(data, 7).map((row, rowIndex) => (
+        <View key={rowIndex} style={styles.row}>
+          {row.map((item, index) => (
+            <View key={index} style={styles.itemContainer}>
+              <Pressable
+                onPress={() => getProducts(item?.category_id)}
+                style={styles.pressableContainer}
+              >
+                <View style={styles.khunganh}>
+                  <Image style={styles.image} source={{ uri: item.image }} />
+                </View>
+              </Pressable>
+              <Text style={styles.text}>{item?.name}</Text>
+            </View>
+          ))}
+        </View>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flexGrow: 1,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  itemContainer: {
+    width: "20%", // 1/5 of the width
+    borderRadius: 15,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  khunganh: {
+    width: 50,
+    height: 50,
+    borderRadius: 18,
+    borderWidth: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pressableContainer: {
+    width: 50,
+    height: 50,
+  },
+  image: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+  },
+  text: {
+    textAlign: "center",
+    fontSize: 11,
+    fontWeight: "500",
+    marginTop: 0,
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  progressTextInsideBar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    color: '#fff',
-  },
-  progressBarBackground: {
-    height: 20,
-    width: '100%',
-    backgroundColor: '#ccc',
-    borderRadius: 10,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#f00',
-    borderRadius: 10,
-  },
-  progressText: {
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  button: {
-    marginTop: 20,
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
   },
 });
 
-export default Notification;
+export default MenuCategory;

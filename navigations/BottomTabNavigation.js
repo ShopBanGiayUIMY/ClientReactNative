@@ -14,8 +14,7 @@ const Tab = createBottomTabNavigator();
 import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect, useState } from "react";
 import { View, TouchableWithoutFeedback, Text } from "react-native";
-import useAuth from "../Services/auth.services";
-import { AuthStatus } from "../Services/AuthContext";
+import CartBadge from "../components/Cart/CartBadge";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
@@ -54,21 +53,6 @@ function TabButton({ onPress, accessibilityState, children }) {
 }
 const MemoizedCart = React.memo(Cart);
 const BottomTabNavigation = () => {
-  const { state} = AuthStatus();
-  const [totalCart, setTotalCart] = useState(0);
-  const fetchData = async () => {
-    try {
-      await state.infoCart.map((item) => {
-        setTotalCart(item.total_cart_items);
-        console.log("item", item.total_cart_items);
-      });
-    } catch (error) {
-      console.log("Error cart:", error);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -116,35 +100,9 @@ const BottomTabNavigation = () => {
           tabBarShowLabel: false,
           title: "Cart",
           tabBarIcon: ({ color }) => (
-            <View>
-              {totalCart == 0 ? null : (
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: 16,
-                    width: 10,
-                    height: 10,
-                    borderRadius: 8,
-                    top: -3,
-                    left: 12,
-                    backgroundColor: "#3C3C3C",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    zIndex: 999,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 5,
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    {totalCart}
-                  </Text>
-                </View>
-              )}
-
+            <View style={{ position: "relative" }}>
               <MaterialCommunityIcons name="cart" color={color} size={20} />
+              <CartBadge />
             </View>
           ),
           tabBarButton: (props) => <TabButton {...props} />,

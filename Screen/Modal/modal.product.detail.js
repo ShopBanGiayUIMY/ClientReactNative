@@ -16,6 +16,9 @@ import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
 import DataLoadingCart from "../../components/loading/DataLoadingCart";
+import { soluonggiohang } from "../../Services/Redux/action/Actions";
+import { useDispatch, useSelector } from "react-redux";
+
 const COLORS = {
   black: "#3C3C3C",
   gray: "#F5F5F5",
@@ -23,12 +26,12 @@ const COLORS = {
   red: "#EE4B2B",
 };
 const { height, width } = Dimensions.get("window");
+
 export default function ModalBottom(props) {
   const { closeDrawer, openDrawer, dataprod } = props;
   const [cartUpdate, setCartUpdate] = useState(0);
   const { UpdateCreateCart } = useAuth();
   const { state } = AuthStatus();
-
   // dữ liệu là
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -36,6 +39,7 @@ export default function ModalBottom(props) {
     product_detail_id: null,
     quantity: quantity,
   });
+  const dispatchRedux = useDispatch();
   const addCart = async () => {
     if (formData.product_detail_id === null) {
       alert("Vui lòng chọn size");
@@ -51,12 +55,15 @@ export default function ModalBottom(props) {
     if (data) {
       alert("Thêm vào giỏ hàng thành công");
       setCartUpdate(cartUpdate + 1);
+      dispatchRedux(soluonggiohang(cartUpdate + 1));
+
+   
     }
   };
 
   const handleSizeSelection = (detail, size, color) => {
     setSelectedSize(size);
-    setFormData({ ...formData, product_detail_id: detail});
+    setFormData({ ...formData, product_detail_id: detail });
     console.log(detail, size, color, quantity);
   };
   return (

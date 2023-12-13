@@ -97,7 +97,7 @@ export default function Register({ navigation }) {
 
       <Image source={logo} style={styles.logo} resizeMode="contain" />
       <Text style={styles.nameapp}>
-        Snake Nike <Text style={styles.shop}> Shop</Text>
+      Nike Sneaker<Text style={styles.shop}> Shop</Text>
       </Text>
       <View style={styles.inputContainer}>
         <TextInput

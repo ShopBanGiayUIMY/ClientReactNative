@@ -13,7 +13,7 @@ const DataLoadingCart= () => {
           dispatch({ type: "INFOCART", payload: result });
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data2:", error);
       }
     };
     fetchData();
