@@ -21,6 +21,7 @@ const MenuCategory = () => {
       const response = await fetch(config.API_BASE_URL + "/categories");
       const json = await response.json();
       setData(json);
+    
     } catch (error) {
       console.error(error);
     } finally {
@@ -32,13 +33,13 @@ const MenuCategory = () => {
     getCategories();
   }, []);
 
-  const getProducts = async (id) => {
+  const getProducts = async (id,name) => {
     try {
       const response = await fetch(`${config.API_BASE_URL}/categories/${id}`);
       const json = await response.json();
       // Choose the first object from the array as an example
       const product = json;
-      navigation.navigate("Category", { categoryData: product });
+      navigation.navigate("Category", { categoryData: product , categoryName: name});
     } catch (error) {
       console.error(error);
     }
@@ -57,7 +58,7 @@ const MenuCategory = () => {
           {data.map((item, index) => (
             <View key={index} style={styles.itemContainer}>
               <Pressable
-                onPress={() => getProducts(item?.category_id)}
+                onPress={() => getProducts(item?.category_id,item?.name)}
                 style={styles.pressableContainer}
               >
                 <View style={styles.khunganh}>
