@@ -8,6 +8,8 @@ import useAuth from "../../Services/auth.services";
 import axios from "axios";
 import Config from "../../Api/Config";
 import { AuthStatus } from "../../Services/AuthContext";
+import authHeader from "../../Services/auth.header";
+
 const VerifyVnPayPayment = (props) => {
   const navigation = useNavigation();
   const [webViewUrl, setWebViewUrl] = useState(null);
@@ -41,6 +43,8 @@ const VerifyVnPayPayment = (props) => {
           // Update the state with the remaining vouchers
           dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
           console.log("orderId", data);
+          
+          const headers = await authHeader();
           const response = await axios.post(
             `${Config.API_BASE_URL}/payment/vnpay/create_payment_url`,
             {
@@ -48,6 +52,8 @@ const VerifyVnPayPayment = (props) => {
               amount: totalPrice,
               bankCode: "VNBANK",
               language: "vn",
+            }, {
+              headers: headers
             }
           );
           console.log("Payment URL response: ", response.data);
