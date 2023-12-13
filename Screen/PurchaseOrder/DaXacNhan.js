@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import useAuth from "../../Services/auth.services";
 
-const DaHuy = () => {
+const DaXacNhan = () => {
   const { CheckStatusOrder } = useAuth();
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = async () => {
-    const res = await CheckStatusOrder("CANCELED");
-    setOrders(res); 
+    const res = await CheckStatusOrder("DELIVERED");
+    setOrders(res);
   };
 
   useEffect(() => {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf: "flex-end",
     paddingHorizontal: 10,
-    backgroundColor: "rgba(219, 220, 221, 0.8)",
+    backgroundColor: "#ee4d2d",
     width: 150,
     height: 50,
     justifyContent: "center",
@@ -115,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DaHuy;
+export default DaXacNhan;

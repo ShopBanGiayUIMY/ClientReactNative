@@ -8,6 +8,7 @@ import {
   Image,
   ToastAndroid,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
@@ -24,7 +25,7 @@ import { Header } from "react-native/Libraries/NewAppScreen";
 const ConfirmationOrder = (props) => {
   const { getDefaultAddress, CreateAddress, Orders } = useAuth();
   const { Orderdata } = props.route.params;
-  const [webViewUrl, setWebViewUrl] = useState();
+
   const { state, dispatch } = AuthStatus();
   console.log("state", state.UseVoucher);
   console.log("Orderdata", Orderdata);
@@ -44,7 +45,6 @@ const ConfirmationOrder = (props) => {
   const [selectedOption, setSelectedOption] = useState("cash");
   const [phivanchuyen, setPhivanchuyen] = useState(10000);
   useEffect(() => {
-    console.log(webViewUrl);
     const onFocus = () => {
       fetchAddresses();
     };
@@ -55,7 +55,8 @@ const ConfirmationOrder = (props) => {
     return () => {
       unsubscribeFocus();
     };
-  }, [webViewUrl, fetchAddresses, navigation]);
+  }, [fetchAddresses, navigation]);
+
   const fetchAddresses = async () => {
     try {
       const data = await getDefaultAddress();
@@ -80,24 +81,49 @@ const ConfirmationOrder = (props) => {
 
   const handlePlaceOrder = async () => {
     try {
-      // let paymentmethod = 1;
-      // if (selectedOption === "card") {
-      //   paymentmethod = 2;
-      // }
+      let paymentmethod = 0;
+      console.log("selectedOption", selectedOption);
+      if (selectedOption === "card") {
+        paymentmethod = 2;
+        navigation.navigate("VerifyVnPayPayMent", {
+          cartItems: Orderdata.item_id,
+          cartId: Orderdata.Cart_id,
+          totalPrice: calculateTotalPayment(),
+          shippingAddressId: addresses[0]?.id,
+          paymentMethodId: paymentmethod,
+          voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
+        });
+      }
+      if (selectedOption === "cash") {
+        paymentmethod = 1;
+        const orderData = {
+          cartItems: Orderdata.item_id,
+          cartId: Orderdata.Cart_id,
+          totalPrice: calculateTotalPayment(),
+          shippingAddressId: addresses[0]?.id,
+          paymentMethodId: paymentmethod,
+          voucherIds: state.UseVoucher.map((voucher) => voucher.voucher_id),
+        };
+        const data = await Orders(orderData);
+        console.log("data", data);
+        if (data.message === "ok") {
+          const usedVoucherIds = state.UseVoucher.map(
+            (voucher) => voucher.voucher_id
+          );
 
-      // const orderData = {
-      //   cartItems: Orderdata.item_id,
-      //   cartId: Orderdata.Cart_id,
-      //   totalPrice: calculateTotalPayment(),
-      //   shippingAddressId: addresses[0]?.id,
-      //   paymentMethodId: paymentmethod,
-      //   voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
-      // };
-      // const data = await Orders(orderData);
-      // if (data === "ok") {
-      //   ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
-      // }
-      navigation.navigate("MainTabPurchase");
+          // Filter out the used vouchers from the state.UseVoucher array
+          const updatedVouchers = state.UseVoucher.filter(
+            (voucher) => !usedVoucherIds.includes(voucher.voucher_id)
+          );
+
+          // Update the state with the remaining vouchers
+          dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
+          ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
+          navigation.navigate("StatusOrder");
+        } else {
+          ToastAndroid.show("Đặt hàng thất bại", ToastAndroid.SHORT);
+        }
+      }
     } catch (error) {
       console.log("errror", error);
     }
@@ -469,27 +495,15 @@ const ConfirmationOrder = (props) => {
             ) : (
               <Entypo
                 onPress={() => {
-                  setSelectedOption("card");
                   Alert.alert("UPI/Debit card", "Pay Online", [
                     {
                       text: "Cancel",
-                      onPress: () => console.log("Cancel is pressed"),
+                      onPress: () => setSelectedOption("cash"),
                     },
                     {
                       text: "OK",
                       onPress: async () => {
-                        const response = await axios.post(
-                          "http://192.168.0.104:3000/api/v1/payment/vnpay/create_payment_url",
-                          {
-                            orderId: 1,
-                            amount: "70000",
-                            bankCode: "VNBANK",
-                            language: "vn",
-                          }
-                        );
-                        console.log("response: ", response.data);
-                        // console.log('url', response.re)
-                        setWebViewUrl(response.data.url);
+                        setSelectedOption("card");
                       },
                     },
                   ]);
@@ -515,27 +529,6 @@ const ConfirmationOrder = (props) => {
           >
             <Text>Tiếp tụcw</Text>
           </Pressable>
-
-          <WebView
-            source={{ uri: webViewUrl }}
-            style={{ width: 300, height: 900 }}
-            onNavigationStateChange={(event) => {
-              console.log("event1", event.url);
-              if (event.url) {
-                console.log("event2", event.url);
-                const url = event.url;
-                axios.get(url).then((response) => {
-                  console.log("logfgfg", response);
-                  if (response.data.RspCode === "00") {
-                    ToastAndroid.show(
-                      "Thanh toán thành công",
-                      ToastAndroid.SHORT
-                    );
-                  }
-                });
-              }
-            }}
-          />
         </View>
       )}
 
@@ -681,7 +674,7 @@ const ConfirmationOrder = (props) => {
               </Text>
             </View>
 
-            <Pressable
+            <TouchableOpacity
               onPress={handlePlaceOrder}
               style={{
                 backgroundColor: "#FFC72C",
@@ -695,7 +688,7 @@ const ConfirmationOrder = (props) => {
               }}
             >
               <Text>Xác nhận đặt hàng</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         )}
     </ScrollView>

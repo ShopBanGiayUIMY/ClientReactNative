@@ -75,7 +75,8 @@ export default function Register({ navigation }) {
           }
           if (result && result.success) {
             ToastAndroid.show(result.message, ToastAndroid.SHORT);
-            // navigation.navigate("Login");
+            ToastAndroid.show("Hãy xác nhận tài khoản trong Gmail Cảm ơn!", ToastAndroid.SHORT);
+             navigation.navigate("Login");
             return true;
           }
          
@@ -175,10 +176,19 @@ export default function Register({ navigation }) {
       </View>
       <View style={styles.container_line}>
         <View style={styles.line_left} />
-        <Text style={styles.text_line}>Or With</Text>
+        <Text style={styles.text_line}>Or</Text>
         <View style={styles.line_right} />
       </View>
-      <View style={styles.inputContainerButton}>
+      <View style={styles.createaccount}>
+        <Text style={styles.texttt}>
+          Đã có tài khoản{". "}
+          </Text>
+          <TouchableOpacity style={styles.createaccount1} onPress={()=>navigation.navigate("Login")}>
+            <Text style={styles.texttt1}>Đăng nhập ngay</Text>
+          </TouchableOpacity>
+       
+      </View>
+      {/* <View style={styles.inputContainerButton}>
         <TouchableOpacity style={styles.registerbyfb}>
           <View style={styles.fbIconContainer}>
             <Image
@@ -190,8 +200,8 @@ export default function Register({ navigation }) {
           </View>
           <Text style={styles.TextRegister}>Signup with Facebook</Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.inputContainerButton}>
+      </View> */}
+      {/* <View style={styles.inputContainerButton}>
         <TouchableOpacity style={styles.registerbygoogle}>
           <View style={styles.ggIconContainer}>
             <Image
@@ -203,7 +213,7 @@ export default function Register({ navigation }) {
           </View>
           <Text style={styles.TextRegisterGoogle}>Signup with Google</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -364,8 +374,8 @@ const styles = StyleSheet.create({
   text_checkbox: {
     fontSize: 16,
     color: "#768487",
-    marginTop: -3,
-    width:185,
+    
+    
   },
   icon: {
     fontSize: 20,
@@ -392,4 +402,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
+  texttt1: {
+    fontSize: 16,
+    color: "#0E64D2",
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+  },
+  createaccount: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  
 });

@@ -31,10 +31,8 @@ export default function Cart({ navigation }) {
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{ }}
-        >
-         
-        </TouchableOpacity>
+          style={{}}
+        ></TouchableOpacity>
       ),
     });
   }, [navigation]);
@@ -42,7 +40,6 @@ export default function Cart({ navigation }) {
   const fetchData = useCallback(async () => {
     try {
       const result = await GetCart();
-      console.log("Result:", result);
 
       // Kiểm tra xem có cartItem không
       if (

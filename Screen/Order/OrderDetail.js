@@ -22,7 +22,7 @@ const Order = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.vScroll}>
-        <CpnOrder navigation={navigation}/>
+        <CpnOrder navigation={navigation} />
       </ScrollView>
     </View>
   );
