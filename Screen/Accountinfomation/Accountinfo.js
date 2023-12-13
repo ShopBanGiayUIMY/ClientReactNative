@@ -10,8 +10,23 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { AuthStatus } from "../../Services/AuthContext";
 import Dialog from "react-native-dialog";
+import useAuth from "../../Services/auth.services";
 const AccountInfo = ({ isVisible, navigation }) => {
-  const { state } = AuthStatus();
+  const { state, dispatch } = AuthStatus();
+  const { UpdateInfoUser } = useAuth();
+  // khi cập nhật thông tin user thì phải cập nhật cả state vì nó lưu thông tin user_id
+  // ví dụ cập nhật tên thì phải cập nhật cả state và database
+  // UpdateInfoUser(formdata)
+  // cập nhật theo user_id dùng mảng
+  //lệnh cập nhật user  dispatch({ type: "USERINFO", payload: chứa formdata sau khi đã cập nhật lên database và phải thành công mới cập nhật state });
+  //   // {
+  //     "full_name":"Nguyễn Văn Huy",
+  //     "phone":"0374786775",
+  //     "gender":"nam",
+  //     "date_of_birth":"2003-12-17"
+      //  nhớ date phải đổi về dạng yyyy-mm-dd
+
+  // }
   const [info, setInfo] = useState(state.userInfo);
   const [formdata, setFormdata] = useState({
     full_name: "",
@@ -20,7 +35,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
     phone: "",
   });
   let date = new Date(info.date_of_birth);
-  let formattedDate = date.toLocaleDateString('vi-VN');
+  let formattedDate = date.toLocaleDateString("vi-VN");
   console.log(info);
   const handleNavigation = (screenName) => {
     navigation.replace(screenName);
@@ -50,10 +65,10 @@ const AccountInfo = ({ isVisible, navigation }) => {
   const FormChangeInfo = () => {
     return (
       <View style={styles.containerw}>
-        <Dialog.Container visible={false}>
+        <Dialog.Container visible={true}>
           <Dialog.Title>Name</Dialog.Title>
           <Dialog.Description>
-            Do you want to delete this account? You cannot undo this action.
+            đây là ví đụ về phần hiển thị lên r bn làm cập nhật từng cái vào đây nhé do cái visible=true
           </Dialog.Description>
           <Dialog.Input label="Email" />
           <Dialog.Button label="Cancel" />
@@ -151,14 +166,14 @@ const AccountInfo = ({ isVisible, navigation }) => {
 
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Address"); 
+            navigation.navigate("Address");
           }}
           style={styles.item}
         >
           <View style={styles.name}>
             <Text style={styles.itemText}>Sổ địa chỉ</Text>
             <TouchableOpacity
-              onPress={() => {                                     
+              onPress={() => {
                 navigation.navigate("Address");
               }}
             >

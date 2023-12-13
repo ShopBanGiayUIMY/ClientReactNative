@@ -7,6 +7,7 @@ import ChoXacNhan from "./ChoXacNhan";
 import DangXuLy from "./DangXuLy";
 import ChoGiaoHang from "./ChoGiaoHang";
 import DaGiaoHang from "./DaGiaoHang";
+import DaXacNhan from "./DaXacNhan";
 import DaHuy from "./DaHuy";
 
 const MainTabPurchase = ({ navigation }) => {
@@ -17,6 +18,7 @@ const MainTabPurchase = ({ navigation }) => {
     { key: "dangXuLy", title: "Đang xử lý" },
     { key: "choGiaoHang", title: "Chờ giao hàng" },
     { key: "daGiaoHangGiao", title: "Đã giao hàng" },
+    { key: "daXacNhan", title: "Đã xác nhận"},
     { key: "daHuy", title: "Đã hủy" },
   ]);
   const [tabKeys, setTabKeys] = useState(routes.reduce((keys, route) => {
@@ -47,6 +49,8 @@ const MainTabPurchase = ({ navigation }) => {
         return <ChoGiaoHang key={tabKeys['choGiaoHang']} />;
       case 'daGiaoHangGiao':
         return <DaGiaoHang key={tabKeys['daGiaoHangGiao']} />;
+      case 'daXacNhan':
+        return <DaXacNhan key={tabKeys['daXacNhan']} />;
       case 'daHuy':
         return <DaHuy key={tabKeys['daHuy']} />;
       default:

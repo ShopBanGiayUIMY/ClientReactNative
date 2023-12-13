@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import useAuth from "../../Services/auth.services";
 
-const DaGiaoHang = () => {
+const DaXacNhan = () => {
   const { CheckStatusOrder } = useAuth();
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = async () => {
-    const res = await CheckStatusOrder("SHIPPED");
+    const res = await CheckStatusOrder("DELIVERED");
     setOrders(res);
   };
 
@@ -115,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DaGiaoHang;
+export default DaXacNhan;

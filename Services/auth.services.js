@@ -447,7 +447,24 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-
+      console.log("Lỗi mạng", error);
+      return error.response.data;
+    }
+  };
+  const UpdateInfoUser = async (user) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.put(
+        `${Config.API_BASE_URL}/users/update-info-user`,
+        user,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
       console.log("Lỗi mạng", error);
       return error.response.data;
     }
@@ -479,6 +496,7 @@ const useAuth = () => {
     CancelOrder,
     VerifyDelivered,
     CheckStatusOrder,
+    UpdateInfoUser,
   };
 };
 

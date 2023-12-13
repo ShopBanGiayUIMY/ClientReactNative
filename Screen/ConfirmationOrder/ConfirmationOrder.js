@@ -8,6 +8,7 @@ import {
   Image,
   ToastAndroid,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
@@ -55,6 +56,7 @@ const ConfirmationOrder = (props) => {
       unsubscribeFocus();
     };
   }, [fetchAddresses, navigation]);
+
   const fetchAddresses = async () => {
     try {
       const data = await getDefaultAddress();
@@ -80,6 +82,7 @@ const ConfirmationOrder = (props) => {
   const handlePlaceOrder = async () => {
     try {
       let paymentmethod = 0;
+      console.log("selectedOption", selectedOption);
       if (selectedOption === "card") {
         paymentmethod = 2;
         navigation.navigate("VerifyVnPayPayMent", {
@@ -99,11 +102,26 @@ const ConfirmationOrder = (props) => {
           totalPrice: calculateTotalPayment(),
           shippingAddressId: addresses[0]?.id,
           paymentMethodId: paymentmethod,
-          voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
+          voucherIds: state.UseVoucher.map((voucher) => voucher.voucher_id),
         };
         const data = await Orders(orderData);
-        if (data === "ok") {
+        console.log("data", data);
+        if (data.message === "ok") {
+          const usedVoucherIds = state.UseVoucher.map(
+            (voucher) => voucher.voucher_id
+          );
+
+          // Filter out the used vouchers from the state.UseVoucher array
+          const updatedVouchers = state.UseVoucher.filter(
+            (voucher) => !usedVoucherIds.includes(voucher.voucher_id)
+          );
+
+          // Update the state with the remaining vouchers
+          dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
+          ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
           navigation.navigate("StatusOrder");
+        } else {
+          ToastAndroid.show("Đặt hàng thất bại", ToastAndroid.SHORT);
         }
       }
     } catch (error) {
@@ -656,7 +674,7 @@ const ConfirmationOrder = (props) => {
               </Text>
             </View>
 
-            <Pressable
+            <TouchableOpacity
               onPress={handlePlaceOrder}
               style={{
                 backgroundColor: "#FFC72C",
@@ -670,7 +688,7 @@ const ConfirmationOrder = (props) => {
               }}
             >
               <Text>Xác nhận đặt hàng</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         )}
     </ScrollView>
