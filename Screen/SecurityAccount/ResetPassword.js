@@ -41,7 +41,7 @@ const ResetPassword = ({ isVisible, navigation }) => {
         setphone(data.phone);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data5:", error);
     }
   };
   useEffect(() => {

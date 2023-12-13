@@ -364,6 +364,39 @@ const useAuth = () => {
       return error.response.data;
     }
   };
+  const SearchProduct = async (product_name) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/search/products?name=${product_name}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+  const Orders = async (order) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/orders/`,
+        order,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
   return {
     loginUser,
     registerUser,
@@ -386,6 +419,8 @@ const useAuth = () => {
     CreateAddress,
     updateAddress,
     DeleteAddress,
+    SearchProduct,
+    Orders,
   };
 };
 
