@@ -15,7 +15,18 @@ import {
 } from "react-native";
 
 export default ProductHorizontal = (props) => {
-  const { item } = props;
+  const { item, fun_productDetail } = props;
+  const fun_handlePress = () => {
+    fun_productDetail ? fun_productDetail(item) : null;
+  };
+  let tensp =
+    item.name.length > 10 ? item.name.slice(0, 15) + "..." : item.name;
+  let totalQuantitySold = item.total_quantity_sold;
+  if (totalQuantitySold === null) {
+    totalQuantitySold = 0;
+  } else {
+    totalQuantitySold = parseInt(totalQuantitySold);
+  }
   return (
     <View
       style={{
@@ -23,7 +34,7 @@ export default ProductHorizontal = (props) => {
         marginHorizontal: 5,
       }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("Details")}>
+      <TouchableOpacity onPress={fun_handlePress}>
         <Image
           source={{ uri: item.thumbnail }}
           style={{
@@ -35,18 +46,17 @@ export default ProductHorizontal = (props) => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Details")}>
-        <Text
-          style={{
-            fontSize: 14,
-            color: "black",
-            fontWeight: "bold",
-            paddingLeft: 5,
-          }}
-        >
-          {item.name}
-        </Text>
-      </TouchableOpacity>
+      <Text
+        style={{
+          fontSize: 14,
+          color: "black",
+          fontWeight: "bold",
+          paddingLeft: 5,
+        }}
+      >
+        {tensp}
+      </Text>
+
       <View style={styles.itemsolid}>
         <Text style={styles.daban}>Đã bán</Text>
         <Text style={styles.item_solid_quantity}>

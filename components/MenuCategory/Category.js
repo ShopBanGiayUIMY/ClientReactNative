@@ -67,7 +67,7 @@ const Category = ({ route }) => {
 
     return (
       <TouchableOpacity
-        onPress={()=>handlePressDetailProduct(item)}
+        onPress={() => handlePressDetailProduct(item)}
         style={styles.container}
       >
         <View style={styles.shadow}>
