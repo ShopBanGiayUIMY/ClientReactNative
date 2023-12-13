@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const VerifyCOD = () => {
   const [showIndicator, setShowIndicator] = useState(true);
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIndicator(false);
@@ -20,7 +20,11 @@ const VerifyCOD = () => {
     <View style={styles.container}>
       <LinearGradient colors={["#FF512F", "#DD2476"]} style={styles.gradient}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => {navigation.navigate("Cart")}}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Cart");
+            }}
+          >
             <FontAwesome name="arrow-left" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={styles.notification}>

@@ -10,8 +10,8 @@ import React from "react";
 
 const Repurchase = () => {
   return (
-    <View  style={styles.container}>
-        <View style={styles.itemcontainer}
+    <View  style={styles.containers}>
+        {/* <View style={styles.itemcontainer}
         >
           <Image
         style={{ width: 30, height: 30, marginRight: 23 }}
@@ -23,7 +23,7 @@ const Repurchase = () => {
         <Text style={{ fontSize: 20, color: "red", marginLeft: 10 }}>
            
         </Text>
-      </View>
+      </View> */}
     </View>
   );
 };

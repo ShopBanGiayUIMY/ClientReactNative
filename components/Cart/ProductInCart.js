@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress, handleOrder, navigation } = props;
+  const [isAnyProductSelected, setIsAnyProductSelected] = useState(false);
   const { UpdateCreateCart, getTotalCart } = useAuth();
   const [soluongchon, setsoluongchon] = useState(0);
   const [data, setData] = useState(dataCart);
@@ -66,7 +67,7 @@ const ProductInCart = (props) => {
         : [...prevSelectedItems, { item_id, product_price, quantity }];
 
       console.log("newSelectedItems", newSelectedItems);
-
+      setIsAnyProductSelected(newSelectedItems.length > 0);
       return newSelectedItems;
     });
   };
@@ -108,7 +109,6 @@ const ProductInCart = (props) => {
       UpdateCreateCart(Cart_id, product_detail_id, quantity - 1).then(
         (result) => {
           if (result.status == 1) {
-            console.log("result", result);
             updateQuantityByItemId(item_id, quantity - 1);
             loadlai();
           }
@@ -122,6 +122,8 @@ const ProductInCart = (props) => {
           }
         }
       );
+    } else if (quantity == 1) {
+      DeleteCart(quantity, product_detail_id, item_id);
     }
   };
   const handleTang = (quantity, product_detail_id, item_id) => {
@@ -243,25 +245,28 @@ const ProductInCart = (props) => {
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
               <View style={styles.all} key={index}>
-                <Checkbox
-                  status={
-                    selectedItems.some(
-                      (selectedItem) => selectedItem.item_id === item.item_id
-                    )
-                      ? "checked"
-                      : "unchecked"
-                  }
-                  onPress={() =>
-                    toggleItemSelection(
-                      item.item_id,
-                      item.ProductDetail.Product.product_price,
-                      item.quantity
-                    )
-                  }
-                  color="#3399ff"
-                />
-
                 <View style={styles.vImage}>
+                  <View style={styles.Checkbox}>
+                    <Checkbox
+                      status={
+                        selectedItems.some(
+                          (selectedItem) =>
+                            selectedItem.item_id === item.item_id
+                        )
+                          ? "checked"
+                          : "unchecked"
+                      }
+                      onPress={() =>
+                        toggleItemSelection(
+                          item.item_id,
+                          item.ProductDetail.Product.product_price,
+                          item.quantity
+                        )
+                      }
+                      color="#3399ff"
+                    />
+                  </View>
+
                   <Image
                     style={styles.imagee}
                     resizeMode="contain"
@@ -399,7 +404,15 @@ const ProductInCart = (props) => {
             onPress={() =>
               navigation.navigate("ConfirmationOrder", { Orderdata })
             }
-            style={styles.paymentButton}
+            style={[
+              styles.paymentButton,
+              {
+                backgroundColor: isAnyProductSelected
+                  ? "rgba(254, 7, 7, 0.8)"
+                  : "rgba(205, 206, 206, 0.8)",
+              },
+            ]}
+            disabled={!isAnyProductSelected}
           >
             <Text style={styles.paymentButtonText}>Thanh toán</Text>
           </TouchableOpacity>
@@ -420,13 +433,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 160,
     marginVertical: 5,
+    borderRadius: 10,
+  },
+  Checkbox: {
+    justifyContent: "center",
   },
   vImage: {
     flex: 1,
     flexDirection: "row",
   },
   imagee: {
-    width: 150,
+    width: 160,
     height: "auto",
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
@@ -531,6 +548,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(245, 65, 2, 0.8)",
     borderColor: "white",
     borderRadius: 10,
+    marginTop: 5,
   },
   buttonTextdelete: {
     textAlign: "center",

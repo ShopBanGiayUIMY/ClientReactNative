@@ -298,20 +298,23 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      return error.response.data; 
+      return error.response.data;
     }
   };
   const getDefaultAddress = async () => {
     const headers = await authHeader();
     try {
-      const response = await axios.get(`${Config.API_BASE_URL}/address/default`, {
-        headers: headers,
-      });
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/address/default`,
+        {
+          headers: headers,
+        }
+      );
       if (response.data) {
         return response.data;
       }
     } catch (error) {
-      return error.response.data; 
+      return error.response.data;
     }
   };
   const CreateAddress = async (address) => {
@@ -397,6 +400,75 @@ const useAuth = () => {
       return error.response.data;
     }
   };
+  const CancelOrder = async (order_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.delete(
+        `${Config.API_BASE_URL}/orders/${order_id}/cancel`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+  const VerifyDelivered = async (order_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.put(
+        `${Config.API_BASE_URL}/orders/${order_id}/verify-delivered`,
+        {},
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+  const CheckStatusOrder = async (order_code) => {
+    const headers = await authHeader();
+    console.log("order_code", order_code);
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/orders?statusCode=${order_code}`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng", error);
+      return error.response.data;
+    }
+  };
+  const UpdateInfoUser = async (user) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.put(
+        `${Config.API_BASE_URL}/users/update-info-user`,
+        user,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng", error);
+      return error.response.data;
+    }
+  };
   return {
     loginUser,
     registerUser,
@@ -421,6 +493,10 @@ const useAuth = () => {
     DeleteAddress,
     SearchProduct,
     Orders,
+    CancelOrder,
+    VerifyDelivered,
+    CheckStatusOrder,
+    UpdateInfoUser,
   };
 };
 

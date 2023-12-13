@@ -8,7 +8,35 @@ import {
   ToastAndroid,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { AuthStatus } from "../../Services/AuthContext";
+import Dialog from "react-native-dialog";
+import useAuth from "../../Services/auth.services";
 const AccountInfo = ({ isVisible, navigation }) => {
+  const { state, dispatch } = AuthStatus();
+  const { UpdateInfoUser } = useAuth();
+  // khi cập nhật thông tin user thì phải cập nhật cả state vì nó lưu thông tin user_id
+  // ví dụ cập nhật tên thì phải cập nhật cả state và database
+  // UpdateInfoUser(formdata)
+  // cập nhật theo user_id dùng mảng
+  //lệnh cập nhật user  dispatch({ type: "USERINFO", payload: chứa formdata sau khi đã cập nhật lên database và phải thành công mới cập nhật state });
+  //   // {
+  //     "full_name":"Nguyễn Văn Huy",
+  //     "phone":"0374786775",
+  //     "gender":"nam",
+  //     "date_of_birth":"2003-12-17"
+      //  nhớ date phải đổi về dạng yyyy-mm-dd
+
+  // }
+  const [info, setInfo] = useState(state.userInfo);
+  const [formdata, setFormdata] = useState({
+    full_name: "",
+    gender: "",
+    birthday: "",
+    phone: "",
+  });
+  let date = new Date(info.date_of_birth);
+  let formattedDate = date.toLocaleDateString("vi-VN");
+  console.log(info);
   const handleNavigation = (screenName) => {
     navigation.replace(screenName);
   };
@@ -34,13 +62,29 @@ const AccountInfo = ({ isVisible, navigation }) => {
       ),
     });
   }, []);
+  const FormChangeInfo = () => {
+    return (
+      <View style={styles.containerw}>
+        <Dialog.Container visible={true}>
+          <Dialog.Title>Name</Dialog.Title>
+          <Dialog.Description>
+            đây là ví đụ về phần hiển thị lên r bn làm cập nhật từng cái vào đây nhé do cái visible=true
+          </Dialog.Description>
+          <Dialog.Input label="Email" />
+          <Dialog.Button label="Cancel" />
+          <Dialog.Button label="Delete" />
+        </Dialog.Container>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
+      <FormChangeInfo />
       <View style={styles.info}>
         <TouchableOpacity
           onPress={() => {
-            alert("đổi tên");
+            FormChangeInfo();
           }}
           style={styles.item}
         >
@@ -48,11 +92,11 @@ const AccountInfo = ({ isVisible, navigation }) => {
             <Text style={styles.itemText}>Tên</Text>
             <TouchableOpacity
               onPress={() => {
-                alert("đổi tên");
+                FormChangeInfo();
               }}
             >
               <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>Nguyễn Văn Huy </Text>
+                <Text style={styles.viewAllOrders}>{info.full_name}</Text>
                 <FontAwesome
                   name="chevron-right"
                   size={24}
@@ -77,7 +121,10 @@ const AccountInfo = ({ isVisible, navigation }) => {
               }}
             >
               <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>Nam</Text>
+                <Text style={styles.viewAllOrders}>
+                  {" "}
+                  {info.gender == null ? "Cập nhật ngay" : info.gender}{" "}
+                </Text>
                 <FontAwesome
                   name="chevron-right"
                   size={24}
@@ -102,7 +149,10 @@ const AccountInfo = ({ isVisible, navigation }) => {
               }}
             >
               <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>17/12/2003</Text>
+                <Text style={styles.viewAllOrders}>
+                  {" "}
+                  {formattedDate == null ? "Cập nhật ngay" : formattedDate}{" "}
+                </Text>
                 <FontAwesome
                   name="chevron-right"
                   size={24}
@@ -116,7 +166,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
 
         <TouchableOpacity
           onPress={() => {
-            alert("đổi tên");
+            navigation.navigate("Address");
           }}
           style={styles.item}
         >
@@ -124,7 +174,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
             <Text style={styles.itemText}>Sổ địa chỉ</Text>
             <TouchableOpacity
               onPress={() => {
-                alert("đổi tên");
+                navigation.navigate("Address");
               }}
             >
               <View style={styles.containeritemicon}>
@@ -188,6 +238,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => {
             alert("đổi tên");
@@ -196,13 +247,12 @@ const AccountInfo = ({ isVisible, navigation }) => {
         >
           <View style={styles.name}>
             <Text style={styles.itemText}>Thay đổi số điện thoại</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("đổi tên");
-              }}
-            >
+            <TouchableOpacity onPress={() => {}}>
               <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>0374786775 </Text>
+                <Text style={styles.viewAllOrders}>
+                  {" "}
+                  {info.phone == null ? "Cập nhật ngay" : info.phone}{" "}
+                </Text>
                 <FontAwesome
                   name="chevron-right"
                   size={24}
@@ -213,29 +263,20 @@ const AccountInfo = ({ isVisible, navigation }) => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            alert("đổi tên");
-          }}
-          style={styles.item}
-        >
+        <TouchableOpacity onPress={() => {}} style={styles.item}>
           <View style={styles.name}>
-            <Text style={styles.itemText}>Thay đổi email</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("đổi tên");
-              }}
-            >
+            <Text style={styles.itemText}>Email</Text>
+            <TouchableOpacity onPress={() => {}}>
               <View style={styles.containeritemicon}>
                 <Text style={styles.viewAllOrders}>
-                  huynvph20687@fpt.edu.vn
+                  {info.email == null ? "Chưa có email" : info.email}
                 </Text>
-                <FontAwesome
+                {/* <FontAwesome
                   name="chevron-right"
                   size={24}
                   color="black"
                   style={styles.iconitem}
-                />
+                /> */}
               </View>
             </TouchableOpacity>
           </View>
@@ -278,7 +319,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   item: {
-    padding: 15,
+    padding: 10,
     backgroundColor: "#E6F1F3",
     width: "100%",
     marginTop: 3,
