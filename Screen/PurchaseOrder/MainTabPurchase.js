@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { useWindowDimensions, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  useWindowDimensions,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -10,26 +16,31 @@ import DaGiaoHang from "./DaGiaoHang";
 import DaXacNhan from "./DaXacNhan";
 import DaHuy from "./DaHuy";
 
-const MainTabPurchase = ({ navigation }) => {
+const MainTabPurchase = ({ navigation, route  }) => {
+  const initialTabIndex = route.params?.initialTabIndex ?? 0;
   const layout = useWindowDimensions();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(initialTabIndex);
   const [routes] = useState([
     { key: "choXacNhan", title: "Chờ xác nhận" },
     { key: "dangXuLy", title: "Đang xử lý" },
     { key: "choGiaoHang", title: "Chờ giao hàng" },
     { key: "daGiaoHangGiao", title: "Đã giao hàng" },
-    { key: "daXacNhan", title: "Đã xác nhận"},
+    { key: "daXacNhan", title: "Đã xác nhận" },
     { key: "daHuy", title: "Đã hủy" },
   ]);
-  const [tabKeys, setTabKeys] = useState(routes.reduce((keys, route) => {
-    keys[route.key] = 0;
-    return keys;
-  }, {}));
-
+  const [tabKeys, setTabKeys] = useState(
+    routes.reduce((keys, route) => {
+      keys[route.key] = 0;
+      return keys;
+    }, {})
+  );
+  useEffect(() => {
+    setIndex(initialTabIndex);
+  }, [initialTabIndex]);
   const updateTabKey = (tabKey) => {
-    setTabKeys(prevKeys => ({
+    setTabKeys((prevKeys) => ({
       ...prevKeys,
-      [tabKey]: prevKeys[tabKey] + 1
+      [tabKey]: prevKeys[tabKey] + 1,
     }));
   };
 
@@ -41,18 +52,18 @@ const MainTabPurchase = ({ navigation }) => {
 
   const renderScene = ({ route }) => {
     switch (route.key) {
-      case 'choXacNhan':
-        return <ChoXacNhan key={tabKeys['choXacNhan']} />;
-      case 'dangXuLy':
-        return <DangXuLy key={tabKeys['dangXuLy']} />;
-      case 'choGiaoHang':
-        return <ChoGiaoHang key={tabKeys['choGiaoHang']} />;
-      case 'daGiaoHangGiao':
-        return <DaGiaoHang key={tabKeys['daGiaoHangGiao']} />;
-      case 'daXacNhan':
-        return <DaXacNhan key={tabKeys['daXacNhan']} />;
-      case 'daHuy':
-        return <DaHuy key={tabKeys['daHuy']} />;
+      case "choXacNhan":
+        return <ChoXacNhan key={tabKeys["choXacNhan"]} />;
+      case "dangXuLy":
+        return <DangXuLy key={tabKeys["dangXuLy"]} />;
+      case "choGiaoHang":
+        return <ChoGiaoHang key={tabKeys["choGiaoHang"]} />;
+      case "daGiaoHangGiao":
+        return <DaGiaoHang key={tabKeys["daGiaoHangGiao"]} />;
+      case "daXacNhan":
+        return <DaXacNhan key={tabKeys["daXacNhan"]} />;
+      case "daHuy":
+        return <DaHuy key={tabKeys["daHuy"]} />;
       default:
         return null;
     }

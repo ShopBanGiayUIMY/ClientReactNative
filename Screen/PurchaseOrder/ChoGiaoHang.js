@@ -16,42 +16,40 @@ const ChoGiaoHang = () => {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.container}>
-      {/* Map through the order details here */}
-      {item.OrderDetails.map((detail, index) => (
-        <View key={index} style={styles.productContainer}>
-          <Image
-            source={{
-              uri: "https://bizweb.dktcdn.net/100/287/440/products/mu-luoi-trai-local-brand-dep-mau-be-1.jpg?v=1644822065327",
-            }}
-            style={styles.productImage}
-          />
-          <View style={styles.productDetails}>
-            <Text style={styles.productTitle}>
-              Mũ Lưỡi Trai Nam Nữ Nhiều Hoa Tiết Thêu - Màu Be
-            </Text>
-            <Text style={styles.productPriceSale}>
-              ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
-            </Text>
-            <Text style={styles.productQuantity}>x{detail.quantity}</Text>
-          </View>
+  <View style={styles.container}>
+    {item.OrderDetails.map((detail, index) => (
+      <View key={index} style={styles.productContainer}>
+        <Image
+          source={{ uri: detail.ProductDetail.Product.thumbnail }}
+          style={styles.productImage}
+        />
+        <View style={styles.productDetails}>
+          <Text style={styles.productTitle}>
+            {detail.ProductDetail.Product.product_name}
+          </Text>
+          <Text style={styles.productPriceSale}>
+            ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
+          </Text>
+          <Text style={styles.productQuantity}>x{detail.quantity}</Text>
         </View>
-      ))}
-      <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>
-          Tổng thanh toán: ₫
-          {parseFloat(item.totalAmount).toLocaleString("vi-VN")}
+      </View>
+    ))}
+    <View style={styles.totalContainer}>
+      <Text style={styles.totalText}>
+        Tổng thanh toán: ₫
+        {parseFloat(item.totalAmount).toLocaleString("vi-VN")}
+      </Text>
+    </View>
+    <View style={styles.buttonContainer}>
+      <View style={styles.processingButton}>
+        <Text style={styles.processingButtonText}>
+          {item.OrderStatus.name}
         </Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <View style={styles.processingButton}>
-          <Text style={styles.processingButtonText}>
-            {item.OrderStatus.name}
-          </Text>
-        </View>
-      </View>
     </View>
-  );
+  </View>
+);
+
 
   return (
     <FlatList

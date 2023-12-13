@@ -419,7 +419,7 @@ const useAuth = () => {
   const VerifyDelivered = async (order_id) => {
     const headers = await authHeader();
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `${Config.API_BASE_URL}/orders/${order_id}/verify-delivered`,
         {},
         {

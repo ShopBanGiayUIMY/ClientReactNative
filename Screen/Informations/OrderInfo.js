@@ -15,6 +15,7 @@ import pay from "../../images/5.png";
 
 export default OrderInfo = ({ navigation }) => {
   const hanldChoThanhToan = () => {
+    navigation.navigate('MainTabPurchase', { initialTabIndex: 2 });
    
   };
   return (
