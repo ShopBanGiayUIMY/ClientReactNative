@@ -23,6 +23,7 @@ const Contact = () => {
       "https://github.com/ShopBanGiayUIMY/ClientReactNative.git";
     Linking.openURL(downloadLink);
   };
+  
   return (
     <View style={styles.container}>
      {/* <View>
@@ -68,7 +69,7 @@ const Contact = () => {
         <Text style={styles.description}>
           Clone repository này về máy của bạn: git clone
           <Pressable onPress={() => handleMemberPress()}>
-            <Text style={{fontSize:15, color:'green', textDecorationLine:'underline'}}>
+            <Text style={{fontSize:15, color:'black', textDecorationLine:'underline'}}>
               https://github.com/ShopBanGiayUIMY/ClientReactNative
             </Text>
           </Pressable>
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "rgba(75, 158, 255, 1)",
+    backgroundColor: "#008080",
     width: "100%",
     height: 800,
   },
