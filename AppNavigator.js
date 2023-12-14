@@ -85,7 +85,7 @@ export default function AppNavigator() {
           component={Category}
           options={{
             resetOnBlur: true,
-            headerShown: false,
+            
           }}
         />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
