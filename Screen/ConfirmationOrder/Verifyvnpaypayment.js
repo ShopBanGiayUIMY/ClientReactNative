@@ -4,31 +4,67 @@ import { PulseIndicator } from "react-native-indicators";
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { WebView } from "react-native-webview";
+import useAuth from "../../Services/auth.services";
 import axios from "axios";
+import Config from "../../Api/Config";
+import { AuthStatus } from "../../Services/AuthContext";
+import authHeader from "../../Services/auth.header";
 
-const VerifyVnPayPayment = () => {
+const VerifyVnPayPayment = (props) => {
   const navigation = useNavigation();
   const [webViewUrl, setWebViewUrl] = useState(null);
+  const { Orders } = useAuth();
+  const { state, dispatch } = AuthStatus();
+  const {
+    cartItems,
+    cartId,
+    totalPrice,
+    shippingAddressId,
+    paymentMethodId,
+    voucherId,
+    freightCost,
+  } = props.route.params;
+  console.log("cartItems", cartItems, cartId, totalPrice, shippingAddressId);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post(
-          "http://192.168.0.103:3000/api/v1/payment/vnpay/create_payment_url",
-          {
-            orderId: 1,
-            amount: "70000",
-            bankCode: "VNBANK",
-            language: "vn",
-          }
-        );
-        console.log("Payment URL response: ", response.data);
-        setWebViewUrl(response.data.url);
+        const data = await Orders(props.route.params);
+        if (data.message === "ok") {
+          const usedVoucherIds = state.UseVoucher.map(
+            (voucher) => voucher.voucher_id
+          );
+
+          // Filter out the used vouchers from the state.UseVoucher array
+          const updatedVouchers = state.UseVoucher.filter(
+            (voucher) => !usedVoucherIds.includes(voucher.voucher_id)
+          );
+
+          // Update the state with the remaining vouchers
+          dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
+          console.log("orderId", data);
+          
+          const headers = await authHeader();
+          const response = await axios.post(
+            `${Config.API_BASE_URL}/payment/vnpay/create_payment_url`,
+            {
+              orderId: data.orderId,
+              amount: totalPrice,
+              bankCode: "VNBANK",
+              language: "vn",
+            }, {
+              headers: headers
+            }
+          );
+          console.log("Payment URL response: ", response.data);
+          setWebViewUrl(response.data.url);
+        }
       } catch (error) {
         console.error("Error fetching payment URL:", error);
         ToastAndroid.show("Error fetching payment URL", ToastAndroid.SHORT);
       }
     };
+
     fetchData();
   }, []);
 
@@ -52,7 +88,7 @@ const VerifyVnPayPayment = () => {
     if (response.RspCode === "00") {
       ToastAndroid.show("Thanh toán thành công", ToastAndroid.SHORT);
       navigation.navigate("Home");
-    } else if (response.RspCode === "-01") {
+    } else if (response.RspCode === "01") {
       ToastAndroid.show("Thanh toán đã bị hủy", ToastAndroid.SHORT);
       navigation.goBack();
     } else {
