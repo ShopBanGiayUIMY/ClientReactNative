@@ -8,6 +8,13 @@ const About = ({ navigation }) => {
   const hanldPressContact =()=>{
     navigation.navigate('Contact')
   }
+  const hanldRealtimChatApp=()=>{
+    navigation.navigate('RealTimeChatApp')
+  }
+  const hanldRealtimDarkMod=()=>{
+    navigation.navigate('DarkMod')
+
+  }
   return (
     <ScrollView style={{ marginBottom: "25%" }}>
       <TouchableOpacity
@@ -230,6 +237,7 @@ const About = ({ navigation }) => {
           alignItems: "center",
           justifyContent: "space-between",
         }}
+        onPress={()=>{hanldRealtimChatApp()}}
       >
         <Image
           style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
@@ -237,6 +245,39 @@ const About = ({ navigation }) => {
         />
         <Text style={{ fontSize: 20, position: "absolute", left: 45 }}>
           Trò chuyện với UIMY{" "}
+        </Text>
+        <Image
+          style={{
+            width: 25,
+            height: 25,
+            marginRight: 10,
+            marginStart: 5,
+            tintColor: "#CDCDCD",
+          }}
+          source={{
+            uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png",
+          }}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          marginTop: 5,
+          marginBottom: 5,
+          backgroundColor: "#fff",
+          width: "100%",
+          height: 50,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+        onPress={()=>{hanldRealtimDarkMod()}}
+      >
+        <Image
+          style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
+          source={{ uri: "https://iili.io/Juuibun.png" }}
+        />
+        <Text style={{ fontSize: 20, position: "absolute", left: 45 }}>
+          Dark Mod{" "}
         </Text>
         <Image
           style={{
