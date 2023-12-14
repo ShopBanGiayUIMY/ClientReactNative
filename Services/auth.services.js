@@ -419,7 +419,7 @@ const useAuth = () => {
   const VerifyDelivered = async (order_id) => {
     const headers = await authHeader();
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `${Config.API_BASE_URL}/orders/${order_id}/verify-delivered`,
         {},
         {
@@ -469,6 +469,23 @@ const useAuth = () => {
       return error.response.data;
     }
   };
+ const totalOrderStatus = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/orders/total-order-status`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng", error);
+      return error.response.data;
+    }
+  }
   return {
     loginUser,
     registerUser,
@@ -497,6 +514,7 @@ const useAuth = () => {
     VerifyDelivered,
     CheckStatusOrder,
     UpdateInfoUser,
+    totalOrderStatus
   };
 };
 

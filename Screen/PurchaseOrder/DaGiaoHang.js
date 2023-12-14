@@ -1,39 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ToastAndroid,
+} from "react-native";
 import useAuth from "../../Services/auth.services";
 
 const DaGiaoHang = () => {
-  const { CheckStatusOrder } = useAuth();
+  const { CheckStatusOrder, VerifyDelivered } = useAuth();
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = async () => {
     const res = await CheckStatusOrder("SHIPPED");
-    setOrders(res);
+    if (res){
+      setOrders(res);
+    }
+    
+    
   };
 
   useEffect(() => {
     fetchOrders();
   }, []);
-
+  const XacNhanDaNhanHang = async (order_id) => {
+    console.log("order_id", order_id);
+    const res = await VerifyDelivered(order_id);
+    if (res) {
+      fetchOrders();
+      ToastAndroid.show("Xác nhận thành công", ToastAndroid.SHORT);
+    }
+  };
   const renderItem = ({ item }) => (
     <View style={styles.container}>
-      {/* Map through the order details here */}
       {item.OrderDetails.map((detail, index) => (
         <View key={index} style={styles.productContainer}>
           <Image
-            source={{
-              uri: "https://bizweb.dktcdn.net/100/287/440/products/mu-luoi-trai-local-brand-dep-mau-be-1.jpg?v=1644822065327",
-            }}
+            source={{ uri: detail.ProductDetail.Product.thumbnail }}
             style={styles.productImage}
           />
           <View style={styles.productDetails}>
             <Text style={styles.productTitle}>
-              Mũ Lưỡi Trai Nam Nữ Nhiều Hoa Tiết Thêu - Màu Be
+              {detail.ProductDetail.Product.product_name}
             </Text>
             <Text style={styles.productPriceSale}>
               ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
             </Text>
             <Text style={styles.productQuantity}>x{detail.quantity}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.size}>Size: {detail.ProductDetail.size}</Text>
+              <Text style={styles.color}>
+                Color: {detail.ProductDetail.color}
+              </Text>
+            </View>
           </View>
         </View>
       ))}
@@ -44,11 +66,18 @@ const DaGiaoHang = () => {
         </Text>
       </View>
       <View style={styles.buttonContainer}>
-        <View style={styles.processingButton}>
-          <Text style={styles.processingButtonText}>
-            {item.OrderStatus.name}
-          </Text>
-        </View>
+        <TouchableOpacity
+          style={styles.processingButtonOpacity}
+          onPress={() => XacNhanDaNhanHang(item.order_id)}
+        >
+          <View style={styles.processingButton}>
+            <Text style={styles.processingButtonText}>
+              {item.OrderStatus.code === "SHIPPED"
+                ? "Xác Nhận"
+                : "Đã Nhận Hàng"}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -112,6 +141,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  size: {
+    marginRight: 10,
   },
 });
 

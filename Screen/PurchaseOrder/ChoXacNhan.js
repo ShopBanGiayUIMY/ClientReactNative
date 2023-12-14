@@ -17,18 +17,15 @@ const ChoXacNhan = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.container}>
-      {/* Map through the order details here */}
       {item.OrderDetails.map((detail, index) => (
         <View key={index} style={styles.productContainer}>
           <Image
-            source={{
-              uri: "https://bizweb.dktcdn.net/100/287/440/products/mu-luoi-trai-local-brand-dep-mau-be-1.jpg?v=1644822065327",
-            }}
+            source={{ uri: detail.ProductDetail.Product.thumbnail }}
             style={styles.productImage}
           />
           <View style={styles.productDetails}>
             <Text style={styles.productTitle}>
-              Mũ Lưỡi Trai Nam Nữ Nhiều Hoa Tiết Thêu - Màu Be
+              {detail.ProductDetail.Product.product_name}
             </Text>
             <Text style={styles.productPriceSale}>
               ₫{parseFloat(detail.price).toLocaleString("vi-VN")}

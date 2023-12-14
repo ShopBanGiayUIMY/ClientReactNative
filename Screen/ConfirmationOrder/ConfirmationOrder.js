@@ -85,6 +85,10 @@ const ConfirmationOrder = (props) => {
       console.log("selectedOption", selectedOption);
       if (selectedOption === "card") {
         paymentmethod = 2;
+        const rewardType3Exists = state.UseVoucher.some(
+          (voucher) => voucher.reward_type === 3
+        );
+
         navigation.navigate("VerifyVnPayPayMent", {
           cartItems: Orderdata.item_id,
           cartId: Orderdata.Cart_id,
@@ -92,10 +96,15 @@ const ConfirmationOrder = (props) => {
           shippingAddressId: addresses[0]?.id,
           paymentMethodId: paymentmethod,
           voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
+          freightCost: rewardType3Exists ? 0 : 10000,
         });
       }
       if (selectedOption === "cash") {
         paymentmethod = 1;
+        const rewardType3Exists = state.UseVoucher.some(
+          (voucher) => voucher.reward_type === 3
+        );
+
         const orderData = {
           cartItems: Orderdata.item_id,
           cartId: Orderdata.Cart_id,
@@ -103,6 +112,7 @@ const ConfirmationOrder = (props) => {
           shippingAddressId: addresses[0]?.id,
           paymentMethodId: paymentmethod,
           voucherIds: state.UseVoucher.map((voucher) => voucher.voucher_id),
+          freightCost: rewardType3Exists ? 0 : 10000,
         };
         const data = await Orders(orderData);
         console.log("data", data);
