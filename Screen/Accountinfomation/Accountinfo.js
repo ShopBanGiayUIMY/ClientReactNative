@@ -1,9 +1,8 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ToastAndroid,
 } from "react-native";
@@ -11,9 +10,20 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { AuthStatus } from "../../Services/AuthContext";
 import Dialog from "react-native-dialog";
 import useAuth from "../../Services/auth.services";
+import RNPickerSelect from "react-native-picker-select";
 const AccountInfo = ({ isVisible, navigation }) => {
   const { state, dispatch } = AuthStatus();
   const { UpdateInfoUser } = useAuth();
+
+  const [info, setInfo] = useState(state.userInfo);
+  const [visible, setVisible] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newGender, setNewGender] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [phone, setPhone] = useState("");
+
+  let date = new Date(info.date_of_birth);
+  let formattedDate = date.toLocaleDateString("vi-VN");
   // khi cập nhật thông tin user thì phải cập nhật cả state vì nó lưu thông tin user_id
   // ví dụ cập nhật tên thì phải cập nhật cả state và database
   // UpdateInfoUser(formdata)
@@ -24,22 +34,12 @@ const AccountInfo = ({ isVisible, navigation }) => {
   //     "phone":"0374786775",
   //     "gender":"nam",
   //     "date_of_birth":"2003-12-17"
-      //  nhớ date phải đổi về dạng yyyy-mm-dd
-
+  //  nhớ date phải đổi về dạng yyyy-mm-dd
   // }
-  const [info, setInfo] = useState(state.userInfo);
-  const [formdata, setFormdata] = useState({
-    full_name: "",
-    gender: "",
-    birthday: "",
-    phone: "",
-  });
-  let date = new Date(info.date_of_birth);
-  let formattedDate = date.toLocaleDateString("vi-VN");
-  console.log(info);
   const handleNavigation = (screenName) => {
     navigation.replace(screenName);
   };
+
   const handleTaiKhoanThanhToan = () => {
     navigation.navigate("PaymentMethod");
   };
@@ -62,39 +62,95 @@ const AccountInfo = ({ isVisible, navigation }) => {
       ),
     });
   }, []);
-  const FormChangeInfo = () => {
-    return (
-      <View style={styles.containerw}>
-        <Dialog.Container visible={true}>
-          <Dialog.Title>Name</Dialog.Title>
-          <Dialog.Description>
-            đây là ví đụ về phần hiển thị lên r bn làm cập nhật từng cái vào đây nhé do cái visible=true
-          </Dialog.Description>
-          <Dialog.Input label="Email" />
-          <Dialog.Button label="Cancel" />
-          <Dialog.Button label="Delete" />
-        </Dialog.Container>
-      </View>
-    );
-  };
 
+  const handleChangeInfo = async () => {
+    try {
+      const users = [
+        {
+          address: info.address,
+          cart_id: info.cart_id,
+          date_of_birth: info.date_of_birth,
+          email: info.email,
+          full_name: info.full_name,
+          gender: info.gender,
+          phone: info.phone,
+          total_cart_items: info.cart_id,
+          user_id: info.user_id,
+          username: info.username,
+        },
+      ];
+      const userIndex = users.findIndex((user) => user.user_id);
+      console.log(userIndex);
+      console.log('Chỗ này không hiểu sao tôi sử dụng findIndex để lấy ra id của user cần sửa nó lại ra 0, trong khi  user_id này là 5  ');
+      if (userIndex !== -1) {
+        const formDataToUpdate = {
+          full_name: newName,
+          gender: newGender,
+          phone,
+          date_of_birth: birthday,
+        };
+        if (newName.trim() === "") {
+          ToastAndroid.show("Vui lòng nhập tên đầy đủ", ToastAndroid.SHORT);
+          return;
+        } else if (newGender.length === 0) {
+          ToastAndroid.show("Vui lòng chọn giới tính", ToastAndroid.SHORT);
+          return;
+        }
+        if (
+          typeof phone !== "string" ||
+          phone.trim().length === 0 ||
+          /^(0[2-9]|84[2-9])?[0-9]{8,9}$/.test(phone.replace(/\s/g, "")) === false
+        ) {
+          ToastAndroid.show(
+            "Vui lòng nhập đúng định dạng số điện thoại",
+            ToastAndroid.SHORT
+          );
+          return;
+        }
+        // Cập nhật đối tượng người dùng trong mảng bằng cách sao chép và ghi đè các thuộc tính
+        users[userIndex] = {
+          ...users[userIndex],
+          ...formDataToUpdate,
+        };
+        // Lấy đối tượng người dùng đã cập nhật từ mảng
+        const updatedUserInfo = users[userIndex];
+        const { success } = await UpdateInfoUser(updatedUserInfo);
+        if (success) {
+          await dispatch({ type: "USERINFO", payload: updatedUserInfo });
+          setVisible(false);
+          ToastAndroid.show(
+            "Cập nhật thông tin thành công",
+            ToastAndroid.SHORT
+          );
+        } else {
+          ToastAndroid.show("Lỗi cập nhật thông tin", ToastAndroid.SHORT);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      ToastAndroid.show(
+        `Có lỗi xảy ra, vui lòng thử lại: ${error.message}`,
+        ToastAndroid.SHORT
+      );
+    }
+  };
+  
+
+  useEffect(() => {
+    setInfo(state.userInfo);
+  }, [state.userInfo]);
   return (
     <View style={styles.container}>
-      <FormChangeInfo />
       <View style={styles.info}>
         <TouchableOpacity
           onPress={() => {
-            FormChangeInfo();
+            setVisible(true);
           }}
           style={styles.item}
         >
           <View style={styles.name}>
             <Text style={styles.itemText}>Tên</Text>
-            <TouchableOpacity
-              onPress={() => {
-                FormChangeInfo();
-              }}
-            >
+            <TouchableOpacity>
               <View style={styles.containeritemicon}>
                 <Text style={styles.viewAllOrders}>{info.full_name}</Text>
                 <FontAwesome
@@ -107,19 +163,48 @@ const AccountInfo = ({ isVisible, navigation }) => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            alert("đổi tên");
-          }}
-          style={styles.item}
-        >
+        {visible && (
+          <Dialog.Container visible={visible}>
+            <Dialog.Title>Cập nhật thông tin tài khoản</Dialog.Title>
+            <Dialog.Description>Nhập thông tin của bạn</Dialog.Description>
+            <Dialog.Input
+              label="Tên"
+              value={newName}
+              onChangeText={(value) => setNewName(value)}
+            />
+            <RNPickerSelect
+              label="Giới tính"
+              value={newGender}
+              onValueChange={(value) => setNewGender(value)}
+              items={[
+                { label: "Nam", value: "nam" },
+                { label: "Nữ", value: "nữ" },
+                { label: "Khác", value: "khác" },
+              ]}
+            />
+            <Dialog.Input
+              label="Số điện thoại"
+              value={phone}
+              onChangeText={(value) => setPhone(value)}
+            />
+            <Dialog.Input
+              label="Ngày sinh"
+              value={birthday}
+              onChangeText={(value) => setBirthday(value)}
+            />
+            <Dialog.Button label="Hủy" onPress={() => setVisible(false)} />
+            <Dialog.Button
+              label="Đồng ý"
+              onPress={() => {
+                handleChangeInfo();
+              }}
+            />
+          </Dialog.Container>
+        )}
+        <TouchableOpacity style={styles.item}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Giới tính</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("đổi tên");
-              }}
-            >
+            <TouchableOpacity>
               <View style={styles.containeritemicon}>
                 <Text style={styles.viewAllOrders}>
                   {" "}
@@ -135,19 +220,10 @@ const AccountInfo = ({ isVisible, navigation }) => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            alert("đổi tên");
-          }}
-          style={styles.item}
-        >
+        <TouchableOpacity style={styles.item}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Ngày sinh</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("đổi tên");
-              }}
-            >
+            <TouchableOpacity>
               <View style={styles.containeritemicon}>
                 <Text style={styles.viewAllOrders}>
                   {" "}
@@ -190,19 +266,10 @@ const AccountInfo = ({ isVisible, navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.auth}>
-        <TouchableOpacity
-          onPress={() => {
-            alert("đổi tên");
-          }}
-          style={styles.item}
-        >
+        <TouchableOpacity style={styles.item}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Đổi mật khẩu</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("đổi tên");
-              }}
-            >
+            <TouchableOpacity>
               <View style={styles.containeritemicon}>
                 <FontAwesome
                   name="chevron-right"
@@ -222,11 +289,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
         >
           <View style={styles.name}>
             <Text style={styles.itemText}>Đặt lại mật khẩu</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("đổi tên");
-              }}
-            >
+            <TouchableOpacity>
               <View style={styles.containeritemicon}>
                 <FontAwesome
                   name="chevron-right"
@@ -239,12 +302,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            alert("đổi tên");
-          }}
-          style={styles.item}
-        >
+        <TouchableOpacity style={styles.item}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Thay đổi số điện thoại</Text>
             <TouchableOpacity onPress={() => {}}>
