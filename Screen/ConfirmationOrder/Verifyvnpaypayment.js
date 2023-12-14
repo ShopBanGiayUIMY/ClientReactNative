@@ -23,6 +23,7 @@ const VerifyVnPayPayment = (props) => {
     paymentMethodId,
     voucherId,
     freightCost,
+    orderId,
   } = props.route.params;
   console.log("cartItems", cartItems, cartId, totalPrice, shippingAddressId);
 
@@ -43,7 +44,7 @@ const VerifyVnPayPayment = (props) => {
           // Update the state with the remaining vouchers
           dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
           console.log("orderId", data);
-          
+
           const headers = await authHeader();
           const response = await axios.post(
             `${Config.API_BASE_URL}/payment/vnpay/create_payment_url`,
@@ -52,8 +53,9 @@ const VerifyVnPayPayment = (props) => {
               amount: totalPrice,
               bankCode: "VNBANK",
               language: "vn",
-            }, {
-              headers: headers
+            },
+            {
+              headers: headers,
             }
           );
           console.log("Payment URL response: ", response.data);
@@ -88,14 +90,9 @@ const VerifyVnPayPayment = (props) => {
     if (response.RspCode === "00") {
       ToastAndroid.show("Thanh toán thành công", ToastAndroid.SHORT);
       navigation.navigate("Home");
-    } else if (response.RspCode === "01") {
-      ToastAndroid.show("Thanh toán đã bị hủy", ToastAndroid.SHORT);
-      navigation.goBack();
     } else {
-      ToastAndroid.show(
-        `Payment Error: ${response.RspCode}`,
-        ToastAndroid.SHORT
-      );
+      ToastAndroid.show("Thanh toán không thành công!", ToastAndroid.SHORT);
+      navigation.goBack();
     }
   };
 

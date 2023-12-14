@@ -486,6 +486,23 @@ const useAuth = () => {
       return error.response.data;
     }
   }
+  const GetRatingProduct = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/products/${product_id}/rating`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng", error);
+      return error.response.data;
+    }
+  }
   return {
     loginUser,
     registerUser,
@@ -514,7 +531,9 @@ const useAuth = () => {
     VerifyDelivered,
     CheckStatusOrder,
     UpdateInfoUser,
-    totalOrderStatus
+    totalOrderStatus,
+    GetRatingProduct
+
   };
 };
 

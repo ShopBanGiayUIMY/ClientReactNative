@@ -95,7 +95,7 @@ const ConfirmationOrder = (props) => {
           totalPrice: calculateTotalPayment(),
           shippingAddressId: addresses[0]?.id,
           paymentMethodId: paymentmethod,
-          voucherId: state.UseVoucher.map((voucher) => voucher.voucher_id),
+          voucherIds: state.UseVoucher.map((voucher) => voucher.voucher_id),
           freightCost: rewardType3Exists ? 0 : 10000,
         });
       }

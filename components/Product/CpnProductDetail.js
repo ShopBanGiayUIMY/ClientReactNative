@@ -40,6 +40,7 @@ const COLOURS = {
 };
 import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.product.detail";
+import Star from "react-native-star-view";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
   let position = Animated.divide(scrollX, WIDTH);
@@ -47,12 +48,15 @@ const CpnProductDetail = ({ product, navigation }) => {
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
   const [daban, setdaban] = useState(null);
+  const [star, setstar] = useState(null);
+
   const {
     GetFavorite,
     AddFavorite,
     RemoveFavorite,
     CheckFavoriteByProduct,
     GetSolidProductById,
+    GetRatingProduct,
   } = useAuth();
   const [favorites, setFavorites] = useState();
   useEffect(() => {
@@ -61,6 +65,7 @@ const CpnProductDetail = ({ product, navigation }) => {
       if (state.isLoggedIn) {
         GetFavoriteProduct();
         GetSolidProductId();
+        GetStarProduct();
       }
     });
 
@@ -85,6 +90,20 @@ const CpnProductDetail = ({ product, navigation }) => {
     try {
       const response = await GetSolidProductById(product.id);
       setdaban(response.total_quantity_sold);
+      return;
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
+
+  const GetStarProduct = async () => {
+    try {
+      const response = await GetRatingProduct(product.id);
+      if (response.status == 200) {
+        setstar(response.average_rating);
+      } else {
+        setstar(0);
+      }
       return;
     } catch (error) {
       console.error("Error fetching product details:", error);
@@ -308,14 +327,21 @@ const CpnProductDetail = ({ product, navigation }) => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={{ marginLeft: 5, marginTop: 10 }}>12345</Text>
+                <Star
+                  score={+star}
+                  style={{
+                    width: 100,
+                    height: 20,
+                    marginTop: 5,
+                  }}
+                />
                 <Text
                   style={{
                     fontWeight: "200",
                     paddingLeft: 5,
                   }}
                 >
-                  5
+                  {+star}
                 </Text>
               </View>
               <View

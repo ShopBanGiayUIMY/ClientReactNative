@@ -203,7 +203,7 @@ const About = ({ navigation }) => {
           style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
           source={{ uri: "https://iili.io/JdjS2Fp.png" }}
         />
-        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:150 }}>
+        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:"auto" }}>
           Giới thiệu và liên hệ
         </Text>
         <Image

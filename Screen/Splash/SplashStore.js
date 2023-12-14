@@ -58,7 +58,7 @@ const SplashStore = ({ navigation }) => {
       soundObject = await playSound();
     };
 
-    startSound();
+    // startSound();
 
     const timer = setTimeout(() => {
       navigation.push("BottomTabNavigation");

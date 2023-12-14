@@ -17,22 +17,31 @@ import CANCELED from "../../images/6.png";
 import useAuth from "../../Services/auth.services";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { AuthStatus } from "../../Services/AuthContext";
 
 export default OrderInfo = () => {
   const { totalOrderStatus } = useAuth();
   const [totalOrderStatusItem, setTotalOrderStatusItem] = useState([]);
   const navigation = useNavigation();
+  const { state, dispatch } = AuthStatus();
   const hanldChoThanhToan = (key) => {
     navigation.navigate("MainTabPurchase", { initialTabIndex: key });
   };
+  // navigation.addListener("focus", () => {
+  //   if (state.isLoggedIn) {
+  //     totalOrderStatus().then((res) => {
+  //       setTotalOrderStatusItem(res.data);
+  //       console.log("res.data");
+  //     });
+  //   }
+  // });
   useEffect(() => {
-    totalOrderStatus().then((res) => {
-      setTotalOrderStatusItem(res.data);
-    });
-  }, [navigation]);
-  totalOrderStatus().then((res) => {
-    console.log("res", res);
-  });
+    if (state.isLoggedIn) {
+      totalOrderStatus().then((res) => {
+        setTotalOrderStatusItem(res.data);
+      });
+    }
+  }, []);
   const getIconByStatusId = (statusId) => {
     switch (statusId) {
       case 1:
@@ -51,7 +60,7 @@ export default OrderInfo = () => {
         return null; // Trả về hình ảnh mặc định hoặc null nếu không tìm thấy
     }
   };
-  return (
+  return state.isLoggedIn ? (
     <View style={styles.iconsContainer}>
       <View>
         <View style={styles.info}>
@@ -86,6 +95,10 @@ export default OrderInfo = () => {
         ))}
       </View>
     </View>
+  ) : (
+    <View style={styles.check}>
+      <Text style={styles.checkText}>Đăng nhập để xem đơn hàng</Text>
+    </View>
   );
 };
 
@@ -101,6 +114,16 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     height: 80,
+  },
+  check: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
+  },
+  checkText: {
+    fontSize: 16,
+    color: "rgba(166, 179, 185, 0.8)",
   },
 
   iconsContainer: {
