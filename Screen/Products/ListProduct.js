@@ -223,7 +223,9 @@ export default function ListProduct({ navigation }) {
     );
     return filteredProducts;
   };
-
+  const fun_productDetail = (item) => {
+    navigation.navigate("ProductDetail", { product: item });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ backgroundColor, ...styles.viewBanner }}>
@@ -300,7 +302,7 @@ export default function ListProduct({ navigation }) {
                     keyExtractor={(item) => item.id}
                     style={{ marginHorizontal: 5 }}
                     renderItem={({ item, index }) => (
-                      <ProductHorizontal item={item} index={index} />
+                      <ProductHorizontal item={item} index={index} fun_productDetail={fun_productDetail} />
                     )}
                   />
                 </View>
