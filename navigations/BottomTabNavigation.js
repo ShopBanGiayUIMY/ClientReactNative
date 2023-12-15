@@ -70,15 +70,17 @@ const BottomTabNavigation = () => {
         options={{
           tabBarShowLabel: false,
           tabBarLabel: "Giỏ hàng",
+          
           tabBarIcon: ({ color }) => (
             <View style={styles.iconWrapper}>
               <MaterialCommunityIcons name="shopping" color={color} size={24} />
-              <NotificationBadge />
+              {/* <NotificationBadge /> */}
+              <CartBadge />
             </View>
           ),
           tabBarButton: (props) => (
             <TabButton {...props}>
-              <CartBadge />
+            
             </TabButton>
           ),
         }}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import { View, Text, Image, StyleSheet, FlatList,TouchableOpacity } from "react-native";
 import useAuth from "../../Services/auth.services";
 
 const DaXacNhan = () => {
@@ -14,6 +14,9 @@ const DaXacNhan = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
+  const DanhGiaDonHang = async (order_id) => {
+    console.log("order_id", order_id);
+  };
 
   const renderItem = ({ item }) => (
   <View style={styles.container}>
@@ -41,11 +44,13 @@ const DaXacNhan = () => {
       </Text>
     </View>
     <View style={styles.buttonContainer}>
-      <View style={styles.processingButton}>
+      <TouchableOpacity style={styles.processingButton} 
+      onPress={() => DanhGiaDonHang(item.id)}
+      >
         <Text style={styles.processingButtonText}>
-          {item.OrderStatus.name}
+          Đánh giá ngay
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   </View>
 );

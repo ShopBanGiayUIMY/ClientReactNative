@@ -28,7 +28,7 @@ const HEIGHT = Dimensions.get("window").height;
 import { useFocusEffect } from "@react-navigation/native";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
 import { useDispatch, useSelector } from "react-redux";
-
+import DataLoadingCart from "../../components/loading/DataLoadingCart";
 import useAuth from "../../Services/auth.services";
 const latestList = [
   {
@@ -277,6 +277,7 @@ export default function ListProduct({ navigation }) {
 
           <HeaderBanner />
           <MenuCategory />
+          <DataLoadingCart />
           {filteredtotalQuantitySold().length > 0 ? (
             <SafeAreaView
               style={{

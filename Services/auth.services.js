@@ -403,8 +403,9 @@ const useAuth = () => {
   const CancelOrder = async (order_id) => {
     const headers = await authHeader();
     try {
-      const response = await axios.delete(
+      const response = await axios.patch(
         `${Config.API_BASE_URL}/orders/${order_id}/cancel`,
+        {},
         {
           headers: headers,
         }

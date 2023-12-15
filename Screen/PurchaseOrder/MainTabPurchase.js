@@ -16,7 +16,7 @@ import DaGiaoHang from "./DaGiaoHang";
 import DaXacNhan from "./DaXacNhan";
 import DaHuy from "./DaHuy";
 
-const MainTabPurchase = ({ navigation, route  }) => {
+const MainTabPurchase = ({ navigation, route }) => {
   const initialTabIndex = route.params?.initialTabIndex ?? 0;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(initialTabIndex);

@@ -30,6 +30,7 @@ import AddAddress from "./Screen/Address/AddAddress";
 import CouponOrder from "./Screen/CouponsOrder/CouponOrder";
 import Contact from "./Screen/Contact/Contact";
 import VerifyVnPayPayMent from "./Screen/ConfirmationOrder/Verifyvnpaypayment";
+import ThanhToanLaiVnpay from "./Screen/PurchaseOrder/ThanhToanLaiVnpay";
 import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
 import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
 import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
@@ -143,6 +144,11 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Profile"
           component={Profile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ThanhToanLaiVnpay"
+          component={ThanhToanLaiVnpay}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

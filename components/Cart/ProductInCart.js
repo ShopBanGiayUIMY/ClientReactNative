@@ -31,6 +31,7 @@ const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import { useDispatch, useSelector } from "react-redux";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
+import DataLoadingCart from "../../components/loading/DataLoadingCart";
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress, handleOrder, navigation } = props;
   const [isAnyProductSelected, setIsAnyProductSelected] = useState(false);
@@ -232,7 +233,7 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <View style={{ flex: 1, marginBottom: "18%" }}>
+    <View style={{ flex: 1, marginBottom: 5 }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
@@ -572,7 +573,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "rgba(222, 250, 253, 0.8)",
     borderRadius: 5,
-    height: "11%",
+    height: "13%",
   },
   paymentButton: {
     height: 40,

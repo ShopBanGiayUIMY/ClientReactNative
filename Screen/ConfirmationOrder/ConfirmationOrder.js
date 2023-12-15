@@ -104,6 +104,8 @@ const ConfirmationOrder = (props) => {
       let paymentmethod = 0;
       console.log("selectedOption", selectedOption);
       if (selectedOption === "card") {
+        formData.totalPrice = calculateTotalPayment();
+        console.log("formDatacard", formData);
         paymentmethod = 2;
         const rewardType3Exists = state.UseVoucher.some(
           (voucher) => voucher.reward_type === 3
@@ -121,7 +123,7 @@ const ConfirmationOrder = (props) => {
       }
       if (selectedOption === "cash") {
         formData.totalPrice = calculateTotalPayment();
-        console.log("formData", formData);
+        console.log("formDatacash", formData);
         const orderData = await Orders(formData);
         // const data = await Orders(orderData);
         console.log("data", orderData);
