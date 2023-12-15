@@ -349,7 +349,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 marginLeft: 50,
               }}
             >
-              <Text style={{ marginLeft: 5 }}>Đã bán</Text>
+              <Text style={{}}>Đã bán</Text>
               <Text
                 style={{
                   fontWeight: "200",
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: width,
-    height: height,
+    height: "100%",
   },
   viewTop: {
     width: width,

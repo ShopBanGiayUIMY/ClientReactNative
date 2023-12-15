@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "762349162089",
+    "project_id": "uimy-14a55",
+    "storage_bucket": "uimy-14a55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762349162089:android:2a1dfd67bae8d5fc265cf8",
+        "android_client_info": {
+          "package_name": "com.huyph20687.ShopBanGiayUIMY"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762349162089-bha0hkv008beg9h2mefjvq37gk981gu2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huyph20687.ShopBanGiayUIMY",
+            "certificate_hash": "9e6e358e87fdd8c4fcc630e7552042fe3774afbd"
+          }
+        },
+        {
+          "client_id": "762349162089-qem7dlllf4ki2is030norlp2j5egu9a4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huyph20687.ShopBanGiayUIMY",
+            "certificate_hash": "c96b51497eb8ad92c860b21c7857d8c532a330f5"
+          }
+        },
+        {
+          "client_id": "762349162089-p1ntfljctmmggj9iccja5u6ueussfhhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeLbWjGNAyUtJ4NcIjHZOuHq_JHN5R47Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762349162089-p1ntfljctmmggj9iccja5u6ueussfhhj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
