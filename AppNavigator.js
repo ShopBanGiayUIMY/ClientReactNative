@@ -19,6 +19,7 @@ const Stack = createNativeStackNavigator();
 import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import LikeProducts from "./Screen/Informations/LikeProducts";
+import Profile from "./Screen/Informations/Profile";
 import Search from "./Screen/Search/Search";
 import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
@@ -86,7 +87,6 @@ export default function AppNavigator() {
           options={{
             resetOnBlur: true,
           }}
-        
         />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
         <Stack.Screen name="FormSecurity" component={FormSecurity} />
@@ -138,6 +138,11 @@ export default function AppNavigator() {
         <Stack.Screen
           name="UploadImage"
           component={UploadImage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

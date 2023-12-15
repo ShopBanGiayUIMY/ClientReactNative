@@ -18,15 +18,14 @@ const App = () => {
 };
 
 const MainApp = () => {
-
   const { InfoAuth, getTotalCart } = useAuth();
   const { dispatch } = AuthStatus();
-  
+
   const fetchData = async () => {
     try {
       const data = await InfoAuth();
       const result = await getTotalCart();
-  
+
       //
 
       if (result) {

@@ -144,6 +144,8 @@ export default function ListProduct({ navigation }) {
         .catch((error) => {
           console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
           setRefreshing(false);
+          setData([]);
+          setDatafull([]);
           setTimeout(() => {
             setIsConnected(false);
             setIsLoading(false);
@@ -159,7 +161,9 @@ export default function ListProduct({ navigation }) {
       fetchData();
       getTotalCart().then((res) => {
         console.log("res[0].total_cart_items");
-        dispatchRedux(soluonggiohang(res[0].total_cart_items));
+        if (res) {
+          dispatchRedux(soluonggiohang(res[0].total_cart_items));
+        }
       });
     }
   }, [refreshing]);
@@ -302,7 +306,11 @@ export default function ListProduct({ navigation }) {
                     keyExtractor={(item) => item.id}
                     style={{ marginHorizontal: 5 }}
                     renderItem={({ item, index }) => (
-                      <ProductHorizontal item={item} index={index} fun_productDetail={fun_productDetail} />
+                      <ProductHorizontal
+                        item={item}
+                        index={index}
+                        fun_productDetail={fun_productDetail}
+                      />
                     )}
                   />
                 </View>
@@ -333,7 +341,6 @@ const styles = StyleSheet.create({
   container: {
     width: WIDTH,
     flex: 1,
-    paddingBottom: 50,
     alignItems: "center",
     alignContent: "center",
     height: HEIGHT,

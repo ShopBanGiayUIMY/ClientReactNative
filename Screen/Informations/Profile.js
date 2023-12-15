@@ -5,7 +5,7 @@ import OrderInfo from "./OrderInfo";
 import Repurchase from "../Informations/Repurchase";
 import About from "../Informations/About";
 
-export default Profile = ({ navigation }) => {
+const Profile = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +41,7 @@ export default Profile = ({ navigation }) => {
   );
 };
 
+export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

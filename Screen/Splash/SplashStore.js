@@ -61,7 +61,7 @@ const SplashStore = ({ navigation }) => {
     // startSound();
 
     const timer = setTimeout(() => {
-      navigation.push("BottomTabNavigation");
+      navigation.replace("BottomTabNavigation");
     }, 4000);
 
     return () => {

@@ -96,7 +96,9 @@ const ProductInCart = (props) => {
   useEffect(() => {
     setData(dataCart);
     getTotalCart().then((result) => {
-      dispatchRedux(soluonggiohang(result[0].total_cart_items));
+      if (result) {
+        dispatchRedux(soluonggiohang(result[0].total_cart_items));
+      }
     });
   }, [dataCart]);
   const handleInputChange = (text, index) => {
