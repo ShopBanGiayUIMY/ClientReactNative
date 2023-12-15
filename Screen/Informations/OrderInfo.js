@@ -57,7 +57,7 @@ export default OrderInfo = () => {
       case 6:
         return CANCELED;
       default:
-        return null; // Trả về hình ảnh mặc định hoặc null nếu không tìm thấy
+        return null;
     }
   };
   return state.isLoggedIn ? (

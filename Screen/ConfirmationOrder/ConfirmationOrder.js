@@ -140,7 +140,7 @@ const ConfirmationOrder = (props) => {
           // Update the state with the remaining vouchers
           dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
           ToastAndroid.show("Đặt hàng thành công", ToastAndroid.SHORT);
-          navigation.navigate("StatusOrder");
+          navigation.navigate("VerifyCOD");
         } else {
           ToastAndroid.show("Đặt hàng thất bại", ToastAndroid.SHORT);
         }

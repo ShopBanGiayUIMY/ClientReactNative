@@ -75,7 +75,12 @@ const Header = (props) => {
           </TouchableOpacity>
         </TouchableWithoutFeedback>
         <View style={styles.right}>
-          <TouchableOpacity style={styles.icon}>
+          <TouchableOpacity
+            style={styles.icon}
+            onPress={() => {
+              navigation.navigate("Notification");
+            }}
+          >
             <View style={styles.count_notify}>
               <Text style={styles.count_notify_total}>40</Text>
             </View>

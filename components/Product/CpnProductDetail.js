@@ -21,8 +21,7 @@ import {
   faShare,
   faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
-const WIDTH = Dimensions.get("window").width;
-const HEIGHT = Dimensions.get("window").height;
+const { height, width } = Dimensions.get("window");
 const EXTAR_HEIGHT = 542.5;
 import { AuthStatus } from "../../Services/AuthContext";
 import axios from "axios";
@@ -41,9 +40,10 @@ const COLOURS = {
 import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.product.detail";
 import Star from "react-native-star-view";
+import { SafeAreaView } from "react-native";
 const CpnProductDetail = ({ product, navigation }) => {
   const scrollX = new Animated.Value(0);
-  let position = Animated.divide(scrollX, WIDTH);
+  let position = Animated.divide(scrollX, width);
   const [data, setData] = useState(null);
   const [dataimage, setDataimage] = useState(null);
   const { state, dispatch } = AuthStatus();
@@ -99,8 +99,9 @@ const CpnProductDetail = ({ product, navigation }) => {
   const GetStarProduct = async () => {
     try {
       const response = await GetRatingProduct(product.id);
-      if (response.status == 200) {
+      if (response) {
         setstar(response.average_rating);
+        console.log("sao", response.average_rating);
       } else {
         setstar(0);
       }
@@ -161,7 +162,7 @@ const CpnProductDetail = ({ product, navigation }) => {
     return (
       <View
         style={{
-          width: WIDTH,
+          width: width,
           height: 240,
           alignItems: "center",
           justifyContent: "center",
@@ -197,236 +198,177 @@ const CpnProductDetail = ({ product, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.vImage}>
-        <StatusBar
-          backgroundColor={COLOURS.backgroundLight}
-          barStyle="dark-content"
-        />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {isModalVisible && (
-            <ModalBottom
-              openDrawer={isModalVisible}
-              closeDrawer={toggleModal}
-              dataprod={data}
-            />
-          )}
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        backgroundColor={COLOURS.backgroundLight}
+        barStyle="dark-content"
+      />
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.main}>
+        {isModalVisible && (
+          <ModalBottom
+            openDrawer={isModalVisible}
+            closeDrawer={toggleModal}
+            dataprod={data}
+          />
+        )}
 
-          <View
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.back}
+          >
+            <Entypo
+              name="chevron-left"
+              style={{
+                fontSize: 18,
+                color: COLOURS.backgroundDark,
+                padding: 12,
+                backgroundColor: COLOURS.white,
+                borderRadius: 10,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={dataimage}
+          horizontal
+          renderItem={renderProduct}
+          showsHorizontalScrollIndicator={false}
+          decelerationRate={0.8}
+          snapToInterval={width}
+          bounces={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: false }
+          )}
+        />
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 16,
+            marginTop: 10,
+          }}
+        >
+          {dataimage
+            ? dataimage.map((data, index) => {
+                let opacity = position.interpolate({
+                  inputRange: [index - 1, index, index + 1],
+                  outputRange: [0.2, 1, 0.2],
+                  extrapolate: "clamp",
+                });
+                return (
+                  <Animated.View
+                    key={index}
+                    style={{
+                      width: "16%",
+                      height: 2.4,
+                      backgroundColor: COLOURS.black,
+                      opacity,
+                      marginHorizontal: 4,
+                      borderRadius: 100,
+                    }}
+                  ></Animated.View>
+                );
+              })
+            : null}
+        </View>
+
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignContent: "center",
+          }}
+        >
+          <Text
             style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              fontSize: 20,
+              fontWeight: "200",
+              paddingLeft: 10,
+              paddingRight: 10,
             }}
           >
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.back}
-            >
-              <Entypo
-                name="chevron-left"
+            {product.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "400",
+              paddingLeft: 10,
+              paddingTop: 10,
+              color: "red",
+            }}
+          >
+            {parseFloat(product.price).toLocaleString("vi-VN")}
+            <Text>đ</Text>
+          </Text>
+        </View>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignContent: "center",
+            backgroundColor: "rgba(240, 237, 241, 0.72)",
+            padding: 10,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Star
+                score={+star}
                 style={{
-                  fontSize: 18,
-                  color: COLOURS.backgroundDark,
-                  padding: 12,
-                  backgroundColor: COLOURS.white,
-                  borderRadius: 10,
+                  width: 100,
+                  height: 20,
+                  marginTop: 5,
                 }}
               />
-            </TouchableOpacity>
-          </View>
-          <FlatList
-            data={dataimage}
-            horizontal
-            renderItem={renderProduct}
-            showsHorizontalScrollIndicator={false}
-            decelerationRate={0.8}
-            snapToInterval={WIDTH}
-            bounces={false}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-              { useNativeDriver: false }
-            )}
-          />
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 16,
-              marginTop: 10,
-            }}
-          >
-            {dataimage
-              ? dataimage.map((data, index) => {
-                  let opacity = position.interpolate({
-                    inputRange: [index - 1, index, index + 1],
-                    outputRange: [0.2, 1, 0.2],
-                    extrapolate: "clamp",
-                  });
-                  return (
-                    <Animated.View
-                      key={index}
-                      style={{
-                        width: "16%",
-                        height: 2.4,
-                        backgroundColor: COLOURS.black,
-                        opacity,
-                        marginHorizontal: 4,
-                        borderRadius: 100,
-                      }}
-                    ></Animated.View>
-                  );
-                })
-              : null}
-          </View>
-
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              alignContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "200",
-                paddingLeft: 10,
-                paddingRight: 10,
-              }}
-            >
-              {product.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "400",
-                paddingLeft: 10,
-                paddingTop: 10,
-                color: "red",
-              }}
-            >
-              {parseFloat(product.price).toLocaleString("vi-VN")}
-              <Text>đ</Text>
-            </Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignContent: "center",
-              backgroundColor: "rgba(240, 237, 241, 0.72)",
-              padding: 10,
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Star
-                  score={+star}
-                  style={{
-                    width: 100,
-                    height: 20,
-                    marginTop: 5,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontWeight: "200",
-                    paddingLeft: 5,
-                  }}
-                >
-                  {+star}
-                </Text>
-              </View>
-              <View
+              <Text
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 50,
+                  fontWeight: "200",
+                  paddingLeft: 5,
                 }}
               >
-                <Text style={{ marginLeft: 5 }}>Đã bán</Text>
-                <Text
-                  style={{
-                    fontWeight: "200",
-                    paddingLeft: 5,
-                  }}
-                >
-                  {totalQuantitySold}
-                </Text>
-              </View>
+                {+star}
+              </Text>
             </View>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                paddingRight: 10,
-                position: "relative",
+                marginLeft: 50,
               }}
             >
-              <TouchableOpacity
+              <Text style={{ marginLeft: 5 }}>Đã bán</Text>
+              <Text
                 style={{
-                  width: 40,
-                  height: 40,
-                  alignItems: "center",
-                  paddingTop: 10,
-                  borderRadius: 25,
-                  borderWidth: 0.5,
-                  borderColor: "white",
-
-                  backgroundColor: "white",
-                  shadowColor: "black",
-                  shadowOffset: { width: 5, height: 0 },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 5,
-                }}
-                onPress={() => CheckFavorite()}
-              >
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  size={20}
-                  color={favorites ? "red" : "gray"}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  width: 40,
-                  height: 40,
-                  alignItems: "center",
-                  paddingTop: 10,
-                  borderRadius: 25,
-                  borderWidth: 0.5,
-                  borderColor: "white",
-                  marginLeft: 30,
-                  backgroundColor: "white",
-                  shadowColor: "black",
-                  shadowOffset: { width: 5, height: 0 },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 5,
+                  fontWeight: "200",
+                  paddingLeft: 5,
                 }}
               >
-                <FontAwesomeIcon icon={faShare} size={20} color="gray" />
-              </TouchableOpacity>
+                {totalQuantitySold}
+              </Text>
             </View>
           </View>
-
           <View
             style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingRight: 10,
               position: "relative",
-              top: 25,
             }}
           >
-            <Text style={{ marginStart: 10, marginEnd: 10, marginBottom: 150 }}>
-              {product.description}
-            </Text>
-          </View>
-          <View style={styles.heartContainer}>
             <TouchableOpacity
-              onPress={() => CheckFavorite()}
               style={{
                 width: 40,
                 height: 40,
@@ -435,13 +377,14 @@ const CpnProductDetail = ({ product, navigation }) => {
                 borderRadius: 25,
                 borderWidth: 0.5,
                 borderColor: "white",
-                marginLeft: 50,
+
                 backgroundColor: "white",
                 shadowColor: "black",
-                shadowOffset: { width: 5, height: 0 }, // 5px bên tay phải
+                shadowOffset: { width: 5, height: 0 },
                 shadowOpacity: 0.5,
                 shadowRadius: 5,
               }}
+              onPress={() => CheckFavorite()}
             >
               <FontAwesomeIcon
                 icon={faHeart}
@@ -449,30 +392,86 @@ const CpnProductDetail = ({ product, navigation }) => {
                 color={favorites ? "red" : "gray"}
               />
             </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: 40,
+                height: 40,
+                alignItems: "center",
+                paddingTop: 10,
+                borderRadius: 25,
+                borderWidth: 0.5,
+                borderColor: "white",
+                marginLeft: 30,
+                backgroundColor: "white",
+                shadowColor: "black",
+                shadowOffset: { width: 5, height: 0 },
+                shadowOpacity: 0.5,
+                shadowRadius: 5,
+              }}
+            >
+              <FontAwesomeIcon icon={faShare} size={20} color="gray" />
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+        </View>
 
-        <View style={styles.buttonContainer}>
-          <Pressable style={styles.addToCartButton} onPress={toggleModal}>
-            <FontAwesomeIcon
-              style={styles.iconAddToCart}
-              icon={faCartShopping}
-              size={20}
-              color="white"
-            />
-            <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
-          </Pressable>
-          <Pressable
-            style={styles.buyNowButton}
-            onPress={() => {
-              hanldThanhToan();
+        <View
+          style={{
+            position: "relative",
+            top: 25,
+          }}
+        >
+          <Text style={{ marginStart: 10, marginEnd: 10, marginBottom: 150 }}>
+            {product.description}
+          </Text>
+        </View>
+        <View style={styles.heartContainer}>
+          <TouchableOpacity
+            onPress={() => CheckFavorite()}
+            style={{
+              width: 40,
+              height: 40,
+              alignItems: "center",
+              paddingTop: 10,
+              borderRadius: 25,
+              borderWidth: 0.5,
+              borderColor: "white",
+              marginLeft: 50,
+              backgroundColor: "white",
+              shadowColor: "black",
+              shadowOffset: { width: 5, height: 0 }, // 5px bên tay phải
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
             }}
           >
-            <Text style={styles.buttonTextmua}>Mua ngay</Text>
-          </Pressable>
+            <FontAwesomeIcon
+              icon={faHeart}
+              size={20}
+              color={favorites ? "red" : "gray"}
+            />
+          </TouchableOpacity>
         </View>
+      </ScrollView>
+
+      <View style={styles.buttonContainer}>
+        <Pressable style={styles.addToCartButton} onPress={toggleModal}>
+          <FontAwesomeIcon
+            style={styles.iconAddToCart}
+            icon={faCartShopping}
+            size={20}
+            color="white"
+          />
+          <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
+        </Pressable>
+        <Pressable
+          style={styles.buyNowButton}
+          onPress={() => {
+            hanldThanhToan();
+          }}
+        >
+          <Text style={styles.buttonTextmua}>Mua ngay</Text>
+        </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -484,12 +483,11 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   container: {
-    width: WIDTH,
-    height: HEIGHT,
-    flex: 1,
+    width: width,
+    height: height,
   },
   viewTop: {
-    width: WIDTH,
+    width: width,
     height: 109,
     flexDirection: "row",
     justifyContent: "space-around",
@@ -501,15 +499,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
   },
-  vImage: {
-    width: "100%",
-    height: HEIGHT,
-
-    position: "relative",
-  },
   dropdownContainer: {
     flexDirection: "row",
-    width: WIDTH,
+    width: width,
     height: 150,
     marginTop: 20,
     padding: 10,
@@ -528,21 +520,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    position: "absolute",
-    bottom: 0,
   },
   addToCartButton: {
-    flexDirection: "column",
     alignItems: "center",
     backgroundColor: "#26aa99",
     paddingVertical: 10,
     paddingHorizontal: 15,
     width: "50%",
+    height: "100%",
   },
   buyNowButton: {
     backgroundColor: "#ee4d2d",
     paddingVertical: 10,
     paddingHorizontal: 15,
+    height: "100%",
 
     width: "50%",
     paddingVertical: 16,
