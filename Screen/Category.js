@@ -5,7 +5,7 @@ import {View, Text, StyleSheet} from 'react-native';
 export default function Category(){
 return(
      <View style={style.container}>
-          <Text>This is screen Category</Text>
+          <Text>This is screen Category.</Text>
      </View>
 )
 }
