@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import Information from "../Informations/Information";
 import OrderInfo from "./OrderInfo";
 import Repurchase from "../Informations/Repurchase";
@@ -7,19 +13,39 @@ import About from "../Informations/About";
 
 const Profile = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); // Thêm refreshing
 
   useEffect(() => {
     // Simulate data loading delay (replace with your actual data fetching logic)
     setTimeout(() => {
       setIsLoading(false);
-    }, 1500); // Adjust the delay as needed
+    }, 1500); // Điều chỉnh thời gian đợi theo nhu cầu của bạn
   }, []);
 
+  const handleRefresh = () => {
+    setRefreshing(true); // Bắt đầu làm mới
+    // Thực hiện logic làm mới ở đây
+    setTimeout(() => {
+      // Sau khi làm mới xong, đánh dấu hoàn thành làm mới
+      setIsLoading(false);
+      setRefreshing(false);
+    }, 1500); // Điều chỉnh thời gian làm mới theo nhu cầu của bạn
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          tintColor="#4882C2" // Màu của tiến trình làm mới
+        />
+      }
+    >
       {isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="rgba(152, 209, 255, 0.8)" />
         </View>
       ) : (
         <>
@@ -42,6 +68,7 @@ const Profile = ({ navigation }) => {
 };
 
 export default Profile;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

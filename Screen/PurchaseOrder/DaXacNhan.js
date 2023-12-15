@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList,TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import useAuth from "../../Services/auth.services";
+import { useNavigation } from "@react-navigation/native";
 
 const DaXacNhan = () => {
   const { CheckStatusOrder } = useAuth();
   const [orders, setOrders] = useState([]);
+  const navigation = useNavigation();
 
   const fetchOrders = async () => {
     const res = await CheckStatusOrder("DELIVERED");
@@ -14,47 +23,46 @@ const DaXacNhan = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
-  const DanhGiaDonHang = async (order_id) => {
-    console.log("order_id", order_id);
+  const DanhGiaDonHang = async (item) => {
+    console.log("order_id", item);
+    navigation.navigate("DanhGiaProduct", { data: item });
   };
 
   const renderItem = ({ item }) => (
-  <View style={styles.container}>
-    {item.OrderDetails.map((detail, index) => (
-      <View key={index} style={styles.productContainer}>
-        <Image
-          source={{ uri: detail.ProductDetail.Product.thumbnail }}
-          style={styles.productImage}
-        />
-        <View style={styles.productDetails}>
-          <Text style={styles.productTitle}>
-            {detail.ProductDetail.Product.product_name}
-          </Text>
-          <Text style={styles.productPriceSale}>
-            ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
-          </Text>
-          <Text style={styles.productQuantity}>x{detail.quantity}</Text>
+    <View style={styles.container}>
+      {item.OrderDetails.map((detail, index) => (
+        <View key={index} style={styles.productContainer}>
+          <Image
+            source={{ uri: detail.ProductDetail.Product.thumbnail }}
+            style={styles.productImage}
+          />
+          <View style={styles.productDetails}>
+            <Text style={styles.productTitle}>
+              {detail.ProductDetail.Product.product_name}
+            </Text>
+            <Text style={styles.productPriceSale}>
+              ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
+            </Text>
+            <Text style={styles.productQuantity}>x{detail.quantity}</Text>
+          </View>
         </View>
-      </View>
-    ))}
-    <View style={styles.totalContainer}>
-      <Text style={styles.totalText}>
-        Tổng thanh toán: ₫
-        {parseFloat(item.totalAmount).toLocaleString("vi-VN")}
-      </Text>
-    </View>
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.processingButton} 
-      onPress={() => DanhGiaDonHang(item.id)}
-      >
-        <Text style={styles.processingButtonText}>
-          Đánh giá ngay
+      ))}
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalText}>
+          Tổng thanh toán: ₫
+          {parseFloat(item.totalAmount).toLocaleString("vi-VN")}
         </Text>
-      </TouchableOpacity>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.processingButton}
+          onPress={() => DanhGiaDonHang(item)}
+        >
+          <Text style={styles.processingButtonText}>Đánh giá ngay</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-);
-
+  );
 
   return (
     <FlatList

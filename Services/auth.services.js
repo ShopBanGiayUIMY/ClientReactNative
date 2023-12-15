@@ -503,6 +503,24 @@ const useAuth = () => {
       return error.response.data;
     }
   };
+  const GuiDanhGia = async (product_id, score) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/products/${product_id}/rating?score=${score}`,
+        {},
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng5", error);
+      return error.response.data;
+    }
+  };
   return {
     loginUser,
     registerUser,
@@ -533,6 +551,7 @@ const useAuth = () => {
     UpdateInfoUser,
     totalOrderStatus,
     GetRatingProduct,
+    GuiDanhGia,
   };
 };
 

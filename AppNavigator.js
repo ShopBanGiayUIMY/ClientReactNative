@@ -35,7 +35,6 @@ import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
 import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
 import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
 import UploadImage from "./Screen/Informations/upload";
-
 export default function AppNavigator() {
   return (
     <NavigationContainer>
