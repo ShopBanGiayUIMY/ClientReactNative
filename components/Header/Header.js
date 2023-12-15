@@ -28,7 +28,6 @@ const Header = (props) => {
   const fetchDataCart = async () => {
     try {
       if (state.isLoggedIn) {
-        
         const data = await getTotalCart();
         if (data) {
           setTotalCart(data[0].total_cart_items);

@@ -41,7 +41,7 @@ export default OrderInfo = () => {
         setTotalOrderStatusItem(res.data);
       });
     }
-  }, []);
+  }, [navigation, state.isLoggedIn]);
   const getIconByStatusId = (statusId) => {
     switch (statusId) {
       case 1:

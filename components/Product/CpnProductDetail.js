@@ -149,7 +149,6 @@ const CpnProductDetail = ({ product, navigation }) => {
         `${Config.API_BASE_URL}/products/${product.id}`
       );
       setData(response.data);
-      console.log("data", response.data.images);
       setDataimage(response.data.images);
     } catch (error) {
       console.error("Error fetching product details:", error);
@@ -158,7 +157,6 @@ const CpnProductDetail = ({ product, navigation }) => {
   const hanldeAddToCart = async () => {
     // alert("Bạn đã thêm " + product.name + " vào giỏ hàng! ");
   };
-  console.log("product", product.price);
   const renderProduct = ({ item, index }) => {
     return (
       <View

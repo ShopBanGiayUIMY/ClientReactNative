@@ -18,31 +18,25 @@ import CartBadge from "../components/Cart/CartBadge";
 function TabButton({ onPress, accessibilityState, children }) {
   const viewRef = useRef(null);
   useEffect(() => {
-    let animationFrameId;
-
-    const handleAnimation = () => {
-      if (accessibilityState.selected) {
-        viewRef.current.animate({
-          0: { scale: 0.3 },
-          1: { scale: 2 },
-        });
-      } else {
-        viewRef.current.animate({
-          0: { scale: 0.5 },
-          1: { scale: 1.5 },
-        });
-      }
-    };
-
-    const handleFrame = () => {
-      animationFrameId = requestAnimationFrame(handleAnimation);
-    };
-
-    handleFrame();
-
-    return () => cancelAnimationFrame(animationFrameId);
+    if (accessibilityState.selected) {
+      viewRef.current.animate(
+        {
+          0: { scale: 0.5, opacity: 0.7 },
+          0.5: { scale: 1.2, opacity: 1 },
+          1: { scale: 2, opacity: 1 },
+        },
+        500
+      );
+    } else {
+      viewRef.current.animate(
+        {
+          0: { scale: 1, opacity: 1 },
+          1: { scale: 1.5, opacity: 1 },
+        },
+        500
+      );
+    }
   }, [accessibilityState.selected]);
-
   return (
     <TouchableWithoutFeedback onPress={onPress} style={{ flex: 1 }}>
       <Animatable.View ref={viewRef} duration={500} style={{ flex: 1 }}>
@@ -119,6 +113,7 @@ const BottomTabNavigation = () => {
           ),
           tabBarButton: (props) => <TabButton {...props} />,
         }}
+        lazy={true}
       />
       <Tab.Screen
         name="Profile"
@@ -131,6 +126,7 @@ const BottomTabNavigation = () => {
           ),
           tabBarButton: (props) => <TabButton {...props} />,
         }}
+        lazy={true}
       />
     </Tab.Navigator>
   );

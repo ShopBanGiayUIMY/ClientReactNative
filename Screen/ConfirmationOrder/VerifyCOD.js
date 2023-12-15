@@ -50,10 +50,16 @@ const VerifyCOD = () => {
               mua ở trạng thái "Đang giao hàng".
             </Text>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("Home")}
+              >
                 <Text style={styles.buttonText}>Trang chủ</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("MainTabPurchase")}
+              >
                 <Text style={styles.buttonText}>Đơn mua</Text>
               </TouchableOpacity>
             </View>

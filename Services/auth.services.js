@@ -66,7 +66,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("lỗi mạng", error);
+      console.log("lỗi mạng5", error);
     }
   };
   const CheckOtp = async (user) => {
@@ -435,7 +435,6 @@ const useAuth = () => {
   };
   const CheckStatusOrder = async (order_code) => {
     const headers = await authHeader();
-    console.log("order_code", order_code);
     try {
       const response = await axios.get(
         `${Config.API_BASE_URL}/orders?statusCode=${order_code}`,
@@ -447,7 +446,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("Lỗi mạng", error);
+      console.log("Lỗi mạng1", error);
       return error.response.data;
     }
   };
@@ -465,11 +464,11 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("Lỗi mạng", error);
+      console.log("Lỗi mạng2", error);
       return error.response.data;
     }
   };
- const totalOrderStatus = async () => {
+  const totalOrderStatus = async () => {
     const headers = await authHeader();
     try {
       const response = await axios.get(
@@ -482,10 +481,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("Lỗi mạng", error);
+      console.log("Lỗi mạng3", error);
       return error.response.data;
     }
-  }
+  };
   const GetRatingProduct = async (product_id) => {
     const headers = await authHeader();
     try {
@@ -499,10 +498,10 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("Lỗi mạng", error);
+      console.log("Lỗi mạng4", error);
       return error.response.data;
     }
-  }
+  };
   return {
     loginUser,
     registerUser,
@@ -532,8 +531,7 @@ const useAuth = () => {
     CheckStatusOrder,
     UpdateInfoUser,
     totalOrderStatus,
-    GetRatingProduct
-
+    GetRatingProduct,
   };
 };
 

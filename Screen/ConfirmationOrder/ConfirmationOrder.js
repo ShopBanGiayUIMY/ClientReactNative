@@ -17,18 +17,32 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
-import WebView from "react-native-webview";
-import Config from "../../Api/Config";
-import { err } from "react-native-svg";
-import authHeader from "../../Services/auth.header";
-import { Header } from "react-native/Libraries/NewAppScreen";
+
 const ConfirmationOrder = (props) => {
   const { getDefaultAddress, CreateAddress, Orders } = useAuth();
   const { Orderdata } = props.route.params;
-
+  const navigation = useNavigation();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAdress] = useState("");
+  const [option, setOption] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("cash");
+  const [phivanchuyen, setPhivanchuyen] = useState(10000);
   const { state, dispatch } = AuthStatus();
-  console.log("state", state.UseVoucher);
-  console.log("Orderdata", Orderdata);
+
+  const rewardfreightCost = state.UseVoucher.some(
+    (voucher) => voucher.reward_type === 3
+  );
+
+  const [formData, setFormData] = useState({
+    cartItems: Orderdata.item_id,
+    cartId: Orderdata.Cart_id,
+    totalPrice: 0,
+    shippingAddressId: "",
+    paymentMethodId: 1,
+    voucherIds: [],
+    freightCost: rewardfreightCost ? 0 : 10000,
+  });
 
   const steps = [
     { title: "Address", content: "Address Form" },
@@ -36,31 +50,35 @@ const ConfirmationOrder = (props) => {
     { title: "Payment", content: "Payment Details" },
     { title: "Place Order", content: "Order Summary" },
   ];
-  const navigation = useNavigation();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [addresses, setAddresses] = useState([]);
+  const fetchVoucher = () => {
+    if (state.UseVoucher.length > 0) {
+      let voucher_ids = state.UseVoucher.map((voucher) => voucher.voucher_id);
+      console.log(
+        "state.UseVoucher",
+        state.UseVoucher.map((voucher) => voucher.voucher_id)
+      );
+      formData.voucherIds = voucher_ids;
+    } else {
+      formData.voucherIds = [];
+    }
+  };
 
-  const [selectedAddress, setSelectedAdress] = useState("");
-  const [option, setOption] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("cash");
-  const [phivanchuyen, setPhivanchuyen] = useState(10000);
   useEffect(() => {
-    const onFocus = () => {
-      fetchAddresses();
+    const onFocus = async () => {
+      await fetchAddresses();
     };
 
     const unsubscribeFocus = navigation.addListener("focus", onFocus);
-
-    // Cleanup function to remove the listener when the component is unmounted
     return () => {
       unsubscribeFocus();
     };
-  }, [fetchAddresses, navigation]);
+  }, [navigation, state.UseVoucher]);
 
   const fetchAddresses = async () => {
     try {
       const data = await getDefaultAddress();
-      console.log("data", data);
+      fetchVoucher();
+
       if (data.status === -1) {
         navigation.navigate("Address");
         ToastAndroid.show(
@@ -70,7 +88,9 @@ const ConfirmationOrder = (props) => {
       }
       if (data.success == true) {
         setAddresses(data.data);
-        console.log("address", data.data);
+        setFormData({ ...formData, shippingAddressId: data.data[0]?.id });
+        // formData.shippingAddressId = data.data[0]?.id;
+        //  console.log("address", data.data);
       } else {
         console.log("error fetching address", response);
       }
@@ -100,23 +120,12 @@ const ConfirmationOrder = (props) => {
         });
       }
       if (selectedOption === "cash") {
-        paymentmethod = 1;
-        const rewardType3Exists = state.UseVoucher.some(
-          (voucher) => voucher.reward_type === 3
-        );
-
-        const orderData = {
-          cartItems: Orderdata.item_id,
-          cartId: Orderdata.Cart_id,
-          totalPrice: calculateTotalPayment(),
-          shippingAddressId: addresses[0]?.id,
-          paymentMethodId: paymentmethod,
-          voucherIds: state.UseVoucher.map((voucher) => voucher.voucher_id),
-          freightCost: rewardType3Exists ? 0 : 10000,
-        };
-        const data = await Orders(orderData);
-        console.log("data", data);
-        if (data.message === "ok") {
+        formData.totalPrice = calculateTotalPayment();
+        console.log("formData", formData);
+        const orderData = await Orders(formData);
+        // const data = await Orders(orderData);
+        console.log("data", orderData);
+        if (orderData.message === "ok") {
           const usedVoucherIds = state.UseVoucher.map(
             (voucher) => voucher.voucher_id
           );
@@ -478,7 +487,10 @@ const ConfirmationOrder = (props) => {
               <FontAwesome5 name="dot-circle" size={20} color="#008397" />
             ) : (
               <Entypo
-                onPress={() => setSelectedOption("cash")}
+                onPress={() => {
+                  setSelectedOption("cash");
+                  setFormData({ ...formData, paymentMethodId: 1 });
+                }}
                 name="circle"
                 size={20}
                 color="gray"
@@ -508,12 +520,16 @@ const ConfirmationOrder = (props) => {
                   Alert.alert("UPI/Debit card", "Pay Online", [
                     {
                       text: "Cancel",
-                      onPress: () => setSelectedOption("cash"),
+                      onPress: () => {
+                        setSelectedOption("cash");
+                        setFormData({ ...formData, paymentMethodId: 1 });
+                      },
                     },
                     {
                       text: "OK",
                       onPress: async () => {
                         setSelectedOption("card");
+                        setFormData({ ...formData, paymentMethodId: 2 });
                       },
                     },
                   ]);

@@ -8,6 +8,7 @@ import {
   RefreshControl,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator, // Import ActivityIndicator
 } from "react-native";
 import { AuthStatus } from "../../Services/AuthContext";
 import loading from "../../images/loading.gif";
@@ -25,14 +26,16 @@ export default function LikeProducts({ navigation }) {
   const [backgroundOpacity, setBackgroundOpacity] = useState(0);
   const [visibleItems, setVisibleItems] = useState(4);
   const { GetFavorite, RemoveFavorite } = useAuth();
-  const {state}=AuthStatus();
+  const { state } = AuthStatus();
   const fetchData = async () => {
-    if(state.isLoggedIn){
-    const responseData = await GetFavorite();
-    const first10Items = responseData.slice(0, visibleItems);
-    setData(first10Items);
-    setIsLoading(false);
-    setRefreshing(false);
+    setIsLoading(true); // Show loading indicator while fetching data
+
+    if (state.isLoggedIn) {
+      const responseData = await GetFavorite();
+      const first10Items = responseData.slice(0, visibleItems);
+      setData(first10Items);
+      setIsLoading(false); // Hide loading indicator after data is fetched
+      setRefreshing(false);
     }
   };
 
@@ -41,10 +44,10 @@ export default function LikeProducts({ navigation }) {
       fetchData();
     }
   }, [refreshing]);
-  
+
   useEffect(() => {
     let time;
-  
+
     if (state.isLoggedIn) {
       time = setTimeout(() => {
         if (!refreshing) {
@@ -54,12 +57,11 @@ export default function LikeProducts({ navigation }) {
     } else {
       navigation.replace("Login", { focustile: "Home" });
     }
-  
+
     return () => {
       clearTimeout(time);
     };
   }, [navigation, refreshing, state.isLoggedIn]);
-
 
   useEffect(() => {
     if (visibleItems > 4)
@@ -102,7 +104,11 @@ export default function LikeProducts({ navigation }) {
       />
 
       {isloading ? (
-        <Image source={loading} style={styles.loadingImage} />
+        <ActivityIndicator
+          size="large"
+          color="#9Bd35A"
+          style={styles.loadingIndicator}
+        />
       ) : (
         <ScrollView
           contentContainerStyle={styles.viewProductsContainer}
@@ -138,7 +144,6 @@ export default function LikeProducts({ navigation }) {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     width: WIDTH,
@@ -146,6 +151,11 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
 
     height: HEIGHT,
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   searchs: {
     flexDirection: "row",

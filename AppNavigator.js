@@ -33,14 +33,14 @@ import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
 import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
 import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
 import UploadImage from "./Screen/Informations/upload";
-const MemoizedBottomTab = React.memo(BottomTabNavigation);
+
 export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashStore">
         <Stack.Screen
           name="BottomTabNavigation"
-          component={MemoizedBottomTab}
+          component={BottomTabNavigation}
           options={{
             headerShown: false,
           }}
@@ -85,8 +85,8 @@ export default function AppNavigator() {
           component={Category}
           options={{
             resetOnBlur: true,
-            
           }}
+        
         />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
         <Stack.Screen name="FormSecurity" component={FormSecurity} />

@@ -9,7 +9,6 @@ const DangXuLy = () => {
   const fetchOrders = async () => {
     const resDangXuLy = await CheckStatusOrder("PROCESSING");
     setOrdersDangXuLy(resDangXuLy); // Assuming 'res' is the array of orders
-    console.log("resDangXuLy", resDangXuLy);
   };
 
   useEffect(() => {
