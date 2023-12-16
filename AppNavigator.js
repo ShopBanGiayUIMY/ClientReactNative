@@ -35,6 +35,7 @@ import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
 import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
 import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
 import UploadImage from "./Screen/Informations/upload";
+import InfoUser from "./Screen/Accountinfomation/Infouser";
 export default function AppNavigator() {
   return (
     <NavigationContainer>
@@ -148,6 +149,11 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ThanhToanLaiVnpay"
           component={ThanhToanLaiVnpay}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="InfoUser"
+          component={InfoUser}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
