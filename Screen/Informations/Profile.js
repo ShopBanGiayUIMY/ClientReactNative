@@ -10,11 +10,12 @@ import Information from "../Informations/Information";
 import OrderInfo from "./OrderInfo";
 import Repurchase from "../Informations/Repurchase";
 import About from "../Informations/About";
+import Notification from "../Notification/Notification";
 
 const Profile = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false); // Thêm refreshing
-
+  const [refreshCounter, setRefreshCounter] = useState(0);
   useEffect(() => {
     // Simulate data loading delay (replace with your actual data fetching logic)
     setTimeout(() => {
@@ -25,8 +26,10 @@ const Profile = ({ navigation }) => {
   const handleRefresh = () => {
     setRefreshing(true); // Bắt đầu làm mới
     // Thực hiện logic làm mới ở đây
+    setRefreshCounter((prevCounter) => prevCounter + 1);
     setTimeout(() => {
       // Sau khi làm mới xong, đánh dấu hoàn thành làm mới
+
       setIsLoading(false);
       setRefreshing(false);
     }, 1500); // Điều chỉnh thời gian làm mới theo nhu cầu của bạn
@@ -49,11 +52,22 @@ const Profile = ({ navigation }) => {
         </View>
       ) : (
         <>
+          <Notification
+            title="New Message"
+            body="You have a new messagesddsêew!"
+            data={{ type: "ORDERSTATUS", status: "PENDING" }} // Example data object
+          />
           <View style={styles.section}>
-            <Information navigation={navigation} />
+            <Information
+              key={`information-${refreshCounter}`}
+              navigation={navigation}
+            />
           </View>
           <View style={styles.section}>
-            <OrderInfo navigation={navigation} />
+            <OrderInfo
+              key={`orderInfo-${refreshCounter}`}
+              navigation={navigation}
+            />
           </View>
           <View style={styles.section}>
             <Repurchase navigation={navigation} />

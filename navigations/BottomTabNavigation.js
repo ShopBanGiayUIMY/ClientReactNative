@@ -6,7 +6,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import Home from "../Screen/Home/Home";
 import Cart from "../Screen/Cart/Cart";
 import LikeProducts from "../Screen/Informations/LikeProducts";
-import Notification from "../Screen/Notification";
+import Notification from "../Screen/Notification/Notification";
 import Profile from "../Screen/Informations/Profile";
 import CartBadge from "../components/Cart/CartBadge";
 import { View, Text, StyleSheet } from "react-native";

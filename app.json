@@ -25,9 +25,6 @@
       },
       "package": "com.huyph20687.ShopBanGiayUIMY"
     },
-    "plugins": [
-      "@react-native-firebase/app"
-    ],
     "web": {
       "favicon": "./assets/icons/favicon.png"
     },
