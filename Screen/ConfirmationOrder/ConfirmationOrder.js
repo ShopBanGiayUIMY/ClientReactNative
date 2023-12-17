@@ -21,6 +21,7 @@ import Notification from "../Notification/Notification";
 const ConfirmationOrder = (props) => {
   const { getDefaultAddress, CreateAddress, Orders } = useAuth();
   const { Orderdata } = props.route.params;
+  console.log("Orderdata", Orderdata);
   const navigation = useNavigation();
   const [currentStep, setCurrentStep] = useState(1);
   const [addresses, setAddresses] = useState([]);

@@ -39,6 +39,7 @@ const COLOURS = {
 };
 import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.product.detail";
+import ModalBottomOrder from "../../Screen/Modal/modal.product.order";
 import Star from "react-native-star-view";
 import { SafeAreaView } from "react-native";
 const CpnProductDetail = ({ product, navigation }) => {
@@ -182,9 +183,13 @@ const CpnProductDetail = ({ product, navigation }) => {
     );
   };
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisibleOrder, setisModalVisibleOrder] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+  };
+  const toggleModalOrder = () => {
+    setisModalVisibleOrder(!isModalVisibleOrder);
   };
   let totalQuantitySold = daban;
   if (totalQuantitySold === null) {
@@ -194,7 +199,7 @@ const CpnProductDetail = ({ product, navigation }) => {
   }
 
   const hanldThanhToan = () => {
-    toggleModal();
+    toggleModalOrder();
   };
 
   return (
@@ -208,6 +213,13 @@ const CpnProductDetail = ({ product, navigation }) => {
           <ModalBottom
             openDrawer={isModalVisible}
             closeDrawer={toggleModal}
+            dataprod={data}
+          />
+        )}
+        {isModalVisibleOrder && (
+          <ModalBottomOrder
+            openDrawer={isModalVisibleOrder}
+            closeDrawer={toggleModalOrder}
             dataprod={data}
           />
         )}
@@ -462,12 +474,7 @@ const CpnProductDetail = ({ product, navigation }) => {
           />
           <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
         </Pressable>
-        <Pressable
-          style={styles.buyNowButton}
-          onPress={() => {
-            hanldThanhToan();
-          }}
-        >
+        <Pressable style={styles.buyNowButton} onPress={hanldThanhToan}>
           <Text style={styles.buttonTextmua}>Mua ngay</Text>
         </Pressable>
       </View>

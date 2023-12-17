@@ -36,11 +36,11 @@ const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress, handleOrder, navigation } = props;
   const [isAnyProductSelected, setIsAnyProductSelected] = useState(false);
   const { UpdateCreateCart, getTotalCart } = useAuth();
-  const [soluongchon, setsoluongchon] = useState(0);
   const [data, setData] = useState(dataCart);
   const [selectedItems, setSelectedItems] = useState([]);
   const [quantity, setQuantity] = useState([]);
   const dispatchRedux = useDispatch();
+  const [totalAmount, setTotalAmount] = useState(0);
   const loadlai = () => {
     handlePress();
   };
@@ -51,10 +51,15 @@ const ProductInCart = (props) => {
       return total + product_price * quantity;
     }, 0);
   };
-  let Orderdata = {
-    Cart_id: Cart_id,
-    total: calculateTotal(),
-    item_id: selectedItems.map((item) => item.item_id),
+  const handleNavigateToConfirmationOrder = () => {
+    let Orderdata = {
+      Cart_id: Cart_id,
+      total: totalAmount,
+      item_id: selectedItems.map((item) => item.item_id),
+    };
+    setSelectedItems([]);
+    setTotalAmount(0);
+    navigation.navigate("ConfirmationOrder", { Orderdata });
   };
   const toggleItemSelection = (item_id, product_price, quantity) => {
     setSelectedItems((prevSelectedItems) => {
@@ -93,12 +98,18 @@ const ProductInCart = (props) => {
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
   }, [dataCart]);
-
+  useEffect(() => {
+    setData(dataCart);
+  }, [dataCart]);
+  useEffect(() => {
+    setTotalAmount(calculateTotal()); // Cập nhật tổng số tiền khi selectedItems thay đổi
+  }, [selectedItems]);
   useEffect(() => {
     setData(dataCart);
     getTotalCart().then((result) => {
       if (result) {
-        dispatchRedux(soluonggiohang(result[0].total_cart_items));
+        console.log("result", result);
+        // dispatchRedux(soluonggiohang(result[0].total_cart_items));
       }
     });
   }, [dataCart]);
@@ -393,7 +404,7 @@ const ProductInCart = (props) => {
         <View style={[styles.totalTextContainer, { flex: 1 }]}>
           <Text style={styles.totalText}>Tổng thanh toán: </Text>
           <Text style={styles.tongtien}>
-            {calculateTotal().toLocaleString("de-DE")}
+            {totalAmount.toLocaleString("de-DE")}
             <Text style={styles.kihieutongtien}>đ</Text>
           </Text>
 
@@ -404,9 +415,7 @@ const ProductInCart = (props) => {
         </View>
         <View style={{ justifyContent: "center" }}>
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ConfirmationOrder", { Orderdata })
-            }
+            onPress={handleNavigateToConfirmationOrder}
             style={[
               styles.paymentButton,
               {

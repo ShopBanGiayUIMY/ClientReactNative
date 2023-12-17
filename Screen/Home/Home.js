@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import ListProduct from "../Products/ListProduct";
+import NotificationPermission from "../Notification/NotificationPermission";
 
 export default function Home({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -20,6 +21,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <NotificationPermission />
       <StatusBar backgroundColor="#00BCD4" barStyle="light-content" />
       {isLoading ? (
         // Hiển thị phần tử "loading" khi isLoading là true

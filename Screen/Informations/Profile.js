@@ -52,11 +52,6 @@ const Profile = ({ navigation }) => {
         </View>
       ) : (
         <>
-          <Notification
-            title="New Message"
-            body="You have a new messagesddsêew!"
-            data={{ type: "ORDERSTATUS", status: "PENDING" }} // Example data object
-          />
           <View style={styles.section}>
             <Information
               key={`information-${refreshCounter}`}

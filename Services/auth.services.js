@@ -306,6 +306,7 @@ const useAuth = () => {
     try {
       const response = await axios.get(
         `${Config.API_BASE_URL}/address/default`,
+
         {
           headers: headers,
         }
