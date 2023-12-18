@@ -75,61 +75,64 @@ const ChoXacNhan = () => {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.container}>
-      {item.OrderDetails.map((detail, index) => (
-        <View key={index} style={styles.productContainer}>
-          <Image
-            source={{ uri: detail.ProductDetail.Product.thumbnail }}
-            style={styles.productImage}
-          />
-          <View style={styles.productDetails}>
-            <Text style={styles.productTitle}>
-              {detail.ProductDetail.Product.product_name}
+    console.log("item", item),
+    (
+      <View style={styles.container}>
+        {item.OrderDetails.map((detail, index) => (
+          <View key={index} style={styles.productContainer}>
+            <Image
+              source={{ uri: detail.ProductDetail.Product.thumbnail }}
+              style={styles.productImage}
+            />
+            <View style={styles.productDetails}>
+              <Text style={styles.productTitle}>
+                {detail.ProductDetail.Product.product_name}
+              </Text>
+              <Text style={styles.productPriceSale}>
+                ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
+              </Text>
+              <Text style={styles.productQuantity}>x{detail.quantity}</Text>
+            </View>
+          </View>
+        ))}
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>
+            Tổng thanh toán: ₫
+            {parseFloat(item.totalAmount).toLocaleString("vi-VN")}
+          </Text>
+          <View>
+            <Text style={styles.totalText}>
+              Phương thức thanh toán:{" "}
+              <Text style={styles.phuongthucthanhtoan}>
+                {item.payment_method_id === 1
+                  ? "COD"
+                  : item.payment_method_id === 2
+                    ? "VNPAY"
+                    : ""}
+              </Text>
             </Text>
-            <Text style={styles.productPriceSale}>
-              ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
+            <Text style={styles.totalText}>
+              Trạng thái thanh toán:{" "}
+              <Text style={styles.trangthaithanhtoan}>
+                {item.paymentStatus === "UNPAID" ? (
+                  <Text style={{ color: "red" }}>Chưa thanh toán</Text>
+                ) : (
+                  <Text style={{ color: "rgba(35, 255, 0, 0.8)" }}>
+                    Đã thanh toán
+                  </Text>
+                )}
+              </Text>
             </Text>
-            <Text style={styles.productQuantity}>x{detail.quantity}</Text>
           </View>
         </View>
-      ))}
-      <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>
-          Tổng thanh toán: ₫
-          {parseFloat(item.totalAmount).toLocaleString("vi-VN")}
-        </Text>
-        <View>
-          <Text style={styles.totalText}>
-            Phương thức thanh toán:{" "}
-            <Text style={styles.phuongthucthanhtoan}>
-              {item.payment_method_id === 1
-                ? "COD"
-                : item.payment_method_id === 2
-                  ? "VNPAY"
-                  : ""}
+        <View style={styles.buttonContainer}>
+          <View style={styles.processingButton}>
+            <Text style={styles.processingButtonText}>
+              {item.OrderStatus.name}
             </Text>
-          </Text>
-          <Text style={styles.totalText}>
-            Trạng thái thanh toán:{" "}
-            <Text style={styles.trangthaithanhtoan}>
-              {item.paymentStatus === "UNPAID" ? (
-                <Text style={{ color: "red" }}>Chưa thanh toán</Text>
-              ) : (
-                <Text color="rgba(0, 255, 61, 0.8) ">Đã thanh toán</Text>
-              )}
-            </Text>
-          </Text>
-        </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        <View style={styles.processingButton}>
-          <Text style={styles.processingButtonText}>
-            {item.OrderStatus.name}
-          </Text>
-        </View>
+          </View>
 
-        {item.payment_method_id === 2 &&
-          (item.paymentStatus === "UNPAID" ? (
+          {item.payment_method_id === 2 && item.paymentStatus === "UNPAID" && (
             <View style={styles.processingButton}>
               <TouchableOpacity
                 style={styles.processingButtonpaymentStatus}
@@ -140,26 +143,21 @@ const ChoXacNhan = () => {
                 <Text style={{ color: "red" }}>Thanh Toán</Text>
               </TouchableOpacity>
             </View>
-          ) : (
-            <View style={styles.processingButton}>
-              <Text style={styles.processingButtonpaymentStatus}>
-                <Text style={{ color: "rgba(4, 229, 58, 0.8)" }}>
-                  Đã thanh toán
-                </Text>
-              </Text>
-            </View>
-          ))}
+          )}
 
-        <View style={styles.processingButtonHuy}>
-          <TouchableOpacity
-            style={styles.processingButtonText}
-            onPress={() => HuydonHang(item.order_id)}
-          >
-            <Text style={styles.processingButtonText}>Hủy</Text>
-          </TouchableOpacity>
+          {item.paymentStatus === "UNPAID" && (
+            <View style={styles.processingButtonHuy}>
+              <TouchableOpacity
+                style={styles.processingButtonText}
+                onPress={() => HuydonHang(item.order_id)}
+              >
+                <Text style={styles.processingButtonText}>Hủy</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
-    </View>
+    )
   );
 
   return (

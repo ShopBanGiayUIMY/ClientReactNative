@@ -8,7 +8,6 @@ import { Audio } from "expo-av";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
 
-
 const playSound = async () => {
   try {
     const { sound } = await Audio.Sound.createAsync(
@@ -88,10 +87,7 @@ async function registerForPushNotificationsAsync() {
       projectId: Constants.expoConfig.extra.eas.projectId,
     });
 
-  
-      console.log(token);
-    
-  
+    console.log(token);
   } else {
     alert("Must use physical device for Push Notifications");
   }
@@ -106,12 +102,12 @@ export default function Notification(props) {
   const notificationListener = useRef();
   const responseListener = useRef();
   const navigation = useNavigation();
-  const {UpdateNotifyToken}=useAuth();
-  const {state}=AuthStatus();
-  if (state.isLoggedIn){
-      UpdateNotifyToken(expoPushToken).then((res)=>{
-    console.log(res);
-  })
+  const { UpdateNotifyToken } = useAuth();
+  const { state } = AuthStatus();
+  if (state.isLoggedIn) {
+    UpdateNotifyToken(expoPushToken).then((res) => {
+      console.log(res);
+    });
   }
 
   useEffect(() => {

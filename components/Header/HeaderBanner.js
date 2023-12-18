@@ -68,7 +68,7 @@ const Slideshow = () => {
     setIsSwiping(false);
   };
   const handleBannerPress = (index) => {
-    alert(`Bạn đã ấn vào banner số ${index + 1}`);
+    
   };
   return (
     <View style={styles.container}>
