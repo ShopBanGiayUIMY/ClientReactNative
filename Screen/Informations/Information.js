@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,39 +7,46 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-
+import { useIsFocused } from "@react-navigation/native";
 import avatar from "../../images/avatar.png";
 import background from "../../images/backgroundprofile.png";
 import login from "../../images/login.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { AuthStatus } from "../../Services/AuthContext";
-
-
+import useAuth from "../../Services/auth.services";
 export default function Information({ navigation }) {
-  const { state ,dispatch} = AuthStatus();
-
-
- 
-
-  console.log(state.isLoggedIn);
+  const { state, dispatch } = AuthStatus();
+  const { getcountFavorites } = useAuth();
+  const [countFavorites, setCountFavorites] = useState(0);
+  const isFocused = useIsFocused();
   const handleLogin = () => {
-  
-    navigation.navigate("Login"); 
+    navigation.navigate("Login");
   };
   const handleRegister = () => {
-    navigation.navigate("Register"); 
+    navigation.navigate("Register");
   };
+  const getCountFavorites = async () => {
+    if (state.isLoggedIn) {
+      const count = await getcountFavorites();
+        setCountFavorites(count.value);
+        return count.value;
+    }else{
+      setCountFavorites(0);
+    }
 
+   
+  };
+  useEffect(() => {
+    getCountFavorites();
+  }, [navigation, isFocused]);
   return (
     <View style={styles.container}>
       <Image style={styles.backgroundImage} source={background} />
-     
-
       <View style={styles.header}>
         {!state.isLoggedIn ? (
           <View>
-            <Text style={{marginTop:50, textAlign: "center",fontSize:15 }}>
+            <Text style={{ marginTop: 50, textAlign: "center", fontSize: 15 }}>
               Đăng nhập để trải nghiệm tốt hơn nhé!
             </Text>
             <View
@@ -105,11 +112,18 @@ export default function Information({ navigation }) {
               <FontAwesomeIcon icon={faCog} size={24} style={styles.cogIcon} />
             </TouchableOpacity>
             <View style={styles.userInfoContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("UploadImage")}
+              >
+
               <Image style={styles.avatar} source={avatar} />
+              </TouchableOpacity>
               <View style={styles.textContainer}>
-                <Text style={styles.userName}>Nguyễn Văn Huy</Text>
-                <Text style={styles.likeproducts}>3 sản phẩm đã thích</Text>
-                <Text style={styles.saleOffUser}>100 Phiếu giảm giá</Text>
+                <Text style={styles.userName}>{state.userInfo.username}</Text>
+                <Text style={styles.likeproducts}>
+                  {countFavorites} sản phẩm đã thích
+                </Text>
+                {/* <Text style={styles.saleOffUser}>100 Phiếu giảm giá</Text> */}
               </View>
             </View>
           </View>
@@ -169,7 +183,7 @@ const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
+    marginHorizontal: 20,
   },
   textContainer: {
     marginLeft: 15,

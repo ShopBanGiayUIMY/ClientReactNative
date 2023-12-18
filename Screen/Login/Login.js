@@ -1,94 +1,191 @@
-import React, { useState,Component,useLayoutEffect  } from "react";
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity,ToastAndroid } from "react-native";
+import React, { useState, Component, useLayoutEffect, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  ToastAndroid,
+  BackHandler,
+} from "react-native";
 import eye from "../../images/eys.jpg";
 import face from "../../images/facebook.png";
 import google from "../../images/google.png";
-import Checkbox from 'expo-checkbox';
-import  useAuth  from "../../Services/auth.services";
+import Checkbox from "expo-checkbox";
+import useAuth from "../../Services/auth.services";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import logo from "../../assets/images/logo.png";
-export default function Login ({navigation})  {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
+import { AuthStatus } from "../../Services/AuthContext";
+import { soluonggiohang } from "../../Services/Redux/action/Actions";
+import { useDispatch, useSelector } from "react-redux";
+export default function Login({ navigation }) {
   const [isloading, setIsLoading] = useState(false);
-  useLayoutEffect(() => { 
-    navigation.setOptions({ 
-      headerTitle: 'Đăng nhập',
+  const { state, dispatch } = AuthStatus();
+  const { InfoAuth, getTotalCart } = useAuth();
+  useEffect(() => {
+    const handleBackPress = () => {
+      navigation.navigate("BottomTabNavigation");
+      return true;
+    };
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
+  }, []);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Đăng nhập",
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ marginLeft: 5 ,marginRight: 10}}
+          onPress={() => navigation.navigate("BottomTabNavigation")}
+          style={{ marginLeft: 5, marginRight: 10 }}
         >
-         
-         <FontAwesome name="arrow-left" size={24} color="black" style={styles.icon}/>
+          <FontAwesome
+            name="arrow-left"
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
         </TouchableOpacity>
       ),
-    }) 
-  }, [])
+    });
+  }, []);
   const { loginUser } = useAuth();
   const [formData, setFormData] = useState({
+    email: "",
     username: "",
     password: "",
-  }); 
+  });
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const checkemail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
+  const checkInternetConnection = async () => {
+    const netInfoState = await NetInfo.fetch();
 
-  const handleLogin = async () =>{
-    
+    if (netInfoState.isConnected) {
+      console.log("Đã kết nối với internet");
+    } else {
+      console.log("Không có kết nối internet");
+    }
+  };
+  const dispatchRedux = useDispatch();
+  const checkinput = (text) => {
+    if (checkemail.test(text)) {
+      setFormData({ ...formData, email: text, username: "" });
+    } else if (usernameRegex.test(text)) {
+      setFormData({ ...formData, username: text, email: "" });
+    } else {
+      setFormData({ ...formData, email: text, username: text });
+    }
+  };
+  const handleLogin = () => {
     try {
-    if (formData.username.trim().length === 0) {
-      ToastAndroid.show('Không để rỗng!', ToastAndroid.SHORT);
-      return;
-    } 
-    else if (!agreeToTerms) {
-      ToastAndroid.show('Bạn chưa đồng ý với điều khoản!', ToastAndroid.SHORT);
-      return;
-    }
-    else {
-      const response = await loginUser(formData);
-      if (response) {
-        console.log(response,"huydz");
-        setIsLoading(true);
-        ToastAndroid.show('Chúc mừng bạn đăng nhập thành công ✓', ToastAndroid.SHORT);
-        setTimeout(() => {
-          setIsLoading(false);
-          navigation.replace("SplashStore");
-        }, 2000);
+      checkInternetConnection();
+
+      if (formData.username.length === 0 && formData.email.length === 0) {
+        ToastAndroid.show("Các trường không để rỗng", ToastAndroid.SHORT);
       } else {
-        // Xử lý trường hợp không nhận được dữ liệu từ hàm loginUser
-        console.error("Tài khoản hoặc mật khẩu không tồn tại");
+        if (!agreeToTerms) {
+          ToastAndroid.show("Bạn chưa đồng ý điều khoản !", ToastAndroid.SHORT);
+        } else {
+          loginUser(formData)
+            .then((result) => {
+              if (result && result.success) {
+                if (result.verified !== "true") {
+                  // User is not verified
+                  console.log(result);
+                  ToastAndroid.show(
+                    "Bạn vui lòng vào gmail để xác nhận tài khoản!",
+                    ToastAndroid.SHORT
+                  );
+                  dispatch({ type: "LOGOUT" });
+                } else {
+                  // User is verified
+                  dispatch({ type: "LOGIN", payload: result.user_id });
+                  AsyncStorage.setItem(
+                    "accesstoken",
+                    JSON.stringify(result.accesstoken)
+                  );
+                  AsyncStorage.setItem(
+                    "user_id",
+                    JSON.stringify(result.user_id)
+                  );
+                  AsyncStorage.setItem("isLoggedIn", "true");
+
+                  InfoAuth().then((data) => {
+                    if (data) {
+                      dispatch({ type: "USERINFO", payload: data });
+                    }
+                  });
+                  getTotalCart(result).then((data) => {
+                    if (data) {
+                      dispatchRedux(soluonggiohang(data[0].total_cart_items));
+                    }
+                  });
+
+                  setIsLoading(true);
+                  ToastAndroid.show(result.message, ToastAndroid.SHORT);
+
+                  setTimeout(() => {
+                    setIsLoading(false);
+                    navigation.replace("SplashStore");
+                  }, 2000);
+                }
+              } else if (result && !result.success && agreeToTerms) {
+                // Login failed
+                ToastAndroid.show(result.message, ToastAndroid.SHORT);
+                return false;
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              ToastAndroid.show("Lỗi!", ToastAndroid.SHORT);
+            });
+        }
       }
-         
-       
-    }
     } catch (error) {
-      ToastAndroid.show('Lỗi Mạng ✓', ToastAndroid.SHORT);
+      ToastAndroid.show("Lỗi!", ToastAndroid.SHORT);
     }
-    
-  }
+  };
   return (
     <View style={styles.container}>
-       <LoadingScreen isVisible={isloading} navigation={navigation} />
-      <Image source={logo} style={styles.logo} resizeMode="contain"/>
-      <Text style={styles.nameapp}>Snake Nike <Text style={styles.shop}> Shop</Text></Text>
+      <LoadingScreen isVisible={isloading} navigation={navigation} />
+      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <Text style={styles.nameapp}>
+        Nike Sneaker<Text style={styles.shop}> Shop</Text>
+      </Text>
 
       <View style={styles.view}>
-      <TextInput
-          onChangeText={(text) => setFormData({ ...formData, username: text })}
-          value={formData.username}
+        <TextInput
+          onChangeText={(text) => checkinput(text)}
           style={styles.input}
           placeholder="Enter your username or email"
+          autoCapitalize="none"
         />
-       <View style={styles.passwordInput}>
+        <View style={styles.passwordInput}>
           <TextInput
-            onChangeText={(text) => setFormData({ ...formData, password: text })}
+            onChangeText={(text) =>
+              setFormData({ ...formData, password: text })
+            }
             value={formData.password}
             style={styles.input}
             placeholder="Enter your password"
             secureTextEntry={!isPasswordVisible}
+            autoCapitalize="none"
           />
-          <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeContainer}>
-            <Image source={eye} style={[styles.eye, isPasswordVisible && styles.invisibleEye]} />
+          <TouchableOpacity
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            style={styles.eyeContainer}
+          >
+            <Image
+              source={eye}
+              style={[styles.eye, isPasswordVisible && styles.invisibleEye]}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -97,10 +194,10 @@ export default function Login ({navigation})  {
         <Checkbox
           style={styles.checkbox}
           value={agreeToTerms}
-          onValueChange={()=>setAgreeToTerms(!agreeToTerms)}
-          color={agreeToTerms ? '#4630EB' : undefined}
+          onValueChange={() => setAgreeToTerms(!agreeToTerms)}
+          color={agreeToTerms ? "#4630EB" : undefined}
         />
-        <Text style={{ marginLeft: 10, marginTop: 2 }}>Remember me? </Text>
+        <Text style={{ marginLeft: 10, marginTop: 2 }}>Đồng ý điều khoản!</Text>
         <Text style={styles.forgotpassword}>Forgot the password?</Text>
       </View>
 
@@ -114,37 +211,37 @@ export default function Login ({navigation})  {
         <Text>Or With</Text>
       </View>
 
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonInnerContainer}>
-          <Image
-            source={face}
-            style={styles.imagess}
-          />
+          <Image source={face} style={styles.imagess} />
           <Text style={styles.buttonText}>Signup with Facebook</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <View style={styles.buttonContainer1}>
+      {/* <View style={styles.buttonContainer1}>
         <TouchableOpacity style={styles.buttonInnerContainer1}>
-          <Image
-            source={google}
-            style={styles.imagess}
-          />
+          <Image source={google} style={styles.imagess} />
           <Text style={styles.buttonText1}>Signup with Google</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={styles.createaccount}>
-        <Text style={styles.texttt}>Don't have an account? <Text style={styles.texttt1}>Create an account</Text></Text>
+        <Text style={styles.texttt}>Bạn chưa có tài khoản? </Text>
+        <TouchableOpacity
+          style={styles.createaccount1}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.texttt1}>Đăng ký ngay</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    
+    backgroundColor: "#fff",
+    alignItems: "center",
+    flex: 1,
   },
   logo: {
     width: 90,
@@ -153,11 +250,11 @@ const styles = StyleSheet.create({
   },
   nameapp: {
     fontSize: 30,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
   shop: {
-    color: 'rgba(255, 198, 0, 1)',
+    color: "rgba(255, 198, 0, 1)",
   },
   view: {
     marginTop: 20,
@@ -169,16 +266,16 @@ const styles = StyleSheet.create({
     width: 300,
     marginTop: 20,
     paddingHorizontal: 20,
-    borderColor: 'gray',
+    borderColor: "gray",
   },
   passwordInput: {
-    position: 'relative',
+    position: "relative",
   },
   eyeContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 34,
     right: 15,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   eye: {
     width: 20,
@@ -189,51 +286,56 @@ const styles = StyleSheet.create({
   },
   checkboxx: {
     marginTop: 15,
-    color: 'gray',
-    flexDirection: 'row',
+    color: "gray",
+    flexDirection: "row",
   },
   forgotpassword: {
     marginLeft: 54,
     marginTop: 4,
     fontSize: 10,
-    color: 'red',
-    textDecorationLine: 'underline',
+    color: "red",
+    textDecorationLine: "underline",
   },
   login: {
     marginTop: 25,
     borderWidth: 1,
-    backgroundColor: 'rgba(14, 100, 210, 1)',
+    backgroundColor: "rgba(14, 100, 210, 1)",
     borderRadius: 10,
     width: 300,
     height: 45,
+    borderColor: "white",
+    justifyContent: "center",
   },
   touchablecity: {
-    color: 'white',
-    textAlign: 'center',
-    marginTop: 12,
+    color: "white",
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: 15,
+    width: "100%",
   },
   orWith: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   buttonContainer: {
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: 'rgba(14, 100, 210, 1)', // Add some padding for better spacing
+    backgroundColor: "rgba(14, 100, 210, 1)", // Add some padding for better spacing
     marginTop: 10,
     width: 300,
+    borderColor: "white",
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // Arrange the image and text horizontally
-    alignItems: 'center', // Center the items vertically
+    flexDirection: "row", // Arrange the image and text horizontally
+    alignItems: "center", // Center the items vertically
     padding: 10,
   },
   buttonText: {
     marginLeft: 60,
-    color: 'white', // Add some left margin to create space between the image and text
+    color: "white", // Add some left margin to create space between the image and text
   },
   imagess: {
     width: 20,
@@ -243,18 +345,19 @@ const styles = StyleSheet.create({
   buttonContainer1: {
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginTop: 30,
     width: 300,
+    borderColor: "white",
   },
   buttonInnerContainer1: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 10,
   },
   buttonText1: {
     marginLeft: 60,
-    color: 'black',
+    color: "black",
   },
   imagess1: {
     width: 20,
@@ -262,16 +365,25 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   createaccount: {
-    marginTop: 30,
+    width: "100%",
+    alignItems: "center",
+  },
+  texttt: {
+    textAlign: "center",
   },
   texttt1: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    textAlign: "center",
+    fontWeight: "bold",
+    textDecorationLine: "underline",
   },
   icon: {
     fontSize: 20,
     color: "#7DDDFF",
     marginTop: 3,
+  },
+  createaccount1: {
+    width: "100%",
+    alignItems: "center",
+    paddingTop: 10,
   },
 });

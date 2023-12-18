@@ -32,8 +32,22 @@ const authReducer = (state, action) => {
     case "USERINFO":
       return {
         ...state,
-        isLoggedIn: true,
         userInfo: action.payload,
+      };
+    case "INFOCART":
+      return {
+        ...state,
+        infoCart: action.payload,
+      };
+    case "ORDERCART":
+      return {
+        ...state,
+        OrderCart: action.payload,
+      };
+    case "USE_VOUCHER":
+      return {
+        ...state,
+        UseVoucher: action.payload,
       };
     default:
       return state;
@@ -45,6 +59,9 @@ const initialState = {
   isLoggedIn: false,
   user: null,
   userInfo: [],
+  OrderCart: [],
+  infoCart: [],
+  UseVoucher: [],
 };
 
 // Custom hook để sử dụng giá trị và hàm dispatch từ Context

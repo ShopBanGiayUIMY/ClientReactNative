@@ -1,185 +1,216 @@
+import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
-  Text,
   View,
-  Image,
   ScrollView,
-  TouchableOpacity,
-  Alert,
-  Modal,
-  Pressable,
+  StyleSheet,
+  Image,
+  Dimensions,
+  RefreshControl,
+  SafeAreaView,
+  StatusBar,
+  ActivityIndicator, // Import ActivityIndicator
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faEllipsis, faCartPlus, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-const LikeProducts = ({ navigation }) => {
-  //LikeProduct
-  const [likedProducts, setLikedProducts] = useState([]);
-  //handldeChuyenMan
-  const handldeOnPressProductDetail = () => {};
+import { AuthStatus } from "../../Services/AuthContext";
+import loading from "../../images/loading.gif";
+import FavoriteProduct from "../../components/FavoriteProduct/FavoriteProduct";
+import { FlatGrid } from "react-native-super-grid";
+const WIDTH = Dimensions.get("window").width;
+const HEIGHT = Dimensions.get("window").height;
+import Config from "../../Api/Config";
+import useAuth from "../../Services/auth.services";
 
-  useEffect(() => {
-    getLikeProducts();
-  }, []);
+export default function LikeProducts({ navigation }) {
+  const [data, setData] = useState(null);
+  const [isloading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [backgroundOpacity, setBackgroundOpacity] = useState(0);
+  const [visibleItems, setVisibleItems] = useState(4);
+  const { GetFavorite, RemoveFavorite } = useAuth();
+  const { state } = AuthStatus();
+  const fetchData = async () => {
+    setIsLoading(true); // Show loading indicator while fetching data
 
-  // Lấy danh sách sản phẩm đã được thích từ AsyncStorage
-  const getLikeProducts = async () => {
-    try {
-      const likedProductsJSON = await AsyncStorage.getItem("likedProducts");
-
-      if (likedProductsJSON) {
-        // Chuyển chuỗi JSON thành một mảng hoặc đối tượng JavaScript
-        const likedProductsArray = JSON.parse(likedProductsJSON);
-        setLikedProducts(likedProductsArray);
-      }
-    } catch (error) {
-      console.log("Lỗi không lấy được danh sách sản phẩm đã thích: " + error);
+    if (state.isLoggedIn) {
+      const responseData = await GetFavorite();
+      const first10Items = responseData.slice(0, visibleItems);
+      setData(first10Items);
+      setIsLoading(false); // Hide loading indicator after data is fetched
+      setRefreshing(false);
     }
   };
-  //
-  const handleMoreOption = () => {
-    Alert.alert(
-      "Cảnh báo !",
-      "Bạn có chắc chắn muốn bỏ thích sản phẩm này chứ?",
-      [
-        {
-          text: "Hủy bỏ",
-          style: "cancel", // or 'destructive' for a destructive button
-          onPress: () => console.log("Cancel Pressed"),
-        },
-        {
-          text: "Bỏ thích",
-          onPress: async () => {
-            console.log('====================================');
-            console.log('Bỏ thích đang cập nhật');
-            console.log('====================================');("Chức năng đang cập nhật");
-          },
-        },
-      ]
-    );
+
+  useEffect(() => {
+    if (!refreshing) {
+      fetchData();
+    }
+  }, [refreshing]);
+
+  useEffect(() => {
+    let time;
+
+    if (state.isLoggedIn) {
+      time = setTimeout(() => {
+        if (!refreshing) {
+          fetchData();
+        }
+      }, 1000);
+    } else {
+      navigation.replace("Login", { focustile: "Home" });
+    }
+
+    return () => {
+      clearTimeout(time);
+    };
+  }, [navigation, refreshing, state.isLoggedIn]);
+
+  useEffect(() => {
+    if (visibleItems > 4)
+      setTimeout(() => {
+        setRefreshing(true);
+        fetchData();
+      }, 1200);
+  }, [visibleItems]);
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const height = event.nativeEvent.layoutMeasurement.height;
+    if (offsetY + height >= contentHeight - 20) {
+      setVisibleItems(visibleItems + 4);
+    }
+
+    const newOpacity = Math.min(offsetY / 100, 1);
+    setBackgroundOpacity(newOpacity);
+  };
+
+  const handlePressDetailProduct = (item) => {
+    navigation.navigate("ProductDetail", { product: item });
+    console.log("itemdsdđ", item);
+  };
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setVisibleItems(4);
+    setTimeout(() => {
+      setRefreshing(true);
+      fetchData();
+    }, 1700);
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={{flexDirection:'row'}}>
-        <Pressable onPress={()=>{navigation.goBack()}}>
-        <FontAwesomeIcon icon={faArrowLeft} size={25} color="orange" style={{marginTop:40, marginStart:10}}/>
-        </Pressable>
-        <Text style={styles.txtTitle}>Danh sách sản phẩm yêu thích</Text>
-      </View>
-      <View style={styles.columnContainer}>
-        {likedProducts && likedProducts.length > 0 ? (
-          likedProducts.map((product, index) => (
-            <TouchableOpacity
-              onPress={() => {
-                alert("Bạn đã ấn vào id số:  " + product.product_id);
-              }}
-              key={index}
-              style={styles.item}
-            >
-              <Image style={styles.img} source={{ uri: product.thumbnail }} />
-              <Text style={styles.productName}>{product.product_name}</Text>
-              <Text style={styles.productName}>{product.product_price}</Text>
-              <Text style={styles.productName}>
-                {product.product_description}
-              </Text>
-              <View style={styles.viewRow}>
-                <TouchableOpacity
-                  style={styles.touchMoreOption}
-                  onPress={() => {
-                    handleMoreOption();
-                  }}
-                >
-                  <FontAwesomeIcon icon={faEllipsis} size={20} color="gray" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    width: 100,
-                    height: 30,
-                    borderRadius: 2,
-                    borderColor: "orange",
-                    borderWidth: 1 , 
-                  }}
-                >
-                  <Text
-                    style={{ textAlign: "center", width: 100, marginTop: 5 }}
-                  >
-                    Tương tự
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.touchMua}>
-                  <FontAwesomeIcon
-                    style={styles.fontMua}
-                    icon={faCartPlus}
-                    size={20}
-                    color="white"
-                  />
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>Chưa có sản phẩm nào được thích.</Text>
-        )}
-      </View>
-    </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        backgroundColor="rgba(234, 235, 236, 0.72)"
+        barStyle="dark-content"
+      />
+
+      {isloading ? (
+        <ActivityIndicator
+          size="large"
+          color="#9Bd35A"
+          style={styles.loadingIndicator}
+        />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.viewProductsContainer}
+          showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          removeClippedSubviews={true}
+          maximumZoomScale={1}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#9Bd35A", "#689F38"]}
+            />
+          }
+          nestedScrollEnabled={true}
+          style={{ flex: 0 }}
+        >
+          <View style={styles.productList}>
+            <FlatGrid
+              itemDimension={WIDTH / 3}
+              scrollEnabled={false}
+              data={data}
+              renderItem={({ item }) => (
+                <FavoriteProduct
+                  dataProd={item}
+                  handlePress={handlePressDetailProduct}
+                />
+              )}
+            />
+          </View>
+        </ScrollView>
+      )}
+    </SafeAreaView>
   );
-};
-
-export default LikeProducts;
-
+}
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#A9CDEE",
+    width: WIDTH,
     flex: 1,
+    paddingBottom: 50,
+
+    height: HEIGHT,
   },
-  txtTitle: {
-    fontSize: 30,
-    textAlign: "center",
-    marginTop: 35,
-  },
-  columnContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  item: {
-    width: "48%",
-    margin: "1%",
-    backgroundColor: "white",
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    height: 250,
   },
-  img: {
-    width: "100%",
-    height: 150,
-    borderRadius: 5,
-  },
-  productName: {
-    textAlign: "center",
-    width: "100%",
-  },
-  viewRow: {
+  searchs: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
-    marginTop: 10,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    height: 75,
+    backgroundColor: "rgba(75, 158, 255, 1)",
   },
-  touchMoreOption: {
-    marginStart: 10,
-    marginTop: 3,
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  touchMua: {
-    marginEnd: 10,
-    borderRadius: 50,
-    backgroundColor: "orange",
-    width: 25,
-    height: 25,
-    marginTop: 3,
+  iconWrapper: {
+    marginLeft: 10,
   },
-  fontMua: {
-    marginTop: 4,
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 47.6,
+    borderWidth: 1,
+    borderColor: "gray",
+    marginLeft: 20,
+  },
+  inputt: {
+    width: 200,
+    height: 30,
+    paddingLeft: 10,
+    fontSize: 20,
+    color: "white",
+  },
+  glass: {
+    marginLeft: 10,
+    marginRight: 5,
+  },
+  viewBanner: {
+    width: WIDTH,
+  },
+  viewProductsContainer: {
+    flexGrow: 1,
+  },
+  productList: {
+    // flexDirection: "row",
+    // flexWrap: "wrap",
+    // justifyContent: "space-around",
+    // marginTop: 12,
+    // alignSelf: "center",
+    // width: WIDTH-10,
+    // borderColor: "red",
+    // borderWidth: 1,
+  },
+  loadingImage: {
+    width: 100,
+    height: 100,
+    marginTop: 100,
     alignSelf: "center",
   },
 });

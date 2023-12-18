@@ -15,7 +15,7 @@ export default function PasswordNew({ navigation, route }) {
       headerTitle: "Xác minh bảo mật",
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("AccountInfo")}
           style={{ marginLeft: 5, marginRight: 10 }}
         >
           <FontAwesome
@@ -57,7 +57,7 @@ export default function PasswordNew({ navigation, route }) {
           , 1000);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data4:", error);
     }
   };
   const handleSavePassword = () => {

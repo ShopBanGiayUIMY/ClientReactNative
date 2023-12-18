@@ -10,14 +10,17 @@ import {
 } from "react-native";
 
 const { width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const images = [
-  "https://1sneaker.vn/wp-content/uploads/2021/06/giay-Nike-Dep-14.jpg",
-  "http://ordixi.com/wp-content/uploads/2020/01/giay-nike-air-force-1-low-shadow-se-spruce-aura-white-ck3172-0023.jpg",
-  "https://bazaarvietnam.vn/wp-content/uploads/2020/11/giay-the-thao-nike-x-PEACEMINUSONE-para-noise-20-g-dragon-01-768x725.jpg",
-  "https://ben.com.vn/tin-tuc/wp-content/uploads/2021/12/hinh-nen-nike-dep-cho-dien-thoai-1.jpg",
-  "https://ben.com.vn/tin-tuc/wp-content/uploads/2021/12/hinh-nen-nike-dep-cho-dien-thoai-1.jpg",
-  "https://ben.com.vn/tin-tuc/wp-content/uploads/2021/12/hinh-nen-nike-dep-cho-dien-thoai-1.jpg",
+  "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/7307e562514417.5a931ab904cad.gif",
+  "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/hk7hv22ezuxx0qvadlt9/air-jordan-legacy-312-low-shoes-6Vd4Xl.png",
+  "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/6c220fb9-a08c-437a-ae82-9b59bc700394/jordan-one-take-4-pf-shoes-v5trdl.png",
+  "https://iili.io/JuGdGOQ.png",
+  "https://giaysneaker.store/media/wysiwyg/slidershow/home-12/banner_NIKE.jpg",
+  "https://chiinstore.com/media/news/9_banner_nike.jpg",
+  "https://i.pinimg.com/originals/84/e0/54/84e0549407ac340872460e040456b59d.gif",
+  "https://cdn.dribbble.com/users/2198140/screenshots/4377526/nike_shoe.gif",
 ];
 
 const Slideshow = () => {
@@ -54,7 +57,7 @@ const Slideshow = () => {
           animated: true,
         });
       }
-    }, 2500);
+    }, 5000);
     return () => clearInterval(timer);
   }, [currentIndex, isSwiping]);
   const handleScrollBegin = () => {
@@ -128,17 +131,18 @@ const Slideshow = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.05,
     marginHorizontal: 10,
+    width: width,
+  
   },
   scrollViewContent: {
     paddingHorizontal: 0, // Thêm giá trị padding cho ScrollView\
   },
   imageContainer: {
     width: width,
-    height: 150,
-   
-  
+    height: 180,
+    position: "relative",
   },
   image: {
     width: "95%",
@@ -149,7 +153,7 @@ const styles = StyleSheet.create({
   pagination: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 10,
+    top: 150,
     alignSelf: "center",
   },
   paginationDot: {
