@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
+  Alert,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { AuthStatus } from "../../Services/AuthContext";
@@ -35,7 +36,7 @@ const Setting = ({ isVisible, navigation }) => {
       headerTitle: "Cài đặt",
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
           style={{ marginLeft: 5, marginRight: 10 }}
         >
           <FontAwesome
@@ -65,19 +66,19 @@ const Setting = ({ isVisible, navigation }) => {
         <Text style={styles.itemText}>Địa chỉ</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => handleNavigation("Country")}
+        onPress={() => Alert.alert("Thông báo", "Chức năng đang phát triển")}
         style={styles.item}
       >
         <Text style={styles.itemText}>Quốc gia</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => handleNavigation("Help")}
+        onPress={() => Alert.alert("Thông báo", "Chức năng đang phát triển")}
         style={styles.item}
       >
         <Text style={styles.itemText}>Trợ giúp</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => handleNavigation("Feedback")}
+        onPress={() => Alert.alert("Thông báo", "Chức năng đang phát triển")}
         style={styles.item}
       >
         <Text style={styles.itemText}>Phản hồi</Text>

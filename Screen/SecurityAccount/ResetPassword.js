@@ -41,7 +41,7 @@ const ResetPassword = ({ isVisible, navigation }) => {
         setphone(data.phone);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data5:", error);
     }
   };
   useEffect(() => {
@@ -86,13 +86,13 @@ const ResetPassword = ({ isVisible, navigation }) => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}  onPress={()=>handleNavigation("FormSecurity")}>
+      {/* <TouchableOpacity style={styles.button}  onPress={()=>handleNavigation("FormSecurity")}>
         <View style={styles.buttonContent}>
           <FontAwesome name="phone" size={24} color="white" style={styles.iconphone} />
           <Text style={styles.buttonText}>Gửi mã về Số điện thoại</Text>
           <FontAwesome name="chevron-right" size={24} color="black" style={styles.iconitem}/>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       </View>
     </View>
   );

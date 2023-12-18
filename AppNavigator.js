@@ -1,130 +1,57 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Cart from "./Screen/Cart";
 import Register from "./Screen/Register/Register";
-import Notification from "./Screen/Notification";
-import Profile from "./Screen/Informations/Profile";
 import Login from "./Screen/Login/Login";
 import ProductDetail from "./Screen/Products/ProductDetail";
 import SplashStore from "./Screen/Splash/SplashStore";
-import Home from "./Screen/Home/Home";
 import Setting from "./Screen/Setting/Setting";
 import ResetPassword from "./Screen/SecurityAccount/ResetPassword";
 import FormSecurity from "./Screen/SecurityAccount/FormSecurity/FormSecurity";
 import PasswordNew from "./Screen/SecurityAccount/PasswordNew";
 import Coupon from "./Screen/Coupons/Coupon";
+import CpnProductDetail from "./components/Product/CpnProductDetail";
+import Address from "./Screen/Informations/Address";
+import Category from "./components/MenuCategory/Category";
+import OrderDetail from "./Screen/Order/OrderDetail";
+import Payment from "./Screen/Payment/Payment";
+import PaymentMethod from "./Screen/Payment/PaymentMethod";
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
-import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
-import { View, TouchableWithoutFeedback } from "react-native";
 import LikeProducts from "./Screen/Informations/LikeProducts";
+import Profile from "./Screen/Informations/Profile";
 import Search from "./Screen/Search/Search";
-import Icon from "react-native-vector-icons/FontAwesome";
-import ModalBottom from "./Screen/Modal/modal.bottom";
-function TabButton({ onPress, accessibilityState, children }) {
-  const viewRef = useRef(null);
-  useEffect(() => {
-    if (accessibilityState.selected) {
-      viewRef.current.animate({
-        0: { scale: 0.5, rotate: "0deg" },
-        1: { scale: 1.8, rotate: "360deg" },
-      });
-    } else {
-      viewRef.current.animate({
-        0: { scale: 0.5, rotate: "360deg" },
-        1: { scale: 1.5, rotate: "0deg" },
-      });
-    }
-  }, [accessibilityState.selected]);
-
-  return (
-    <TouchableWithoutFeedback onPress={onPress} style={{ flex: 1 }}>
-      <Animatable.View ref={viewRef} duration={500} style={{ flex: 1 }}>
-        {children}
-      </Animatable.View>
-    </TouchableWithoutFeedback>
-  );
-}
-
-function TabNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: {
-          height: 55,
-          position: "absolute",
-          backgroundColor: "#fff",
-        },
-      }}
-    >
-      <Tab.Screen
-        name="Homes"
-        component={Home}
-        options={{
-          
-          tabBarShowLabel: false,
-          title: "Chào mừng bạn",
-          headerShown: false,
-          
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="home" color={color} size={20} />
-          ),
-          tabBarButton: (props) => <TabButton {...props} />,
-        }}
-      />
-      <Tab.Screen
-        name="Notification"
-        component={ModalBottom}
-        options={{
-          tabBarShowLabel: false,
-          title: "Thông báo",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={20} />
-          ),
-          tabBarButton: (props) => <TabButton {...props} />,
-        }}
-      />
-      <Tab.Screen
-        name="Cart"
-        component={Cart}
-        options={{
-          tabBarShowLabel: false,
-          title: "Cart",
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="cart" color={color} size={20} />
-          ),
-          tabBarButton: (props) => <TabButton {...props} />,
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarShowLabel: false,
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" color={color} size={20} />
-          ),
-          tabBarButton: (props) => <TabButton {...props} />,
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
-
+import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
+import BottomTabNavigation from "./navigations/BottomTabNavigation";
+import Qrcode from "./Screen/Qrcode/Qrcode";
+import ConfirmationOrder from "./Screen/ConfirmationOrder/ConfirmationOrder";
+import EditAddress from "./Screen/Address/EditAddress";
+import AddAddress from "./Screen/Address/AddAddress";
+import CouponOrder from "./Screen/CouponsOrder/CouponOrder";
+import Contact from "./Screen/Contact/Contact";
+import VerifyVnPayPayMent from "./Screen/ConfirmationOrder/Verifyvnpaypayment";
+import ThanhToanLaiVnpay from "./Screen/PurchaseOrder/ThanhToanLaiVnpay";
+import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
+import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
+import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
+import UploadImage from "./Screen/Informations/upload";
+import InfoUser from "./Screen/Accountinfomation/Infouser";
+import About from "./Screen/Informations/About";
 export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashStore">
         <Stack.Screen
+          name="BottomTabNavigation"
+          component={BottomTabNavigation}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="SplashStore"
           component={SplashStore}
-          options={{ headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
@@ -133,20 +60,32 @@ export default function AppNavigator() {
           component={ProductDetail}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LikeProducts"
-          component={LikeProducts}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="LikeProducts" component={LikeProducts} />
         <Stack.Screen name="Setting" component={Setting} />
         <Stack.Screen
           name="AccountInfo"
           component={AccountInfo}
+          options={{
+            resetOnBlur: true,
+          }}
+        />
+        <Stack.Screen
+          name="CpnProductDetail"
+          component={CpnProductDetail}
+          options={{
+            resetOnBlur: true,
+          }}
+        />
+        <Stack.Screen
+          name="Address"
+          component={Address}
+          options={{
+            resetOnBlur: true,
+          }}
+        />
+        <Stack.Screen
+          name="Category"
+          component={Category}
           options={{
             resetOnBlur: true,
           }}
@@ -156,6 +95,73 @@ export default function AppNavigator() {
         <Stack.Screen name="PasswordNew" component={PasswordNew} />
         <Stack.Screen name="Coupon" component={Coupon} />
         <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="DanhGiaProduct" component={DanhGiaProduct} />
+        <Stack.Screen name="Qrcode" component={Qrcode} />
+        <Stack.Screen name="ConfirmationOrder" component={ConfirmationOrder} />
+        <Stack.Screen
+          name="OrderDetail"
+          component={OrderDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Payment"
+          component={Payment}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PaymentMethod"
+          component={PaymentMethod}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="EditAddress" component={EditAddress} />
+        <Stack.Screen name="AddAddress" component={AddAddress} />
+        <Stack.Screen name="CouponOrder" component={CouponOrder} />
+        <Stack.Screen name="Contact" component={Contact} options={{}} />
+        <Stack.Screen
+          name="VerifyCOD"
+          component={VerifyCOD}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VerifyVnPayPayMent"
+          component={VerifyVnPayPayMent}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MainTabPurchase"
+          component={MainTabPurchase}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="StatusOrder"
+          component={StatusOrder}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="UploadImage"
+          component={UploadImage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ThanhToanLaiVnpay"
+          component={ThanhToanLaiVnpay}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="InfoUser"
+          component={InfoUser}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="About"
+          component={About}
+          options={{ headerShown: true }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

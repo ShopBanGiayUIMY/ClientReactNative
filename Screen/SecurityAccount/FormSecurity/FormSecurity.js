@@ -120,7 +120,7 @@ const FormSecurity = ({navigation,route}) => {
         navigation.navigate("PasswordNew",{auth_code:value});
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data6:", error);
     }
   };
   const SendOtp = () => {

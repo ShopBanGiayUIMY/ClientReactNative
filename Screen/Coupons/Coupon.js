@@ -8,30 +8,39 @@ import {
   Pressable,
   Image,
   Dimensions,
+
 } from "react-native";
 const windowWidth = Dimensions.get("window").width;
 import ModalCoupon from "./modal.coupon";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CouponComponent from "../../components/Coupon/CouponComponent";
+import useAuth from "../../Services/auth.services";
+import { AuthStatus } from "../../Services/AuthContext";
+import FlashMessage, {
+  showMessage,
+  renderMessage,
+} from "react-native-flash-message";
+
 export default function Coupon({ navigation }) {
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isclick, setIsClick] = useState(false);
+  const { GetVoucher, search_voucher_and_add } = useAuth();
+  const { state, dispatch } = AuthStatus();
+
+  const fetchdata=()=>{
+    state.isLoggedIn
+    ? GetVoucher()
+        .then((result) => {
+          setData(result);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    : null;
+  }
   useEffect(() => {
-    // Define the API URL
-    const apiUrl =
-      "https://653caee5d5d6790f5ec82b3c.mockapi.io/api/v1/vouchers  ";
-    // Make the GET request using fetch
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((responseData) => {
-        // Handle the retrieved data by updating the state
-        setData(responseData);
-        console.log("đã load dữ liệu thành công");
-      })
-      .catch((error) => {
-        console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
-      });
+    fetchdata();
   }, [refreshing]);
 
   useLayoutEffect(() => {
@@ -55,22 +64,27 @@ export default function Coupon({ navigation }) {
   const fun_handlePress = (item) => {
     setIsClick(!isclick);
   };
-  const handlePresSearch = (item) => {
-    console.log(item);
+ 
+  const handlePresSearch = () => {
+   const time= setTimeout(() => {
+      fetchdata();
+    }, 1000);
+   
   };
-  return (
+  return state.isLoggedIn ? (
     <ScrollView style={styles.container}>
-      <View style={styles.modal}> 
-      <ModalCoupon
-        check={isclick}
-        handlePress={() => setIsClick(false)}
-        fun_search={handlePresSearch}
-      />
-      </View>
      
+      <View style={styles.modal}>
+        <ModalCoupon
+          check={isclick}
+          handlePress={() => setIsClick(false)}
+          fun_search={handlePresSearch}
+        />
+      </View>
+
       <View style={styles.header}>
-        <Pressable style={styles.textHeader}
-         onPress={fun_handlePress}>
+      
+        <Pressable style={styles.textHeader} onPress={fun_handlePress}>
           <Image
             source={{ uri: "https://iili.io/JqAuyDN.png" }}
             style={styles.img}
@@ -78,6 +92,7 @@ export default function Coupon({ navigation }) {
           <Text style={styles.text}>Nhập mã voucher</Text>
         </Pressable>
       </View>
+  
       <View>
         {data &&
           data.map((item, index) => (
@@ -89,9 +104,21 @@ export default function Coupon({ navigation }) {
           ))}
       </View>
     </ScrollView>
+  ) : (
+    <View style={styles.error}>
+      <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+        Bạn cần đăng nhập để xem !
+      </Text>
+    </View>
   );
 }
 const styles = StyleSheet.create({
+  error: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  
+  },
   container: {
     backgroundColor: "rgba(216, 234, 245, 0.8)",
   },
