@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import useAuth from "../../Services/auth.services";
+import { useNavigation } from "@react-navigation/native";
 
 const DaXacNhan = () => {
   const { CheckStatusOrder } = useAuth();
   const [orders, setOrders] = useState([]);
+  const navigation = useNavigation();
 
   const fetchOrders = async () => {
     const res = await CheckStatusOrder("DELIVERED");
@@ -14,21 +23,22 @@ const DaXacNhan = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
+  const DanhGiaDonHang = async (item) => {
+    console.log("order_id", item);
+    navigation.navigate("DanhGiaProduct", { data: item });
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.container}>
-      {/* Map through the order details here */}
       {item.OrderDetails.map((detail, index) => (
         <View key={index} style={styles.productContainer}>
           <Image
-            source={{
-              uri: "https://bizweb.dktcdn.net/100/287/440/products/mu-luoi-trai-local-brand-dep-mau-be-1.jpg?v=1644822065327",
-            }}
+            source={{ uri: detail.ProductDetail.Product.thumbnail }}
             style={styles.productImage}
           />
           <View style={styles.productDetails}>
             <Text style={styles.productTitle}>
-              Mũ Lưỡi Trai Nam Nữ Nhiều Hoa Tiết Thêu - Màu Be
+              {detail.ProductDetail.Product.product_name}
             </Text>
             <Text style={styles.productPriceSale}>
               ₫{parseFloat(detail.price).toLocaleString("vi-VN")}
@@ -44,11 +54,12 @@ const DaXacNhan = () => {
         </Text>
       </View>
       <View style={styles.buttonContainer}>
-        <View style={styles.processingButton}>
-          <Text style={styles.processingButtonText}>
-            {item.OrderStatus.name}
-          </Text>
-        </View>
+        <TouchableOpacity
+          style={styles.processingButton}
+          onPress={() => DanhGiaDonHang(item)}
+        >
+          <Text style={styles.processingButtonText}>Đánh giá ngay</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

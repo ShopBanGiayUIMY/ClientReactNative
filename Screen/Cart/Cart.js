@@ -19,6 +19,7 @@ import Swipelist from "react-native-swipeable-list-view";
 import { AuthStatus } from "../../Services/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
+
 export default function Cart({ navigation }) {
   const [data, setData] = useState([]);
   const { GetCart, getTotalCart } = useAuth();

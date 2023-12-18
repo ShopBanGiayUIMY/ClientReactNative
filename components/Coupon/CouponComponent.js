@@ -19,7 +19,9 @@ export default function CouponComponent(props) {
   const [icon, seticon] = useState(null);
   const [value, setvalue] = useState();
   const progress = useRef(new Animated.Value(0)).current;
-  const [progressValue, setProgressValue] = useState(dataVouchers.usage_remaining);
+  const [progressValue, setProgressValue] = useState(
+    dataVouchers.usage_remaining
+  );
   const [usage_quantity] = useState(dataVouchers.usage_quantity);
   useEffect(() => {
     const progressListener = progress.addListener(({ value }) => {
@@ -32,7 +34,7 @@ export default function CouponComponent(props) {
   }, [progress]);
   if (progressValue < usage_quantity) {
     Animated.timing(progress, {
-      toValue:  dataVouchers.usage_quantity-dataVouchers.usage_remaining,
+      toValue: dataVouchers.usage_quantity - dataVouchers.usage_remaining,
       duration: 100,
       useNativeDriver: false,
     }).start();
@@ -59,11 +61,9 @@ export default function CouponComponent(props) {
   );
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      checkVoucherStatus();
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    const intervalId = setTimeout(() => {}, 2000);
+    checkVoucherStatus();
+    return () => clearTimeout(intervalId);
   }, []);
   const checkVoucherStatus = () => {
     const startDateTimeInSeconds = parseFloat(dataVouchers.start_time);
@@ -77,49 +77,94 @@ export default function CouponComponent(props) {
     });
     const timenow = DateTime.now({ zone: "Asia/Ho_Chi_Minh" });
 
-    if (startTime.diff(timenow, "days").days === 1) {
+    console.log("timenow", timenow);
+    console.log("startTime", startTime);
+    console.log("endTime", endTime);
+
+    const diffBetweenStartAndNow = startTime.diff(timenow, "seconds").seconds;
+    const diffBetweenNowAndStart = timenow.diff(startTime, "seconds").seconds;
+    const diffBetweenEndAndStart = endTime.diff(startTime, "seconds").seconds;
+    const diffBetweenEndAndNow = endTime.diff(timenow, "seconds").seconds;
+    // console.log("diffBetweenStartAndNow", diffBetweenStartAndNow / 3600);
+    // console.log("diffBetweenNowAndStart", diffBetweenNowAndStart / 3600);
+    // console.log("diffBetweenEndAndStart", diffBetweenEndAndStart / 3600);
+    // console.log("diffBetweenEndAndNow", diffBetweenEndAndNow / 3600);
+    if (
+      diffBetweenStartAndNow / 3600 >= 24 &&
+      diffBetweenStartAndNow / 3600 <= 48
+    ) {
       setvalue("Có hiệu lực sau 1 ngày");
-    } else if (
-      startTime.diff(timenow, "hours").hours < 24 &&
-      startTime.diff(timenow, "hours").hours >= 1
+      console.log("1 ngay");
+      return;
+    }
+    if (diffBetweenStartAndNow / 3600 >= 48) {
+      setvalue(`Có hiệu lực từ ngày ${startTime.toFormat("dd/MM/yyyy")}`);
+      return;
+    }
+    if (
+      diffBetweenStartAndNow / 3600 < 24 &&
+      diffBetweenStartAndNow / 3600 > 0
     ) {
       setvalue(
-        `Có hiệu lực sau ${Math.floor(
-          startTime.diff(timenow, "hours").hours
-        )} giờ`
+        `Có hiệu lực sau ${Math.floor(diffBetweenStartAndNow / 3600)} giờ`
       );
-    } else if (
-      startTime.diff(timenow, "minutes").minutes <= 60 &&
-      startTime.diff(timenow, "minutes").minutes > 1
+      console.log("gio");
+      return;
+    }
+    if (
+      diffBetweenStartAndNow / 3600 < 1 &&
+      diffBetweenStartAndNow / 3600 > 0
     ) {
       setvalue(
-        `Có hiệu lực sau ${Math.floor(
-          startTime.diff(timenow, "minutes").minutes
-        )} phút`
+        `Có hiệu lực sau ${Math.floor(diffBetweenStartAndNow / 60)} phút`
       );
-    } else if (
-      startTime.diff(timenow, "seconds").seconds <= 60 &&
-      startTime.diff(timenow, "seconds").seconds >= 1
+      console.log("phut");
+      return;
+    }
+    if (
+      diffBetweenStartAndNow / 3600 < 1 &&
+      diffBetweenStartAndNow / 3600 > 0
     ) {
-      setvalue(
-        `Có hiệu lực sau ${Math.floor(
-          startTime.diff(timenow, "seconds").seconds
-        )} giây`
-      );
-    } else if (
-      startTime.diff(timenow, "seconds").seconds <= 0 &&
-      timenow.diff(endTime, "seconds").seconds <= 0
-    ) {
-      setvalue(`HSD ${endTime.toFormat("dd/MM/yyyy")}`);
-    } else if (
-      timenow.diff(startTime, "seconds").seconds < 0 &&
-      endTime.diff(timenow, "seconds").seconds >= 0 &&
-      endTime.diff(startTime, "seconds").seconds > 0
+      setvalue(`Có hiệu lực sau ${Math.floor(diffBetweenStartAndNow)} giây`);
+      console.log("giay");
+      return;
+    }
+    if (
+      diffBetweenNowAndStart / 3600 >= 0 &&
+      diffBetweenEndAndNow / 3600 >= 0
     ) {
       seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
-      setvalue(`Có hiệu lực từ ngày ${startTime.toFormat("dd/MM/yyyy")}`);
+      setvalue(`HSD ${endTime.toFormat("dd/MM/yyyy")}`);
+      console.log("bat dau");
+      return;
+    }
+    if (diffBetweenEndAndNow / 3600 < 24 && diffBetweenEndAndNow / 3600 > 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Hết hạn sau ${parseInt(diffBetweenEndAndNow / 3600)} giờ`);
+      console.log("Hạn sau giờ");
+      return;
+    }
+    if (diffBetweenEndAndNow / 60 < 60 && diffBetweenEndAndNow / 86400 > 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Hết hạn sau ${parseInt(diffBetweenEndAndNow / 60)} phút`);
+      console.log("Hạn sau phút");
+      return;
+    }
+    if (diffBetweenEndAndNow < 60 && diffBetweenEndAndNow > 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Hết hạn sau ${parseInt(diffBetweenEndAndNow)} giây`);
+      console.log("Hạn sau giây");
+      return;
+    }
+
+    if (diffBetweenEndAndNow / 3600 < 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Đã hết hạn`);
+      console.log("het han");
+      return;
     }
   };
+
   const fun_handlePress = () => {
     handlePress ? handlePress(dataVouchers) : null;
   };
@@ -168,9 +213,7 @@ export default function CouponComponent(props) {
                 { width: widthvoucher, height: heightvoucher },
               ]}
             />
-            <Text style={styles.textvoucher_txt_page_left}>
-              UIMY
-            </Text>
+            <Text style={styles.textvoucher_txt_page_left}>UIMY</Text>
           </View>
           <View style={styles.wallet_page_right}>
             <Text style={styles.namevoucher_txt_page_right}>
@@ -187,14 +230,18 @@ export default function CouponComponent(props) {
               <Text style={styles.value}>{value}</Text>
             </View>
             <View style={styles.progress}>
-            <Animated.View style={[styles.progressBar, { width }]}>
-              <Text style={styles.progressTextInsideBar} ellipsizeMode="head" numberOfLines={1}>Đã dùng 
-              <Text> {Math.round(progressPercentage)}%</Text>
-              {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
-              </Text>
-            </Animated.View>
+              <Animated.View style={[styles.progressBar, { width }]}>
+                <Text
+                  style={styles.progressTextInsideBar}
+                  ellipsizeMode="head"
+                  numberOfLines={1}
+                >
+                  Đã dùng
+                  <Text> {Math.round(progressPercentage)}%</Text>
+                  {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
+                </Text>
+              </Animated.View>
             </View>
-         
           </View>
           {/* <Pressable style={styles.button_page_right} onPress={increaseValue}>
             <LinearGradient
@@ -323,9 +370,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 16,
   },
-  progress:{
+  progress: {
     width: "80%",
-    
+
     position: "absolute",
     top: "85%",
     left: 80,
@@ -333,5 +380,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(208, 226, 237, 0.8)",
     borderWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.2)",
-  }
+  },
 });

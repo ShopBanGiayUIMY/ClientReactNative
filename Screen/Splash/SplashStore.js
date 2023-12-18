@@ -1,28 +1,87 @@
-import React, { useEffect } from "react";
-import { View, Image, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Image,
+  StyleSheet,
+  Text,
+  ImageBackground,
+  Alert,
+} from "react-native";
 import SplashScreen from "react-native-splash-screen";
+import { Audio } from "expo-av";
+import { BackHandler } from "react-native";
 
 const SplashStore = ({ navigation }) => {
   useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Ôi !!!", "Bạn có muốn thoát khỏi ứng dụng không !", [
+        {
+          text: "Không",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Có", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  const playSound = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../assets/audio/JingleBells.mp3"),
+        { shouldPlay: true }
+      );
+
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+
+      return sound;
+    } catch (e) {
+      console.log(`cannot play the sound file`, e);
+    }
+  };
+
+  useEffect(() => {
+    let soundObject;
+
+    const startSound = async () => {
+      soundObject = await playSound();
+    };
+
+    // startSound();
+
     const timer = setTimeout(() => {
       navigation.replace("BottomTabNavigation");
-    }, 2500);
+    }, 4000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      soundObject?.unloadAsync();
+    };
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      style={styles.container}
+      source={{ uri: "https://iili.io/JuzSn2f.png" }}
+    >
       <Image
         source={{
-          uri: "https://www.internship.edu.vn/wp-content/uploads/363e98fedca7891c88adf55e8e90f992.jpg",
+          uri: "https://iili.io/JuzZvLv.gif",
         }}
         style={styles.Icon}
       />
-      <Text style={styles.Text1}>
-        Sneaker <Text style={styles.Text2}>Store</Text>
-      </Text>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -32,6 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
+    height: "100%",
   },
   Icon: {
     width: "100%",

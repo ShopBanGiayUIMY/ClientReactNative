@@ -28,8 +28,9 @@ const HEIGHT = Dimensions.get("window").height;
 import { useFocusEffect } from "@react-navigation/native";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
 import { useDispatch, useSelector } from "react-redux";
-
+import DataLoadingCart from "../../components/loading/DataLoadingCart";
 import useAuth from "../../Services/auth.services";
+
 const latestList = [
   {
     id: "1",
@@ -144,6 +145,8 @@ export default function ListProduct({ navigation }) {
         .catch((error) => {
           console.error("Đang gặp lỗi vui lòng chờ đợi trong giây lát:");
           setRefreshing(false);
+          setData([]);
+          setDatafull([]);
           setTimeout(() => {
             setIsConnected(false);
             setIsLoading(false);
@@ -159,7 +162,9 @@ export default function ListProduct({ navigation }) {
       fetchData();
       getTotalCart().then((res) => {
         console.log("res[0].total_cart_items");
-        dispatchRedux(soluonggiohang(res[0].total_cart_items));
+        if (res) {
+          dispatchRedux(soluonggiohang(res[0].total_cart_items));
+        }
       });
     }
   }, [refreshing]);
@@ -223,7 +228,9 @@ export default function ListProduct({ navigation }) {
     );
     return filteredProducts;
   };
-
+  const fun_productDetail = (item) => {
+    navigation.navigate("ProductDetail", { product: item });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ backgroundColor, ...styles.viewBanner }}>
@@ -271,6 +278,7 @@ export default function ListProduct({ navigation }) {
 
           <HeaderBanner />
           <MenuCategory />
+          <DataLoadingCart />
           {filteredtotalQuantitySold().length > 0 ? (
             <SafeAreaView
               style={{
@@ -300,7 +308,11 @@ export default function ListProduct({ navigation }) {
                     keyExtractor={(item) => item.id}
                     style={{ marginHorizontal: 5 }}
                     renderItem={({ item, index }) => (
-                      <ProductHorizontal item={item} index={index} />
+                      <ProductHorizontal
+                        item={item}
+                        index={index}
+                        fun_productDetail={fun_productDetail}
+                      />
                     )}
                   />
                 </View>
@@ -331,7 +343,6 @@ const styles = StyleSheet.create({
   container: {
     width: WIDTH,
     flex: 1,
-    paddingBottom: 50,
     alignItems: "center",
     alignContent: "center",
     height: HEIGHT,

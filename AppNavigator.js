@@ -19,6 +19,7 @@ const Stack = createNativeStackNavigator();
 import React, { useRef, useEffect } from "react";
 import AccountInfo from "./Screen/Accountinfomation/Accountinfo";
 import LikeProducts from "./Screen/Informations/LikeProducts";
+import Profile from "./Screen/Informations/Profile";
 import Search from "./Screen/Search/Search";
 import DanhGiaProduct from "./Screen/danhgia/danhgiaproduct";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
@@ -29,18 +30,20 @@ import AddAddress from "./Screen/Address/AddAddress";
 import CouponOrder from "./Screen/CouponsOrder/CouponOrder";
 import Contact from "./Screen/Contact/Contact";
 import VerifyVnPayPayMent from "./Screen/ConfirmationOrder/Verifyvnpaypayment";
+import ThanhToanLaiVnpay from "./Screen/PurchaseOrder/ThanhToanLaiVnpay";
 import VerifyCOD from "./Screen/ConfirmationOrder/VerifyCOD";
 import MainTabPurchase from "./Screen/PurchaseOrder/MainTabPurchase";
 import StatusOrder from "./Screen/ConfirmationOrder/StatusOrder";
 import UploadImage from "./Screen/Informations/upload";
-const MemoizedBottomTab = React.memo(BottomTabNavigation);
+import InfoUser from "./Screen/Accountinfomation/Infouser";
+import About from "./Screen/Informations/About";
 export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashStore">
         <Stack.Screen
           name="BottomTabNavigation"
-          component={MemoizedBottomTab}
+          component={BottomTabNavigation}
           options={{
             headerShown: false,
           }}
@@ -85,7 +88,6 @@ export default function AppNavigator() {
           component={Category}
           options={{
             resetOnBlur: true,
-            headerShown: false,
           }}
         />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
@@ -139,6 +141,26 @@ export default function AppNavigator() {
           name="UploadImage"
           component={UploadImage}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ThanhToanLaiVnpay"
+          component={ThanhToanLaiVnpay}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="InfoUser"
+          component={InfoUser}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="About"
+          component={About}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>

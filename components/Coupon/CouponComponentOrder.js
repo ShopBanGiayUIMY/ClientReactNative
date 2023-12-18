@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Pressable } from "react-native";
+import { Pressable, SafeAreaView } from "react-native";
 import {
   Text,
   View,
@@ -11,11 +11,13 @@ import {
   Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { PulseIndicator } from "react-native-indicators";
 const { DateTime } = require("luxon");
 
 const width = Dimensions.get("screen").width;
 
 export default function CouponComponentOrder(props) {
+  const [showIndicator, setShowIndicator] = useState(false);
   const { dataVouchers, handlePress, navigation, checkvoucher } = props;
   const [icon, seticon] = useState(null);
   const [value, setvalue] = useState();
@@ -23,6 +25,7 @@ export default function CouponComponentOrder(props) {
   const [progressValue, setProgressValue] = useState(
     dataVouchers.usage_remaining
   );
+
   const [usage_quantity] = useState(dataVouchers.usage_quantity);
   useEffect(() => {
     const progressListener = progress.addListener(({ value }) => {
@@ -41,8 +44,19 @@ export default function CouponComponentOrder(props) {
       useNativeDriver: false,
     }).start();
   }
-  const UsePaymentVoucher = () => {
+  const loadingvoucher = () => {
+    setShowIndicator(true);
+    console.log("loadingvoucher");
     handlePress ? handlePress(dataVouchers) : null;
+
+    const intervalId = setTimeout(() => {
+      setShowIndicator(false);
+    }, 1500);
+
+    return () => clearTimeout(intervalId);
+  };
+  const UsePaymentVoucher = () => {
+    loadingvoucher();
   };
 
   const width = progress.interpolate({
@@ -56,11 +70,9 @@ export default function CouponComponentOrder(props) {
   );
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      checkVoucherStatus();
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    const intervalId = setTimeout(() => {}, 2000);
+    checkVoucherStatus();
+    return () => clearTimeout(intervalId);
   }, []);
   const checkVoucherStatus = () => {
     const startDateTimeInSeconds = parseFloat(dataVouchers.start_time);
@@ -74,47 +86,91 @@ export default function CouponComponentOrder(props) {
     });
     const timenow = DateTime.now({ zone: "Asia/Ho_Chi_Minh" });
 
-    if (startTime.diff(timenow, "days").days === 1) {
+    console.log("timenow", timenow);
+    console.log("startTime", startTime);
+    console.log("endTime", endTime);
+
+    const diffBetweenStartAndNow = startTime.diff(timenow, "seconds").seconds;
+    const diffBetweenNowAndStart = timenow.diff(startTime, "seconds").seconds;
+    const diffBetweenEndAndStart = endTime.diff(startTime, "seconds").seconds;
+    const diffBetweenEndAndNow = endTime.diff(timenow, "seconds").seconds;
+    // console.log("diffBetweenStartAndNow", diffBetweenStartAndNow / 3600);
+    // console.log("diffBetweenNowAndStart", diffBetweenNowAndStart / 3600);
+    // console.log("diffBetweenEndAndStart", diffBetweenEndAndStart / 3600);
+    // console.log("diffBetweenEndAndNow", diffBetweenEndAndNow / 3600);
+    if (
+      diffBetweenStartAndNow / 3600 >= 24 &&
+      diffBetweenStartAndNow / 3600 <= 48
+    ) {
       setvalue("Có hiệu lực sau 1 ngày");
-    } else if (
-      startTime.diff(timenow, "hours").hours < 24 &&
-      startTime.diff(timenow, "hours").hours >= 1
+      console.log("1 ngay");
+      return;
+    }
+    if (diffBetweenStartAndNow / 3600 >= 48) {
+      setvalue(`Có hiệu lực từ ngày ${startTime.toFormat("dd/MM/yyyy")}`);
+      return;
+    }
+    if (
+      diffBetweenStartAndNow / 3600 < 24 &&
+      diffBetweenStartAndNow / 3600 > 0
     ) {
       setvalue(
-        `Có hiệu lực sau ${Math.floor(
-          startTime.diff(timenow, "hours").hours
-        )} giờ`
+        `Có hiệu lực sau ${Math.floor(diffBetweenStartAndNow / 3600)} giờ`
       );
-    } else if (
-      startTime.diff(timenow, "minutes").minutes <= 60 &&
-      startTime.diff(timenow, "minutes").minutes > 1
+      console.log("gio");
+      return;
+    }
+    if (
+      diffBetweenStartAndNow / 3600 < 1 &&
+      diffBetweenStartAndNow / 3600 > 0
     ) {
       setvalue(
-        `Có hiệu lực sau ${Math.floor(
-          startTime.diff(timenow, "minutes").minutes
-        )} phút`
+        `Có hiệu lực sau ${Math.floor(diffBetweenStartAndNow / 60)} phút`
       );
-    } else if (
-      startTime.diff(timenow, "seconds").seconds <= 60 &&
-      startTime.diff(timenow, "seconds").seconds >= 1
+      console.log("phut");
+      return;
+    }
+    if (
+      diffBetweenStartAndNow / 3600 < 1 &&
+      diffBetweenStartAndNow / 3600 > 0
     ) {
-      setvalue(
-        `Có hiệu lực sau ${Math.floor(
-          startTime.diff(timenow, "seconds").seconds
-        )} giây`
-      );
-    } else if (
-      startTime.diff(timenow, "seconds").seconds <= 0 &&
-      timenow.diff(endTime, "seconds").seconds <= 0
-    ) {
-      setvalue(`HSD ${endTime.toFormat("dd/MM/yyyy")}`);
-    } else if (
-      timenow.diff(startTime, "seconds").seconds < 0 &&
-      endTime.diff(timenow, "seconds").seconds >= 0 &&
-      endTime.diff(startTime, "seconds").seconds > 0
+      setvalue(`Có hiệu lực sau ${Math.floor(diffBetweenStartAndNow)} giây`);
+      console.log("giay");
+      return;
+    }
+    if (
+      diffBetweenNowAndStart / 3600 >= 0 &&
+      diffBetweenEndAndNow / 3600 >= 0
     ) {
       seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
-      setvalue(`Có hiệu lực từ ngày ${startTime.toFormat("dd/MM/yyyy")}`);
+      setvalue(`HSD ${endTime.toFormat("dd/MM/yyyy")}`);
+      console.log("bat dau");
+      return;
+    }
+    if (diffBetweenEndAndNow / 3600 < 24 && diffBetweenEndAndNow / 3600 > 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Hết hạn sau ${parseInt(diffBetweenEndAndNow / 3600)} giờ`);
+      console.log("Hạn sau giờ");
+      return;
+    }
+    if (diffBetweenEndAndNow / 60 < 60 && diffBetweenEndAndNow / 86400 > 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Hết hạn sau ${parseInt(diffBetweenEndAndNow / 60)} phút`);
+      console.log("Hạn sau phút");
+      return;
+    }
+    if (diffBetweenEndAndNow < 60 && diffBetweenEndAndNow > 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Hết hạn sau ${parseInt(diffBetweenEndAndNow)} giây`);
+      console.log("Hạn sau giây");
+      return;
+    }
+
+    if (diffBetweenEndAndNow / 3600 < 0) {
+      seticon("https://cdn-icons-png.flaticon.com/512/109/109613.png");
+      setvalue(`Đã hết hạn`);
+      console.log("het han");
+      return;
     }
   };
   const fun_handlePress = () => {
@@ -147,90 +203,95 @@ export default function CouponComponentOrder(props) {
       ? (discount_amount = "Giảm " + discount_amount)
       : null;
   }
- 
 
   return (
-    <TouchableWithoutFeedback onPress={fun_handlePress}>
-      <View style={styles.container}>
-        <ImageBackground
-          source={{ uri: voucher_bg }}
-          style={styles.wallet_page}
-          resizeMode="contain"
-        >
-          <View style={styles.wallet_page_left}>
-            <Image
-              source={{ uri: imgvoucher }}
-              resizeMode="cover"
-              style={[
-                styles.imgvoucher_image_page_left,
-                { width: widthvoucher, height: heightvoucher },
-              ]}
-            />
-            <Text style={styles.textvoucher_txt_page_left}>UIMY</Text>
-          </View>
-          <View style={styles.wallet_page_right}>
-            <Text style={styles.namevoucher_txt_page_right}>
-              {dataVouchers.voucher_name}
-            </Text>
-            <Text style={styles.code_txt_page_right}>
-              {dataVouchers.voucher_code}
-            </Text>
-            <View style={styles.value_txt_page_right}>
-              {icon ? (
-                <Image source={{ uri: icon }} style={styles.icon} />
-              ) : null}
-
-              <Text style={styles.value}>{value}</Text>
-            </View>
-            <View style={styles.progress}>
-              <Animated.View style={[styles.progressBar, { width }]}>
-                <Text
-                  style={styles.progressTextInsideBar}
-                  ellipsizeMode="head"
-                  numberOfLines={1}
-                >
-                  Đã dùng
-                  <Text> {Math.round(progressPercentage)}%</Text>
-                  {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
-                </Text>
-              </Animated.View>
-            </View>
-          </View>
-          <Pressable
-            style={styles.button_page_right}
-            onPress={UsePaymentVoucher}
+    <SafeAreaView onPress={fun_handlePress}>
+      {showIndicator && (
+        <View style={styles.content}>
+          <PulseIndicator color="white" size={100} />
+        </View>
+      )}
+      {!showIndicator && (
+        <View style={styles.container}>
+          <ImageBackground
+            source={{ uri: voucher_bg }}
+            style={styles.wallet_page}
+            resizeMode="contain"
           >
-            <LinearGradient
-              colors={["rgb(255, 147, 63)", "rgb(249, 55, 130)"]} // Màu với độ trong suốt
-              start={{ x: 0.2, y: 0.5 }} // Vị trí bắt đầu (top left)
-              end={{ x: 0.5, y: 1 }} // Vị trí kết thúc (bottom right)
-              angle={130} // Góc màu chéo (tương đương với 130 độ)
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 15,
-              }}
+            <View style={styles.wallet_page_left}>
+              <Image
+                source={{ uri: imgvoucher }}
+                resizeMode="cover"
+                style={[
+                  styles.imgvoucher_image_page_left,
+                  { width: widthvoucher, height: heightvoucher },
+                ]}
+              />
+              <Text style={styles.textvoucher_txt_page_left}>UIMY</Text>
+            </View>
+            <View style={styles.wallet_page_right}>
+              <Text style={styles.namevoucher_txt_page_right}>
+                {dataVouchers.voucher_name}
+              </Text>
+              <Text style={styles.code_txt_page_right}>
+                {dataVouchers.voucher_code}
+              </Text>
+              <View style={styles.value_txt_page_right}>
+                {icon ? (
+                  <Image source={{ uri: icon }} style={styles.icon} />
+                ) : null}
+
+                <Text style={styles.value}>{value}</Text>
+              </View>
+              <View style={styles.progress}>
+                <Animated.View style={[styles.progressBar, { width }]}>
+                  <Text
+                    style={styles.progressTextInsideBar}
+                    ellipsizeMode="head"
+                    numberOfLines={1}
+                  >
+                    Đã dùng
+                    <Text> {Math.round(progressPercentage)}%</Text>
+                    {/* <Text> {Math.round(progressPercentage)}% ({progressValue.toFixed(2)})</Text> */}
+                  </Text>
+                </Animated.View>
+              </View>
+            </View>
+            <Pressable
+              style={styles.button_page_right}
+              onPress={UsePaymentVoucher}
             >
-              {checkvoucher ? (
-                <Text
-                  style={{ color: "black", fontSize: 10, fontWeight: "bold" }}
-                >
-                  Đang dùng
-                </Text>
-              ) : (
-                <Text
-                  style={{ color: "white", fontSize: 10, fontWeight: "bold" }}
-                >
-                  Dùng ngay
-                </Text>
-              )}
-              
-            </LinearGradient>
-          </Pressable>
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+              <LinearGradient
+                colors={["rgb(255, 147, 63)", "rgb(249, 55, 130)"]} // Màu với độ trong suốt
+                start={{ x: 0.2, y: 0.5 }} // Vị trí bắt đầu (top left)
+                end={{ x: 0.5, y: 1 }} // Vị trí kết thúc (bottom right)
+                angle={130} // Góc màu chéo (tương đương với 130 độ)
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 15,
+                }}
+              >
+                {checkvoucher ? (
+                  <Text
+                    style={{ color: "black", fontSize: 10, fontWeight: "bold" }}
+                  >
+                    Đang dùng
+                  </Text>
+                ) : (
+                  <Text
+                    style={{ color: "white", fontSize: 10, fontWeight: "bold" }}
+                  >
+                    Dùng ngay
+                  </Text>
+                )}
+              </LinearGradient>
+            </Pressable>
+          </ImageBackground>
+        </View>
+      )}
+    </SafeAreaView>
   );
 }
 

@@ -10,7 +10,7 @@ const About = ({ navigation }) => {
   }
   return (
     <ScrollView style={{ marginBottom: "25%" }}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           flexDirection: "row",
           marginTop: 5,
@@ -47,7 +47,7 @@ const About = ({ navigation }) => {
             uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png",
           }}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -122,7 +122,7 @@ const About = ({ navigation }) => {
           }}
         />
       </TouchableOpacity>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           flexDirection: "row",
           marginTop: 5,
@@ -153,8 +153,8 @@ const About = ({ navigation }) => {
             uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png",
           }}
         />
-      </TouchableOpacity>
-      <TouchableOpacity
+      </TouchableOpacity> */}
+      {/* <TouchableOpacity
         style={{
           flexDirection: "row",
           marginTop: 5,
@@ -185,7 +185,7 @@ const About = ({ navigation }) => {
             uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png",
           }}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -203,7 +203,7 @@ const About = ({ navigation }) => {
           style={{ width: 30, height: 30, marginRight: 10, marginStart: 5 }}
           source={{ uri: "https://iili.io/JdjS2Fp.png" }}
         />
-        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:150 }}>
+        <Text style={{ fontSize: 20, position: "absolute", left: 45, width:"auto" }}>
           Giới thiệu và liên hệ
         </Text>
         <Image
@@ -219,7 +219,7 @@ const About = ({ navigation }) => {
           }}
         />
       </TouchableOpacity>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           flexDirection: "row",
           marginTop: 5,
@@ -250,7 +250,7 @@ const About = ({ navigation }) => {
             uri: "https://cdn-icons-png.flaticon.com/128/271/271228.png",
           }}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ScrollView>
   );
 };

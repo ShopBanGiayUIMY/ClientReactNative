@@ -5,25 +5,20 @@ import {
   Text,
   TouchableOpacity,
   ToastAndroid,
+  Alert
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { AuthStatus } from "../../Services/AuthContext";
 import Dialog from "react-native-dialog";
-import useAuth from "../../Services/auth.services";
+
 import RNPickerSelect from "react-native-picker-select";
 const AccountInfo = ({ isVisible, navigation }) => {
   const { state, dispatch } = AuthStatus();
-  const { UpdateInfoUser } = useAuth();
+  
 
   const [info, setInfo] = useState(state.userInfo);
-  const [visible, setVisible] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [newGender, setNewGender] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [phone, setPhone] = useState("");
 
   let date = new Date(info.date_of_birth);
-  let formattedDate = date.toLocaleDateString("vi-VN");
   // khi cập nhật thông tin user thì phải cập nhật cả state vì nó lưu thông tin user_id
   // ví dụ cập nhật tên thì phải cập nhật cả state và database
   // UpdateInfoUser(formdata)
@@ -63,78 +58,77 @@ const AccountInfo = ({ isVisible, navigation }) => {
     });
   }, []);
 
-  const handleChangeInfo = async () => {
-    try {
-      const users = [
-        {
-          address: info.address,
-          cart_id: info.cart_id,
-          date_of_birth: info.date_of_birth,
-          email: info.email,
-          full_name: info.full_name,
-          gender: info.gender,
-          phone: info.phone,
-          total_cart_items: info.cart_id,
-          user_id: info.user_id,
-          username: info.username,
-        },
-      ];
-      const userIndex = users.findIndex((user) => user.user_id);
-      console.log(userIndex);
-      console.log('Chỗ này không hiểu sao tôi sử dụng findIndex để lấy ra id của user cần sửa nó lại ra 0, trong khi  user_id này là 5  ');
-      if (userIndex !== -1) {
-        const formDataToUpdate = {
-          full_name: newName,
-          gender: newGender,
-          phone,
-          date_of_birth: birthday,
-        };
-        if (newName.trim() === "") {
-          ToastAndroid.show("Vui lòng nhập tên đầy đủ", ToastAndroid.SHORT);
-          return;
-        } else if (newGender.length === 0) {
-          ToastAndroid.show("Vui lòng chọn giới tính", ToastAndroid.SHORT);
-          return;
-        }
-        if (
-          typeof phone !== "string" ||
-          phone.trim().length === 0 ||
-          /^(0[2-9]|84[2-9])?[0-9]{8,9}$/.test(phone.replace(/\s/g, "")) === false
-        ) {
-          ToastAndroid.show(
-            "Vui lòng nhập đúng định dạng số điện thoại",
-            ToastAndroid.SHORT
-          );
-          return;
-        }
-        // Cập nhật đối tượng người dùng trong mảng bằng cách sao chép và ghi đè các thuộc tính
-        users[userIndex] = {
-          ...users[userIndex],
-          ...formDataToUpdate,
-        };
-        // Lấy đối tượng người dùng đã cập nhật từ mảng
-        const updatedUserInfo = users[userIndex];
-        const { success } = await UpdateInfoUser(updatedUserInfo);
-        if (success) {
-          await dispatch({ type: "USERINFO", payload: updatedUserInfo });
-          setVisible(false);
-          ToastAndroid.show(
-            "Cập nhật thông tin thành công",
-            ToastAndroid.SHORT
-          );
-        } else {
-          ToastAndroid.show("Lỗi cập nhật thông tin", ToastAndroid.SHORT);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      ToastAndroid.show(
-        `Có lỗi xảy ra, vui lòng thử lại: ${error.message}`,
-        ToastAndroid.SHORT
-      );
-    }
-  };
-  
+  // const handleChangeInfo = async () => {
+  //   try {
+  //     const users = [
+  //       {
+  //         address: info.address,
+  //         cart_id: info.cart_id,
+  //         date_of_birth: info.date_of_birth,
+  //         email: info.email,
+  //         full_name: info.full_name,
+  //         gender: info.gender,
+  //         phone: info.phone,
+  //         total_cart_items: info.cart_id,
+  //         user_id: info.user_id,
+  //         username: info.username,
+  //       },
+  //     ];
+  //     const userIndex = users.findIndex((user) => user.user_id);
+  //     console.log(userIndex);
+  //     console.log('Chỗ này không hiểu sao tôi sử dụng findIndex để lấy ra id của user cần sửa nó lại ra 0, trong khi  user_id này là 5  ');
+  //     if (userIndex !== -1) {
+  //       const formDataToUpdate = {
+  //         full_name: newName,
+  //         gender: newGender,
+  //         phone,
+  //         date_of_birth: birthday,
+  //       };
+  //       if (newName.trim() === "") {
+  //         ToastAndroid.show("Vui lòng nhập tên đầy đủ", ToastAndroid.SHORT);
+  //         return;
+  //       } else if (newGender.length === 0) {
+  //         ToastAndroid.show("Vui lòng chọn giới tính", ToastAndroid.SHORT);
+  //         return;
+  //       }
+  //       if (
+  //         typeof phone !== "string" ||
+  //         phone.trim().length === 0 ||
+  //         /^(0[2-9]|84[2-9])?[0-9]{8,9}$/.test(phone.replace(/\s/g, "")) === false
+  //       ) {
+  //         ToastAndroid.show(
+  //           "Vui lòng nhập đúng định dạng số điện thoại",
+  //           ToastAndroid.SHORT
+  //         );
+  //         return;
+  //       }
+  //       // Cập nhật đối tượng người dùng trong mảng bằng cách sao chép và ghi đè các thuộc tính
+  //       users[userIndex] = {
+  //         ...users[userIndex],
+  //         ...formDataToUpdate,
+  //       };
+  //       // Lấy đối tượng người dùng đã cập nhật từ mảng
+  //       const updatedUserInfo = users[userIndex];
+  //       const { success } = await UpdateInfoUser(updatedUserInfo);
+  //       if (success) {
+  //         await dispatch({ type: "USERINFO", payload: updatedUserInfo });
+  //         setVisible(false);
+  //         ToastAndroid.show(
+  //           "Cập nhật thông tin thành công",
+  //           ToastAndroid.SHORT
+  //         );
+  //       } else {
+  //         ToastAndroid.show("Lỗi cập nhật thông tin", ToastAndroid.SHORT);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     ToastAndroid.show(
+  //       `Có lỗi xảy ra, vui lòng thử lại: ${error.message}`,
+  //       ToastAndroid.SHORT
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     setInfo(state.userInfo);
@@ -144,72 +138,18 @@ const AccountInfo = ({ isVisible, navigation }) => {
       <View style={styles.info}>
         <TouchableOpacity
           onPress={() => {
-            setVisible(true);
+            navigation.navigate("InfoUser", { info: state.userInfo });
           }}
           style={styles.item}
         >
           <View style={styles.name}>
-            <Text style={styles.itemText}>Tên</Text>
-            <TouchableOpacity>
-              <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>{info.full_name}</Text>
-                <FontAwesome
-                  name="chevron-right"
-                  size={24}
-                  color="black"
-                  style={styles.iconitem}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-        {visible && (
-          <Dialog.Container visible={visible}>
-            <Dialog.Title>Cập nhật thông tin tài khoản</Dialog.Title>
-            <Dialog.Description>Nhập thông tin của bạn</Dialog.Description>
-            <Dialog.Input
-              label="Tên"
-              value={newName}
-              onChangeText={(value) => setNewName(value)}
-            />
-            <RNPickerSelect
-              label="Giới tính"
-              value={newGender}
-              onValueChange={(value) => setNewGender(value)}
-              items={[
-                { label: "Nam", value: "nam" },
-                { label: "Nữ", value: "nữ" },
-                { label: "Khác", value: "khác" },
-              ]}
-            />
-            <Dialog.Input
-              label="Số điện thoại"
-              value={phone}
-              onChangeText={(value) => setPhone(value)}
-            />
-            <Dialog.Input
-              label="Ngày sinh"
-              value={birthday}
-              onChangeText={(value) => setBirthday(value)}
-            />
-            <Dialog.Button label="Hủy" onPress={() => setVisible(false)} />
-            <Dialog.Button
-              label="Đồng ý"
+            <Text style={styles.itemText}>Hồ sơ của tôi</Text>
+            <TouchableOpacity
               onPress={() => {
-                handleChangeInfo();
+                navigation.navigate("Infouser");
               }}
-            />
-          </Dialog.Container>
-        )}
-        <TouchableOpacity style={styles.item}>
-          <View style={styles.name}>
-            <Text style={styles.itemText}>Giới tính</Text>
-            <TouchableOpacity>
+            >
               <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>
-                  {" "}
-                  {info.gender == null ? "Cập nhật ngay" : info.gender}{" "}
-                </Text>
                 <FontAwesome
                   name="chevron-right"
                   size={24}
@@ -220,26 +160,6 @@ const AccountInfo = ({ isVisible, navigation }) => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <View style={styles.name}>
-            <Text style={styles.itemText}>Ngày sinh</Text>
-            <TouchableOpacity>
-              <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>
-                  {" "}
-                  {formattedDate == null ? "Cập nhật ngay" : formattedDate}{" "}
-                </Text>
-                <FontAwesome
-                  name="chevron-right"
-                  size={24}
-                  color="black"
-                  style={styles.iconitem}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("Address");
@@ -266,7 +186,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.auth}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item}  onPress={() => Alert.alert("Thông báo", "Chức năng đang phát triển")}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Đổi mật khẩu</Text>
             <TouchableOpacity>
@@ -302,25 +222,6 @@ const AccountInfo = ({ isVisible, navigation }) => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.item}>
-          <View style={styles.name}>
-            <Text style={styles.itemText}>Thay đổi số điện thoại</Text>
-            <TouchableOpacity onPress={() => {}}>
-              <View style={styles.containeritemicon}>
-                <Text style={styles.viewAllOrders}>
-                  {" "}
-                  {info.phone == null ? "Cập nhật ngay" : info.phone}{" "}
-                </Text>
-                <FontAwesome
-                  name="chevron-right"
-                  size={24}
-                  color="black"
-                  style={styles.iconitem}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => {}} style={styles.item}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Email</Text>

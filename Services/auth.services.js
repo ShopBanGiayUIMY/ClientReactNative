@@ -66,7 +66,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("lỗi mạng", error);
+      console.log("lỗi mạng5", error);
     }
   };
   const CheckOtp = async (user) => {
@@ -306,6 +306,7 @@ const useAuth = () => {
     try {
       const response = await axios.get(
         `${Config.API_BASE_URL}/address/default`,
+
         {
           headers: headers,
         }
@@ -403,8 +404,9 @@ const useAuth = () => {
   const CancelOrder = async (order_id) => {
     const headers = await authHeader();
     try {
-      const response = await axios.delete(
+      const response = await axios.patch(
         `${Config.API_BASE_URL}/orders/${order_id}/cancel`,
+        {},
         {
           headers: headers,
         }
@@ -419,7 +421,7 @@ const useAuth = () => {
   const VerifyDelivered = async (order_id) => {
     const headers = await authHeader();
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `${Config.API_BASE_URL}/orders/${order_id}/verify-delivered`,
         {},
         {
@@ -435,7 +437,6 @@ const useAuth = () => {
   };
   const CheckStatusOrder = async (order_code) => {
     const headers = await authHeader();
-    console.log("order_code", order_code);
     try {
       const response = await axios.get(
         `${Config.API_BASE_URL}/orders?statusCode=${order_code}`,
@@ -447,7 +448,7 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("Lỗi mạng", error);
+      console.log("Lỗi mạng1", error);
       return error.response.data;
     }
   };
@@ -465,9 +466,76 @@ const useAuth = () => {
         return response.data;
       }
     } catch (error) {
-      console.log("Lỗi mạng", error);
+      console.log("Lỗi mạng2", error);
       return error.response.data;
     }
+  };
+  const totalOrderStatus = async () => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/orders/total-order-status`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng3", error);
+      return error.response.data;
+    }
+  };
+  const GetRatingProduct = async (product_id) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.get(
+        `${Config.API_BASE_URL}/products/${product_id}/rating`,
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng4", error);
+      return error.response.data;
+    }
+  };
+  const GuiDanhGia = async (product_id, score) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.post(
+        `${Config.API_BASE_URL}/products/${product_id}/rating?score=${score}`,
+        {},
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log("Lỗi mạng5", error);
+      return error.response.data;
+    }
+  };
+  const UpdateNotifyToken = async (key) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.patch(
+        `${Config.API_BASE_URL}/users/notify-token`,
+        { notifyToken: key },
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {}
   };
   return {
     loginUser,
@@ -497,6 +565,10 @@ const useAuth = () => {
     VerifyDelivered,
     CheckStatusOrder,
     UpdateInfoUser,
+    totalOrderStatus,
+    GetRatingProduct,
+    GuiDanhGia,
+    UpdateNotifyToken,
   };
 };
 

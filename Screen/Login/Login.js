@@ -197,7 +197,7 @@ export default function Login({ navigation }) {
           onValueChange={() => setAgreeToTerms(!agreeToTerms)}
           color={agreeToTerms ? "#4630EB" : undefined}
         />
-        <Text style={{ marginLeft: 10, marginTop: 2 }}>Remember me? </Text>
+        <Text style={{ marginLeft: 10, marginTop: 2 }}>Đồng ý điều khoản!</Text>
         <Text style={styles.forgotpassword}>Forgot the password?</Text>
       </View>
 

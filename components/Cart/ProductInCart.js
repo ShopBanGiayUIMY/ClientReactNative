@@ -31,15 +31,16 @@ const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 import { useDispatch, useSelector } from "react-redux";
 import { soluonggiohang } from "../../Services/Redux/action/Actions";
+import DataLoadingCart from "../../components/loading/DataLoadingCart";
 const ProductInCart = (props) => {
   const { dataCart, Cart_id, handlePress, handleOrder, navigation } = props;
   const [isAnyProductSelected, setIsAnyProductSelected] = useState(false);
   const { UpdateCreateCart, getTotalCart } = useAuth();
-  const [soluongchon, setsoluongchon] = useState(0);
   const [data, setData] = useState(dataCart);
   const [selectedItems, setSelectedItems] = useState([]);
   const [quantity, setQuantity] = useState([]);
   const dispatchRedux = useDispatch();
+  const [totalAmount, setTotalAmount] = useState(0);
   const loadlai = () => {
     handlePress();
   };
@@ -50,10 +51,15 @@ const ProductInCart = (props) => {
       return total + product_price * quantity;
     }, 0);
   };
-  let Orderdata = {
-    Cart_id: Cart_id,
-    total: calculateTotal(),
-    item_id: selectedItems.map((item) => item.item_id),
+  const handleNavigateToConfirmationOrder = () => {
+    let Orderdata = {
+      Cart_id: Cart_id,
+      total: totalAmount,
+      item_id: selectedItems.map((item) => item.item_id),
+    };
+    setSelectedItems([]);
+    setTotalAmount(0);
+    navigation.navigate("ConfirmationOrder", { Orderdata });
   };
   const toggleItemSelection = (item_id, product_price, quantity) => {
     setSelectedItems((prevSelectedItems) => {
@@ -92,11 +98,19 @@ const ProductInCart = (props) => {
   useEffect(() => {
     setQuantity(dataCart.map((item) => item.quantity));
   }, [dataCart]);
-
+  useEffect(() => {
+    setData(dataCart);
+  }, [dataCart]);
+  useEffect(() => {
+    setTotalAmount(calculateTotal()); // Cập nhật tổng số tiền khi selectedItems thay đổi
+  }, [selectedItems]);
   useEffect(() => {
     setData(dataCart);
     getTotalCart().then((result) => {
-      dispatchRedux(soluonggiohang(result[0].total_cart_items));
+      if (result) {
+        console.log("result", result);
+        // dispatchRedux(soluonggiohang(result[0].total_cart_items));
+      }
     });
   }, [dataCart]);
   const handleInputChange = (text, index) => {
@@ -230,7 +244,7 @@ const ProductInCart = (props) => {
     );
   }
   return (
-    <View style={{ flex: 1, marginBottom: "18%" }}>
+    <View style={{ flex: 1, marginBottom: 5 }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
@@ -283,10 +297,10 @@ const ProductInCart = (props) => {
                       }}
                     >
                       <Text style={styles.txtName}>
-                        {item.ProductDetail.Product.product_name.length > 15
+                        {item.ProductDetail.Product.product_name.length > 10
                           ? item.ProductDetail.Product.product_name.slice(
                               0,
-                              15
+                              10
                             ) + "..."
                           : item.ProductDetail.Product.product_name}
                       </Text>
@@ -390,7 +404,7 @@ const ProductInCart = (props) => {
         <View style={[styles.totalTextContainer, { flex: 1 }]}>
           <Text style={styles.totalText}>Tổng thanh toán: </Text>
           <Text style={styles.tongtien}>
-            {calculateTotal().toLocaleString("de-DE")}
+            {totalAmount.toLocaleString("de-DE")}
             <Text style={styles.kihieutongtien}>đ</Text>
           </Text>
 
@@ -401,9 +415,7 @@ const ProductInCart = (props) => {
         </View>
         <View style={{ justifyContent: "center" }}>
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ConfirmationOrder", { Orderdata })
-            }
+            onPress={handleNavigateToConfirmationOrder}
             style={[
               styles.paymentButton,
               {
@@ -570,7 +582,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "rgba(222, 250, 253, 0.8)",
     borderRadius: 5,
-    height: "11%",
+    height: "13%",
   },
   paymentButton: {
     height: 40,

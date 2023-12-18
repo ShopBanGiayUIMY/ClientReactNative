@@ -28,21 +28,19 @@ const CartBadge = () => {
       <View
         style={{
           position: "absolute",
-          bottom: 16,
-          width: 10,
-          height: 10,
-          borderRadius: 10,
+          right: -6,
           top: -3,
-          left: 11,
-          backgroundColor: "#3C3C3C",
-          alignItems: "center",
+          backgroundColor: "red",
+          borderRadius: 8.5,
+          width: 17,
+          height: 17,
           justifyContent: "center",
-          zIndex: 999,
+          alignItems: "center",
         }}
       >
         <Text
           style={{
-            fontSize: 5,
+            fontSize: 10,
             color: "#FFFFFF",
           }}
         >

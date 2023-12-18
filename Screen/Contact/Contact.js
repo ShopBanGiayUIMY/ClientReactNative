@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   Linking,
   Pressable,
- Image
+ Image,
+ ScrollView
 } from "react-native";
 import React from "react";
 const Contact = () => {
   const membersData = [
-    { id: "1", name: "Nguyễn Văn Huy - PH0000 " },
+    { id: "1", name: "Nguyễn Văn Huy - PH20687 " },
     { id: "2", name: "Trần Văn Trung - PH0000" },
     { id: "3", name: "Bùi Minh Chiến - PH0000" },
-    { id: "4", name: "Phạm Thành Đạo - PH0000" },
+    { id: "4", name: "Phạm Thành Đạo - PH23912" },
     { id: "5", name: "Vũ Anh Tú - PH0000" },
     { id: "6", name: "Trần Minh - PH0000" },
   ];
@@ -25,7 +26,7 @@ const Contact = () => {
   };
   
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
      {/* <View>
           <Image   source={{
           uri: "https://www.internship.edu.vn/wp-content/uploads/363e98fedca7891c88adf55e8e90f992.jpg",
@@ -102,40 +103,60 @@ const Contact = () => {
           <View style={{ width: "100%", height: 8 }} /> 
         )}
       />
-    </View>
+    </ScrollView>
   );
 };
 
 export default Contact;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#008080",
-    width: "100%",
-    height: 800,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "white",
-  },
-  description: {
-    textAlign: "center",
-    marginBottom: 15,
-    fontSize: 16,
-    color: "white",
-    width: "100%",
-  },
-  membersHeading: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  memberName: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
+ 
+    container: {
+      flex: 1,
+      padding: 16,
+      backgroundColor: 'white',
+      marginBottom: 10,
+    },
+    heading: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 16,
+      color: '#008080',
+      textAlign: 'center',
+    },
+    description: {
+      fontSize: 16,
+      color: '#333333',
+      marginBottom: 10,
+      textAlign: 'center',
+    },
+    sectionHeading: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginTop: 20,
+      marginBottom: 10,
+      color: '#008080',
+    },
+    link: {
+      fontSize: 16,
+      color: 'blue',
+      textDecorationLine: 'underline',
+      textAlign: 'center',
+    },
+    list: {
+      width: '100%',
+    },
+    memberItem: {
+      width: '50%',
+      padding: 8,
+      alignItems: 'center',
+    },
+    memberName: {
+      fontSize: 16,
+      color: '#333333',
+    },
+    separator: {
+      height: 8,
+    },
+  
 });

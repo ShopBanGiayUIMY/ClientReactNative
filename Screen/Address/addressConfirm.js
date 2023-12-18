@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  ToastAndroid,
 } from "react-native";
 import axios from "axios";
 
@@ -98,7 +99,10 @@ const AddressConfirm = (props) => {
         setWards(response.data.districts[0].wards);
       })
       .catch((error) => {
-        console.error("Error fetching ward data:", error);
+        ToastAndroid.show(
+          "Có lỗi lấy phường tại địa chỉ này",
+          ToastAndroid.SHORT
+        );
       });
   };
 
@@ -223,7 +227,7 @@ const AddressConfirm = (props) => {
                   key={district.code}
                   style={styles.selectableItem}
                   onPress={() =>
-                    handleDistrictSelection(districts.code, district.name)
+                    handleDistrictSelection(district.code, district.name)
                   }
                 >
                   <Text>{district.name}</Text>

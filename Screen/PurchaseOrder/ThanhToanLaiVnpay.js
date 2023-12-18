@@ -10,57 +10,29 @@ import Config from "../../Api/Config";
 import { AuthStatus } from "../../Services/AuthContext";
 import authHeader from "../../Services/auth.header";
 
-const VerifyVnPayPayment = (props) => {
+const ThanhToanLaiVnpay = (props) => {
   const navigation = useNavigation();
   const [webViewUrl, setWebViewUrl] = useState(null);
-  const { Orders } = useAuth();
-  const { state, dispatch } = AuthStatus();
-  const {
-    cartItems,
-    cartId,
-    totalPrice,
-    shippingAddressId,
-    paymentMethodId,
-    voucherId,
-    freightCost,
-    orderId,
-  } = props.route.params;
-  console.log("cartItems", cartItems, cartId, totalPrice, shippingAddressId);
+  const { order_id, totalPrice } = props.route.params;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await Orders(props.route.params);
-        if (data.message === "ok") {
-          const usedVoucherIds = state.UseVoucher.map(
-            (voucher) => voucher.voucher_id
-          );
-
-          // Filter out the used vouchers from the state.UseVoucher array
-          const updatedVouchers = state.UseVoucher.filter(
-            (voucher) => !usedVoucherIds.includes(voucher.voucher_id)
-          );
-
-          // Update the state with the remaining vouchers
-          dispatch({ type: "USE_VOUCHER", payload: updatedVouchers });
-          console.log("orderId", data);
-
-          const headers = await authHeader();
-          const response = await axios.post(
-            `${Config.API_BASE_URL}/payment/vnpay/create_payment_url`,
-            {
-              orderId: data.orderId,
-              amount: totalPrice,
-              bankCode: "VNBANK",
-              language: "vn",
-            },
-            {
-              headers: headers,
-            }
-          );
-          console.log("Payment URL response: ", response.data);
-          setWebViewUrl(response.data.url);
-        }
+        const headers = await authHeader();
+        const response = await axios.post(
+          `${Config.API_BASE_URL}/payment/vnpay/create_payment_url`,
+          {
+            orderId: order_id,
+            amount: totalPrice,
+            bankCode: "VNBANK",
+            language: "vn",
+          },
+          {
+            headers: headers,
+          }
+        );
+        console.log("Payment URL response: ", response.data);
+        setWebViewUrl(response.data.url);
       } catch (error) {
         console.error("Error fetching payment URL:", error);
         ToastAndroid.show("Error fetching payment URL", ToastAndroid.SHORT);
@@ -132,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VerifyVnPayPayment;
+export default ThanhToanLaiVnpay;

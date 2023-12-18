@@ -6,7 +6,7 @@ const StatusOrder = () => {
   const navigation = useNavigation();
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigation.navigate("MainTabPurchase");
+      navigation.navigate("VerifyCOD");
     }, 2000);
 
     return () => clearTimeout(timeout);
