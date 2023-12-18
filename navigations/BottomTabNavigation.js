@@ -85,7 +85,7 @@ const BottomTabNavigation = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Notification"
         component={Notification}
         options={{
@@ -99,7 +99,7 @@ const BottomTabNavigation = () => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={Profile}

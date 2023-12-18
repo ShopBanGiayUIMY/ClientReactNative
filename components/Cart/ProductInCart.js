@@ -297,10 +297,10 @@ const ProductInCart = (props) => {
                       }}
                     >
                       <Text style={styles.txtName}>
-                        {item.ProductDetail.Product.product_name.length > 15
+                        {item.ProductDetail.Product.product_name.length > 10
                           ? item.ProductDetail.Product.product_name.slice(
                               0,
-                              15
+                              10
                             ) + "..."
                           : item.ProductDetail.Product.product_name}
                       </Text>

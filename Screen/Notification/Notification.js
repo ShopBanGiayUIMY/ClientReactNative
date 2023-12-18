@@ -5,6 +5,10 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { useNavigation } from "@react-navigation/native";
 import { Audio } from "expo-av";
+import useAuth from "../../Services/auth.services";
+import { AuthStatus } from "../../Services/AuthContext";
+
+
 const playSound = async () => {
   try {
     const { sound } = await Audio.Sound.createAsync(
@@ -31,7 +35,6 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
-    
   }),
 });
 
@@ -43,10 +46,7 @@ async function sendPushNotification(expoPushToken, title, body, data) {
     title: title,
     body: body,
     data: data || {},
-   
-
   };
-  
 
   await fetch("https://exp.host/--/api/v2/push/send", {
     method: "POST",
@@ -87,7 +87,11 @@ async function registerForPushNotificationsAsync() {
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants.expoConfig.extra.eas.projectId,
     });
-    console.log(token);
+
+  
+      console.log(token);
+    
+  
   } else {
     alert("Must use physical device for Push Notifications");
   }
@@ -102,6 +106,13 @@ export default function Notification(props) {
   const notificationListener = useRef();
   const responseListener = useRef();
   const navigation = useNavigation();
+  const {UpdateNotifyToken}=useAuth();
+  const {state}=AuthStatus();
+  if (state.isLoggedIn){
+      UpdateNotifyToken(expoPushToken).then((res)=>{
+    console.log(res);
+  })
+  }
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>

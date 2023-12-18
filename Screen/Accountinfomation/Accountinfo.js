@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   ToastAndroid,
+  Alert
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { AuthStatus } from "../../Services/AuthContext";
@@ -185,7 +186,7 @@ const AccountInfo = ({ isVisible, navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.auth}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item}  onPress={() => Alert.alert("Thông báo", "Chức năng đang phát triển")}>
           <View style={styles.name}>
             <Text style={styles.itemText}>Đổi mật khẩu</Text>
             <TouchableOpacity>

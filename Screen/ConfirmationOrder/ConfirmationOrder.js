@@ -17,7 +17,6 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import useAuth from "../../Services/auth.services";
 import { AuthStatus } from "../../Services/AuthContext";
-import Notification from "../Notification/Notification";
 const ConfirmationOrder = (props) => {
   const { getDefaultAddress, CreateAddress, Orders } = useAuth();
   const { Orderdata } = props.route.params;
@@ -218,14 +217,6 @@ const ConfirmationOrder = (props) => {
 
   return (
     <ScrollView style={styles.container}>
-      {orderSuccess && (
-        <Notification
-          key={notificationKey}
-          title="Trạng thái đơn hàng"
-          body="Đang chờ xác nhận!"
-          data={{ type: "ORDERSTATUS", status: "PROCESSING" }}
-        />
-      )}
       <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
         <View
           style={{

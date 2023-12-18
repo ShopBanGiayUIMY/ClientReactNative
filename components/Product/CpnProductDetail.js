@@ -101,8 +101,8 @@ const CpnProductDetail = ({ product, navigation }) => {
     try {
       const response = await GetRatingProduct(product.id);
       if (response) {
-        setstar(response.average_rating);
-        console.log("sao", response.average_rating);
+        setstar((+response.average_rating).toFixed(1));
+        console.log("sao", (+response.average_rating).toFixed(1));
       } else {
         setstar(0);
       }
@@ -474,9 +474,9 @@ const CpnProductDetail = ({ product, navigation }) => {
           />
           <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
         </Pressable>
-        <Pressable style={styles.buyNowButton} onPress={hanldThanhToan}>
+        {/* <Pressable style={styles.buyNowButton} onPress={hanldThanhToan}>
           <Text style={styles.buttonTextmua}>Mua ngay</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </SafeAreaView>
   );
@@ -492,6 +492,9 @@ const styles = StyleSheet.create({
   container: {
     width: width,
     height: "100%",
+  },
+  main: {
+    paddingTop: 0,
   },
   viewTop: {
     width: width,
@@ -533,7 +536,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#26aa99",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    width: "50%",
+    width: "100%",
     height: "100%",
   },
   buyNowButton: {
