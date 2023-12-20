@@ -1,6 +1,7 @@
 # Shop Quần Áo - React Native 
 Trường cao đẳng Fpt Polytechnic
-https://cdn.haitrieu.com/wp-content/uploads/2023/05/Logo-Truong-Cao-dang-FPT-Polytechnic.png
+![image](https://github.com/ShopBanGiayUIMY/ClientReactNative/assets/24969335/ca75a7b1-60e3-4253-a649-1f7ebaa3e534)
+
 Team MD-02 ![image](https://github.com/ShopBanGiayUIMY/ClientReactNative/assets/94282645/1733964b-ba08-40e1-8f70-012640be9ffb)
 
 
