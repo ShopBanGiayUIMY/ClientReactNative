@@ -75,7 +75,7 @@ const Header = (props) => {
           </TouchableOpacity>
         </TouchableWithoutFeedback>
         <View style={styles.right}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.icon}
             onPress={() => {
               navigation.navigate("Notification");
@@ -91,7 +91,7 @@ const Header = (props) => {
               style={styles.iconitem}
               color="#363636"
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={styles.icon}
             onPress={() => {
@@ -128,7 +128,7 @@ const styles = {
     height: 60,
   },
   center: {
-    flex: 4,
+    flex: 9,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -139,6 +139,7 @@ const styles = {
     borderRadius: 10,
     paddingHorizontal: 10,
     borderWidth: 1,
+    
     borderColor: "rgba(0, 199, 218, 0.8)",
   },
   searchIcon: {

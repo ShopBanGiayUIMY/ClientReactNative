@@ -27,9 +27,9 @@ const COLORS = {
 };
 const { height, width } = Dimensions.get("window");
 
-export default function ModalBottom(props) {
-  const total_cart = useSelector((state) => state.Reducers.total);
+export default function ModalBottomOrder(props) {
   const { closeDrawer, openDrawer, dataprod } = props;
+  console.log("dataprod", dataprod);
   const [cartUpdate, setCartUpdate] = useState(0);
   const { UpdateCreateCart } = useAuth();
   const { state } = AuthStatus();
@@ -41,6 +41,7 @@ export default function ModalBottom(props) {
     quantity: quantity,
   });
   const dispatchRedux = useDispatch();
+
   const addCart = async () => {
     if (formData.product_detail_id === null) {
       alert("Vui lòng chọn size");
@@ -55,8 +56,14 @@ export default function ModalBottom(props) {
     console.log(data);
     if (data) {
       alert("Thêm vào giỏ hàng thành công");
+      console.log("hjfghjhdfhjd", JSON.stringify(data));
       setCartUpdate(cartUpdate + 1);
-      dispatchRedux(soluonggiohang(total_cart + 1));
+      let Orderdata = {
+        Cart_id: Cart_id,
+        total: calculateTotal(),
+        item_id: data.data,
+      };
+      // dispatchRedux(soluonggiohang(cartUpdate + 1));
     }
   };
 
@@ -200,10 +207,10 @@ export default function ModalBottom(props) {
                   </TouchableOpacity>
                 </View>
 
-                {/* <View style={{ flexDirection: "column" }}>
+                <View style={{ flexDirection: "column" }}>
                   <Text style={styles.body4}>Tạm tính</Text>
                   <Text style={styles.h3}>23000đ</Text>
-                </View> */}
+                </View>
               </View>
 
               <TouchableOpacity
@@ -212,7 +219,7 @@ export default function ModalBottom(props) {
                   addCart();
                 }}
               >
-                <Feather name="shopping-bag" size={24} color={COLORS.white} />
+                <Feather name="send" size={24} color={COLORS.white} />
 
                 <Text
                   style={{
@@ -220,7 +227,7 @@ export default function ModalBottom(props) {
                     marginLeft: 12,
                   }}
                 >
-                  Thêm vào giỏ hàng
+                  Mua ngay
                 </Text>
               </TouchableOpacity>
             </View>
@@ -264,6 +271,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.black,
+    backgroundColor: COLORS.red,
   },
 });

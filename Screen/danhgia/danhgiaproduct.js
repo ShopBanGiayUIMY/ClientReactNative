@@ -9,10 +9,14 @@ import {
 } from "react-native";
 import { Rating } from "react-native-ratings";
 import useAuth from "../../Services/auth.services";
+import { useNavigation } from "@react-navigation/native";
 
 const DanhGiaProduct = (props) => {
-  const [tempRating, setTempRating] = useState(0);
-  const [rating, setRating] = useState("");
+  const [tempRating, setTempRating] = useState(5); // Default rating set to 5
+  const [rating, setRating] = useState("Tuyệt vời"); // Default rating label
+  const [comment, setComment] = useState(""); // State for the text input
+  const navigation = useNavigation();
+
   const { data } = props.route.params;
   const { GuiDanhGia } = useAuth();
   console.log("data", data.OrderDetails[0].ProductDetail.Product.product_id);
@@ -25,9 +29,13 @@ const DanhGiaProduct = (props) => {
   };
 
   const handleSubmit = () => {
+    // if (comment.trim() === "") {
+    //   Alert.alert("Thông báo", "Vui lòng nhập nhận xét của bạn.");
+    //   return;
+    // }
+
     try {
-      // If the cancellation is successful, show an alert for payment method selection
-      Alert.alert("Trạng thái", "Bạn có muốn thanh toán đơn hàng này không?", [
+      Alert.alert("Trạng thái", "Bạn có muốn đánh giá đơn hàng này không?", [
         {
           text: "Không",
           onPress: () => {},
@@ -35,8 +43,11 @@ const DanhGiaProduct = (props) => {
         {
           text: "Có",
           onPress: async () => {
-            await GuiDanhGia(data.OrderDetails[0].ProductDetail.Product.product_id, tempRating);
-            props.navigation.navigate("BottomTabNavigation");
+            await GuiDanhGia(
+              data.OrderDetails[0].ProductDetail.Product.product_id,
+              tempRating
+            );
+            navigation.navigate("BottomTabNavigation");
           },
         },
       ]);
@@ -60,13 +71,16 @@ const DanhGiaProduct = (props) => {
         imageSize={30}
         onFinishRating={ratingCompleted}
         style={{ backgroundColor: "transparent", paddingVertical: 10 }}
+        startingValue={5} // Default starting value set to 5
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         placeholder="Hãy chia sẻ nhận xét về sản phẩm này bạn nhé!"
         multiline
         numberOfLines={4}
-      />
+        onChangeText={setComment}
+        value={comment}
+      /> */}
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitButtonText}>Gửi đánh giá</Text>
@@ -85,7 +99,6 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     flexDirection: "row",
-
     width: "100%",
   },
   ratingText: {

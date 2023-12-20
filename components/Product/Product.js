@@ -48,7 +48,7 @@ export default function Product(props) {
             <TouchableOpacity
               style={styles.addToCart}
               onPress={() => {
-                alert("Thêm vào giỏ hàng");
+                alert("Chức năng đang phát triển");
               }}
             >
               <FontAwesomeIcon

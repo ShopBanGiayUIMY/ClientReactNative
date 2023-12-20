@@ -115,7 +115,7 @@ const ChoXacNhan = () => {
               {item.paymentStatus === "UNPAID" ? (
                 <Text style={{ color: "red" }}>Chưa thanh toán</Text>
               ) : (
-                <Text color="rgba(0, 255, 61, 0.8)">Đã thanh toán</Text>
+                <Text color="rgba(0, 255, 61, 0.8) ">Đã thanh toán</Text>
               )}
             </Text>
           </Text>
@@ -235,7 +235,9 @@ const styles = StyleSheet.create({
   processingButtonpaymentStatus: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 12,
+    alignItems: "center",
+    textAlign: "center",
   },
   processingButtonHuy: {
     borderRadius: 4,

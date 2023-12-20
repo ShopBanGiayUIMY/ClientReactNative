@@ -123,7 +123,7 @@ export default function Information({ navigation }) {
                 <Text style={styles.likeproducts}>
                   {countFavorites} sản phẩm đã thích
                 </Text>
-                <Text style={styles.saleOffUser}>100 Phiếu giảm giá</Text>
+                {/* <Text style={styles.saleOffUser}>100 Phiếu giảm giá</Text> */}
               </View>
             </View>
           </View>

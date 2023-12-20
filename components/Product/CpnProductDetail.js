@@ -39,6 +39,7 @@ const COLOURS = {
 };
 import useAuth from "../../Services/auth.services";
 import ModalBottom from "../../Screen/Modal/modal.product.detail";
+import ModalBottomOrder from "../../Screen/Modal/modal.product.order";
 import Star from "react-native-star-view";
 import { SafeAreaView } from "react-native";
 const CpnProductDetail = ({ product, navigation }) => {
@@ -100,8 +101,8 @@ const CpnProductDetail = ({ product, navigation }) => {
     try {
       const response = await GetRatingProduct(product.id);
       if (response) {
-        setstar(response.average_rating);
-        console.log("sao", response.average_rating);
+        setstar((+response.average_rating).toFixed(1));
+        console.log("sao", (+response.average_rating).toFixed(1));
       } else {
         setstar(0);
       }
@@ -182,9 +183,13 @@ const CpnProductDetail = ({ product, navigation }) => {
     );
   };
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisibleOrder, setisModalVisibleOrder] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+  };
+  const toggleModalOrder = () => {
+    setisModalVisibleOrder(!isModalVisibleOrder);
   };
   let totalQuantitySold = daban;
   if (totalQuantitySold === null) {
@@ -194,7 +199,7 @@ const CpnProductDetail = ({ product, navigation }) => {
   }
 
   const hanldThanhToan = () => {
-    toggleModal();
+    toggleModalOrder();
   };
 
   return (
@@ -208,6 +213,13 @@ const CpnProductDetail = ({ product, navigation }) => {
           <ModalBottom
             openDrawer={isModalVisible}
             closeDrawer={toggleModal}
+            dataprod={data}
+          />
+        )}
+        {isModalVisibleOrder && (
+          <ModalBottomOrder
+            openDrawer={isModalVisibleOrder}
+            closeDrawer={toggleModalOrder}
             dataprod={data}
           />
         )}
@@ -349,7 +361,7 @@ const CpnProductDetail = ({ product, navigation }) => {
                 marginLeft: 50,
               }}
             >
-              <Text style={{ marginLeft: 5 }}>Đã bán</Text>
+              <Text style={{}}>Đã bán</Text>
               <Text
                 style={{
                   fontWeight: "200",
@@ -462,14 +474,9 @@ const CpnProductDetail = ({ product, navigation }) => {
           />
           <Text style={styles.buttonTextadd}>Thêm vào giỏ hàng</Text>
         </Pressable>
-        <Pressable
-          style={styles.buyNowButton}
-          onPress={() => {
-            hanldThanhToan();
-          }}
-        >
+        {/* <Pressable style={styles.buyNowButton} onPress={hanldThanhToan}>
           <Text style={styles.buttonTextmua}>Mua ngay</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </SafeAreaView>
   );
@@ -485,6 +492,8 @@ const styles = StyleSheet.create({
   container: {
     width: width,
     height: '100%',
+  },
+
   },
   viewTop: {
     width: width,
@@ -526,7 +535,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#26aa99",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    width: "50%",
+    width: "100%",
     height: "100%",
   },
   buyNowButton: {

@@ -306,6 +306,7 @@ const useAuth = () => {
     try {
       const response = await axios.get(
         `${Config.API_BASE_URL}/address/default`,
+
         {
           headers: headers,
         }
@@ -521,6 +522,21 @@ const useAuth = () => {
       return error.response.data;
     }
   };
+  const UpdateNotifyToken = async (key) => {
+    const headers = await authHeader();
+    try {
+      const response = await axios.patch(
+        `${Config.API_BASE_URL}/users/notify-token`,
+        { notifyToken: key },
+        {
+          headers: headers,
+        }
+      );
+      if (response.data) {
+        return response.data;
+      }
+    } catch (error) {}
+  };
   return {
     loginUser,
     registerUser,
@@ -552,6 +568,7 @@ const useAuth = () => {
     totalOrderStatus,
     GetRatingProduct,
     GuiDanhGia,
+    UpdateNotifyToken,
   };
 };
 
