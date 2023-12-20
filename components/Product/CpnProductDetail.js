@@ -491,10 +491,9 @@ const styles = StyleSheet.create({
   },
   container: {
     width: width,
-    height: "100%",
+    height: '100%',
   },
-  main: {
-    paddingTop: 0,
+
   },
   viewTop: {
     width: width,
