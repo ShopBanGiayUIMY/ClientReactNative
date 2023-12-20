@@ -1,4 +1,8 @@
-# Shop Quần Áo - React Native
+# Shop Quần Áo - React Native 
+Trường cao đẳng Fpt Polytechnic
+https://cdn.haitrieu.com/wp-content/uploads/2023/05/Logo-Truong-Cao-dang-FPT-Polytechnic.png
+Team MD-02 ![image](https://github.com/ShopBanGiayUIMY/ClientReactNative/assets/94282645/1733964b-ba08-40e1-8f70-012640be9ffb)
+
 
 ## Giới thiệu
 Shop Quần Áo - React Native là một ứng dụng di động được xây dựng bằng React Native, nhằm cung cấp một giao diện dễ sử dụng và hấp dẫn cho việc mua sắm quần áo trực tuyến. Ứng dụng này cho phép người dùng duyệt qua danh sách sản phẩm, xem chi tiết và thêm vào giỏ hàng, cùng với các tính năng khác như tìm kiếm sản phẩm, đăng nhập và thanh toán.
