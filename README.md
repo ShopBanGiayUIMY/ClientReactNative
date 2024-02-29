@@ -1,13 +1,13 @@
-# Shop Quần Áo - React Native
+# Ứng dụng bán giầy thể thao nike - React Native
 
 ## Giới thiệu
-Shop Quần Áo - React Native là một ứng dụng di động được xây dựng bằng React Native, nhằm cung cấp một giao diện dễ sử dụng và hấp dẫn cho việc mua sắm quần áo trực tuyến. Ứng dụng này cho phép người dùng duyệt qua danh sách sản phẩm, xem chi tiết và thêm vào giỏ hàng, cùng với các tính năng khác như tìm kiếm sản phẩm, đăng nhập và thanh toán.
+Shop Quần Áo - React Native là một ứng dụng di động được xây dựng bằng React Native, nhằm cung cấp một giao diện dễ sử dụng và hấp dẫn cho việc mua sắm giầy trực tuyến. Ứng dụng này cho phép người dùng duyệt qua danh sách sản phẩm, xem chi tiết và thêm vào giỏ hàng, cùng với các tính năng khác như tìm kiếm sản phẩm, đăng nhập và thanh toán.
 
 ## Tính năng chính
-- Danh sách sản phẩm: hiển thị danh sách các sản phẩm quần áo.
+- Danh sách sản phẩm: hiển thị danh sách các sản phẩm giầy.
 - Xem chi tiết sản phẩm: cho phép xem thông tin chi tiết, hình ảnh và mô tả sản phẩm.
 - Thêm vào giỏ hàng: cho phép người dùng thêm sản phẩm vào giỏ hàng.
-- Tìm kiếm sản phẩm: hỗ trợ tìm kiếm sản phẩm theo tên, mô tả hoặc loại quần áo.
+- Tìm kiếm sản phẩm: hỗ trợ tìm kiếm sản phẩm theo tên, mô tả hoặc loại giầy.
 - Đăng nhập: cho phép người dùng đăng nhập vào tài khoản cá nhân.
 - Thanh toán: cung cấp giao diện thanh toán đơn giản và an toàn.
 
